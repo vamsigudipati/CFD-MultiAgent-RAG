@@ -1,0 +1,58 @@
+Slide Deck,Category/Section,Authors,Year,Title,Journal / Venue,GitHub Repo URL
+Slide Deck 1,"Data Science, Machine Learning & AI Foundations",Hey et al.,2009,The Fourth Paradigm: Data-Intensive Scientific Discovery,N/A,
+,,"Tukey, John",1962,The Future of Data Analysis,N/A,
+,,McCarthy et al.,1955,A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence,N/A,
+,,"Samuel, Arthur",1959,Some Studies in Machine Learning Using the Game of Checkers,N/A,
+,,Rumelhart et al.,1986,Learning representations by back-propagating errors,N/A,
+,,Glorot & Bengio,2010,Understanding the difficulty of training deep feedforward neural networks,N/A,
+,,Hochreiter & Schmidhuber,1997,Long Short-Term Memory,N/A,
+,,Chiappa et al.,2017,Recurrent environment simulators,N/A,
+,,"Rudin, Cynthia",2019,Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead,N/A,
+,,Cranmer et al.,2020,Discovering Symbolic Models from Deep Learning with Inductive Biases,N/A,https://github.com/MilesCranmer/symbolic_deep_learning
+,"AI Impact, Climate & Governance",Vinuesa et al.,2020,The role of artificial intelligence in achieving the Sustainable Development Goals,Nature Communications,
+,,Vinuesa & Sirmacek,2021,Interpretable machine learning for resource allocation with satellite imagery,Nature Machine Intelligence,
+,,Future of Life Institute,2023,Pause Giant AI Experiments: An Open Letter,Open Letter,
+,,Baum et al.,2023,From fear to action: AI governance and opportunities for all,Frontiers in Computer Science,
+,,Larosa et al.,2023,Halting generative AI advancements may harm progress in climate research,Nature Climate Change,
+,Time-Series Forecasting & Reduced-Order Modeling (RNNs / LSTMs / Transformers),Moehlis et al.,2004,A low-dimensional model for turbulent shear flow,N/A,
+,,"Kim, John",2005,Transition to turbulence in a low-dimensional model of plane Couette flow,N/A,
+,,Srinivasan et al.,2019,Predictions of turbulent shear flows using deep neural networks,Physical Review Fluids,
+,,Guastoni et al.,2019,Prediction of wall-bounded turbulence from wall measurements using neural networks,TSFP,https://github.com/KTH-FlowAI/FCN-turbulence-predictions-from-wall-quantities
+,,Eivazi et al.,2021,Recurrent neural networks for time-series forecasting of chaotic flow fields,International Journal of Heat and Fluid Flow,https://github.com/KTH-FlowAI/9eqModel_KNFandLSTM
+,,Borrelli et al.,2022,Predicting temporal dynamics in minimal turbulent channel flows using long short-term memory networks,International Journal of Heat and Fluid Flow,
+,,Yousif et al.,2023,A transformer-based synthetic inflow generator for turbulent boundary layers,Journal of Fluid Mechanics,
+,Physics-Informed Neural Networks (PINNs) & Datasets,Eivazi et al.,2022,Physics-informed neural networks for solving Reynolds-averaged Navier–Stokes equations,Physics of Fluids,https://github.com/KTH-FlowAI/Physics-informed-neural-networks-for-solving-Reynolds-averaged-Navier-Stokes-equations
+,,Eitel-Amor et al.,2014,Simulation of zero-pressure-gradient turbulent boundary layers,International Journal of Heat and Fluid Flow,
+,,Bobke et al.,2017,Numerical study of adverse-pressure-gradient turbulent boundary layers,Journal of Fluid Mechanics,
+,,Vinuesa et al.,2018,"Direct numerical simulation of the flow around a NACA4412 airfoil at Re_c = 200,000",International Journal of Heat and Fluid Flow,
+,,Hasanuzzaman et al.,2023,Physics-informed neural networks to correct particle image velocimetry measurements,Measurement Science and Technology,https://github.com/KTH-FlowAI/Enhancement-of-PIV-via-PINNs
+,,Eivazi et al.,2024,De-noising fluid flow measurements with physics-informed neural networks,Measurement Science and Technology,
+Slide Deck 2,General AI Milestones,Silver et al.,2016,Mastering the game of Go with deep neural networks and tree search,Nature,
+,,Silver et al.,2017,Mastering the game of Go without human knowledge,Nature,
+,Key Literature in ML for Fluid Dynamics,Milano & Koumoutsakos,2002,Neural network modeling of wall-bounded turbulent flows,Journal of Computational Physics,
+,,Beck et al.,2018,Deep neural networks for data-driven LES subgrid-scale modeling,Journal of Computational Physics,
+,,Fukami et al.,2019,Super-resolution reconstruction of turbulent flows using machine learning,Journal of Fluid Mechanics,
+,,Duraisamy et al.,2019,Turbulence modeling in the age of data,Annual Review of Fluid Mechanics,
+,,Raissi et al.,2020,Hidden fluid mechanics: Learning velocity and pressure fields from flow visualizations,Science,https://github.com/maziarraissi/HFM
+,,Brunton et al.,2019,Machine learning for fluid mechanics,Annual Review of Fluid Mechanics,
+,,"Vinuesa, Brunton & McKeon",2023,Enhancing experimental fluid mechanics with machine learning,Nature Reviews Physics,https://github.com/KTH-FlowAI/Physics-informed-deep-learning-applications-to-experimental-fluid-mechanics
+,"Non-Intrusive Sensing, Wall Predictions & Super-Resolution (CNNs / GANs)",Suzuki & Hasegawa,2017,Linear estimation of turbulent channel flow,Journal of Fluid Mechanics,
+,,Encinar et al.,2018,Logarithmic layer turbulence,N/A,
+,,Sasaki et al.,2019,Transfer functions for flow predictions in wall-bounded turbulence,Journal of Fluid Mechanics,
+,,Li et al.,1984,Historical reference on spatial neural network architectures,N/A,
+,,Chevalier et al.,2007,SIMSON: A pseudo-spectral solver for turbulent flow simulation,KTH Technical Report,
+,,Güemes et al.,2019,From wall measurements to off-wall velocity fields using neural networks,Physics of Fluids,
+,,Guastoni et al.,2020,Transfer learning for non-intrusive sensing in turbulent channel flows,Journal of Physics: Conference Series,https://github.com/KTH-FlowAI/FCN-turbulence-predictions-from-wall-quantities
+,,Guastoni et al.,2021,Convolutional neural networks for non-intrusive sensing in turbulent channel flows,Journal of Fluid Mechanics,
+,,Kim et al.,2021,Unsupervised GANs for fluid flow super-resolution,N/A,
+,,Güemes et al.,2021,Super-resolution reconstruction of turbulent wall measurements using generative adversarial networks,Physics of Fluids,
+,,Mizuno & Jiménez,2013,Wall-bounded turbulence at high Reynolds numbers,Journal of Fluid Mechanics,
+,,Balasubramanian et al.,2023,Near-wall predictions of turbulent channels using convolutional neural networks,International Journal of Heat and Fluid Flow,
+,"Coherent Structures, Physics Discovery & Explainable AI (XAI)",Lozano-Durán et al.,2012,Three-dimensional intensity structures in turbulent channels,Journal of Fluid Mechanics,
+,,Lundberg & Lee,2017,A Unified Approach to Interpreting Model Predictions (Kernel SHAP),NeurIPS,https://github.com/shap/shap
+,,Lee et al.,2019,Towing tank PIV measurements of turbulent boundary layer,TSFP11,
+,,Erion et al.,2021,Improving performance of deep learning models with gradient SHAP,Nature Machine Intelligence,https://github.com/suinleelab/attributionpriors
+,,Lozano-Durán & Arranz,2022,Information-theoretic analysis of wall-bounded turbulence,Physical Review Research,
+,,Encinar & Jiménez,2023,Cause and effect of streaks and vortices in wall-bounded turbulence,Journal of Fluid Mechanics,
+,,Cremades et al.,2024,Identification of key coherent structures in turbulent channel flows through explainable deep learning,Nature Communications,https://github.com/KTH-FlowAI/Identifying-regions-of-importance-in-wall-bounded-turbulence-through-explainable-deep-learning
+,,"Cremades, Hoyas & Vinuesa",2025,Point-by-point SHAP analysis in wall-bounded turbulence,Nature Communications,
