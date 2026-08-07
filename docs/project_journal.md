@@ -169,3 +169,10 @@ T2C -.->|Namespace: Code| KR
     * **AST Indexer:** Implemented a targeted AST visitor (`ast_indexer.py`) that successfully indexed 155 critical physics symbols (models, neural nets, loss functions, and PDE residuals) into a highly structured SQLite database (`ast_index.sqlite`).
     * **Keras Function Factory Patch:** Adjusted the extraction rules to capture functional API definitions (`def model_factory`) critical for TensorFlow/Keras architectures.
     * **fetch_symbol Tool:** Established the deterministic lookup function that the Framework Sub-Agents will use to inject golden physics code into their generation contexts.
+
+    ### 11. Phase 4 Started: LangGraph Orchestration & Physics Reasoner
+* **Milestone:** Defined the `AgentState` schema and wired the deterministic initial nodes (A, A.5, and B) into a compiled `StateGraph`.
+* **Key Implementations:**
+    * **Node A & A.5 (Ingestion & Kill Switch):** Implemented a deterministic data pre-check. If a blueprint's `closure_status` is `unclosed` or `pde_family` is unresolved, the graph safely terminates with a `BLOCKED_DATA` status without wasting a single LLM token.
+    * **Node B (Physics Reasoner):** Bypassed the LLM entirely for synthesis. The node deterministically constructs an `execution_plan` string by iterating over the Pydantic `frontmatter`. This explicitly sets the contract for the Code Supervisor, mandating `compute_bc_loss`, `train_short_loop`, and `get_dummy_batch` (with structured targets to satisfy the T1 overfit calibration).
+    * **State Serialization:** Ensured `frontmatter` is passed via `model_dump()` so the entire state remains JSON-serializable, anticipating the `SqliteSaver` checkpointer.
