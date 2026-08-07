@@ -136,6 +136,17 @@ EOF
 
 All commands run from the repository root.
 
+**Run the platform smoke test** (does everything still work?) — a deterministic,
+offline regression that drives both proven end-to-end threads (a CNN-field paper
+and a continuous-PINN paper) through the full graph + Green Layer gates and
+asserts each reaches `PASSED`. `GEMINI_API_KEY` is unset for the run, so Node C
+uses its deterministic fallback templates (no network or cost):
+
+```bash
+tools/smoke_test.sh
+# override interpreter if needed:  PYTHON=/path/to/python3 tools/smoke_test.sh
+```
+
 **Run the orchestrator test suite** (happy path, kill switch, budget exhaustion):
 
 ```bash
@@ -186,9 +197,13 @@ full workflow deep-dive, kill-switch semantics, and checkpoint forensics.
 ├── pdf_repository/                   # 48+ research paper PDFs
 ├── docs/
 │   ├── extracted_papers/             # Marker-extracted + normalized markdown per paper
+│   ├── framework_templates/          # framework RAG references (PyTorch PINN training, data loaders)
+│   ├── usecases/                     # user-centric "why it matters" overview
+│   ├── workflows/                    # spec-to-ML workflow + CFD-to-PINN concept mapping
+│   ├── validation/                   # benchmark matrix (gate coverage per canonical problem)
 │   ├── project_journal.md            # engineering decision log
 │   └── workflows_and_use_cases.md    # functional deep-dive (this doc's companion)
-├── tools/                            # ingestion, synthesis, cloning, AST indexing
+├── tools/                            # ingestion, synthesis, cloning, AST indexing, smoke_test.sh
 ├── data/                             # (gitignored) repos, AST index, checkpoints
 └── modules/
     ├── validation_harness/           # GREEN LAYER — immutable T0–T3 gates

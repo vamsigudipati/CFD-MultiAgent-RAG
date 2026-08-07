@@ -192,3 +192,37 @@ T2C -.->|Namespace: Code| KR
     * **Normalization Spec Typing:** Updated `node_b_physics_reasoner` to call `.model_dump()` on the Pydantic `NormalizationSpec` object prior to dictionary iteration.
     * **Test Institutionalization:** Committed `modules/orchestrator/test_orchestrator.py` to permanently capture happy-path execution, data kill-switches (`BLOCKED_DATA`), and budget exhaustion ($k=3$) leading to `BLOCKED_PHYSICS`.
     * **Dependency Management:** Established root `requirements.txt` containing all runtime libraries (`torch`, `pydantic`, `pyyaml`, `pytest`, `pytest-timeout`, `langgraph`, `langgraph-checkpoint-sqlite`).
+
+### 14. Framework RAG Injection for PINN Training Loops (Completed)
+* **Milestone:** Integrated framework-grounded generation guidance for PINN execution logic and validated end-to-end autonomous synthesis quality.
+* **Key Implementations:**
+    * **Framework Template Added:** Created `docs/framework_templates/pytorch_pinn_training.md` as a reusable reference for PyTorch PINN best practices, including a two-stage optimizer workflow (Adam warm-up + LBFGS closure refinement) and explicit `train_model`/`validate` function contracts.
+    * **Supervisor Prompt Upgrade:** Updated `modules/orchestrator/node_c.py` to inject the framework template into the PINN generation prompt path while preserving strict modality isolation (CNN prompt path remains template-free).
+    * **Physics-Safe Execution Contract:** Reinforced PINN directives to require continuous-coordinate training behavior, explicit optimization staging, and evaluable validation hooks suitable for Green Layer checks.
+    * **Runtime Validation:** Verified via orchestrator run `eivazi-pinn-e2e-run-004` that generated monolith code included a complete two-stage training loop and passed routed PINN gate execution without retries.
+    * **Repository Security Checkpoint:** Changes were staged, committed, and pushed to `main` with commit `2724f09` using message: `feat: implement Framework RAG for PyTorch PINN execution logic and two-stage optimizer templates`.
+
+### 15. Framework RAG: Custom Dataset & Multiprocessing DataLoader (Completed)
+* **Milestone:** Extended the Framework RAG layer beyond training loops to cover high-performance data ingestion, and validated it end-to-end.
+* **Key Implementations:**
+    * **Template Section Added:** Added a *Data Handling & Loaders* section to `docs/framework_templates/pytorch_pinn_training.md` demonstrating a `torch.utils.data.Dataset` subclass with Min-Max coordinate scaling, explicit boundary/interior collocation separation, and a multiprocessing `DataLoader` (`batch_size`, `num_workers`, `persistent_workers`).
+    * **Prompt Hardening:** Added a strict requirement (#11) to the `PINN_SYSTEM_PROMPT` in `modules/orchestrator/node_c.py` mandating a custom Dataset for ingestion/scaling/boundary separation and a multi-process DataLoader-fed training loop.
+    * **Runtime Validation:** Orchestrator run `eivazi-pinn-e2e-run-005` passed first attempt (0 retries); the generated monolith produced a `PINNDataset` with `MinMaxScaler`, boundary/interior split, and DataLoader-aware `train_model`/`validate` paths.
+    * **Repository Security Checkpoint:** Pushed to `main` as commit `ec0aebc`: `feat: implement Framework RAG data handling templates and custom Dataset/DataLoader requirements for PINNs`.
+
+### 16. User-Centric Documentation & Benchmark Framework (Completed)
+* **Milestone:** Restructured documentation around user narrative (why the platform matters) and expanded scope to traditional-CFD-to-ML conversion and spec-driven generation.
+* **Key Implementations:**
+    * **New doc directories:** `docs/usecases/`, `docs/workflows/`, `docs/validation/`.
+    * **`docs/usecases/overview.md`** — audience-facing rationale (industrialized trust, code-rot elimination, cross-paper normalization, anti-hallucination, spec-driven generation) for researchers, CFD practitioners, and engineering leaders.
+    * **`docs/workflows/specification_to_ml.md`** — the two entry paths (traditional CFD paper → extracted equations/BCs, or raw markdown problem spec) into the same validated pipeline.
+    * **`docs/workflows/cfd_to_pinn_mapping.md`** — reference mapping of numerical concepts to ML equivalents (NS/Euler → residual loss `L_e`; inlets/walls/obstacles → boundary loss `L_b`; mesh/domain → collocation sampling + MinMax scaling).
+    * **`docs/validation/benchmark_matrix.md`** — three canonical benchmarks (lid-driven cavity, cylinder at Re=100, thermal flat plate) mapped to the Green Layer gate coverage with quantitative acceptance targets.
+    * **Repository Security Checkpoint:** Pushed to `main` as commit `3260eff`: `docs: introduce user-centric use cases, specification-to-ML workflows, CFD-to-PINN mappings, and benchmark matrix`.
+
+### 17. Regression Smoke Test (Completed)
+* **Milestone:** Added a single-command health check so future maintainers can confirm the platform still works after dependency drift.
+* **Key Implementations:**
+    * **`tools/smoke_test.sh`** — deterministic/offline regression that recreates the trust-anchor `blueprint.yaml` (workspace is gitignored), then drives both proven threads — a CNN-field paper (`2004.08826v3`) and a continuous-PINN paper (`Eivazi_2022_PINN_RANS_Navier_Stokes`) — through the full graph and Green Layer gates using fresh timestamped thread IDs.
+    * **Offline by design:** `GEMINI_API_KEY` is unset for the run so Node C uses its deterministic fallback templates, exercising graph routing, gates, and checkpointing without a live LLM, network, or cost.
+    * **Verdict semantics:** exits `0` only if both threads reach `PASSED`. Verified locally: both cases `PASSED` with 0 attempts.
