@@ -1,0 +1,1451 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Stop Explaining Black Box Machine Learning Models for High Stakes Decisions and Use\nInterpretable Models Instead",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          87.83901786804199,
+          70.93519020080566
+        ],
+        [
+          522.67822265625,
+          70.93519020080566
+        ],
+        [
+          522.67822265625,
+          100.350341796875
+        ],
+        [
+          87.83901786804199,
+          100.350341796875
+        ]
+      ]
+    },
+    {
+      "title": "Abstract",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          285.4391098022461,
+          156.2614860534668
+        ],
+        [
+          324.5877227783203,
+          156.2614860534668
+        ],
+        [
+          324.5877227783203,
+          169.39019775390625
+        ],
+        [
+          285.4391098022461,
+          169.39019775390625
+        ]
+      ]
+    },
+    {
+      "title": "1 Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          62.040109634399414,
+          314.3342056274414
+        ],
+        [
+          164.67745971679688,
+          314.3342056274414
+        ],
+        [
+          164.67745971679688,
+          331.94635009765625
+        ],
+        [
+          62.040109634399414,
+          331.94635009765625
+        ]
+      ]
+    },
+    {
+      "title": "2 Key Issues with Explainable ML",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          61.42166519165039,
+          69.7188835144043
+        ],
+        [
+          285.7364730834961,
+          69.7188835144043
+        ],
+        [
+          285.7364730834961,
+          86.8193359375
+        ],
+        [
+          61.42166519165039,
+          86.8193359375
+        ]
+      ]
+    },
+    {
+      "title": "(i) It is a myth that there is necessarily a trade-off between accuracy and interpretability.",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          61.72329139709473,
+          299.7296676635742
+        ],
+        [
+          476.13836669921875,
+          299.7296676635742
+        ],
+        [
+          476.13836669921875,
+          314.1789855957031
+        ],
+        [
+          61.72329139709473,
+          314.1789855957031
+        ]
+      ]
+    },
+    {
+      "title": "(ii) Explainable ML methods provide explanations that are not faithful to what the original model com-\nputes.",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          61.95494842529297,
+          537.3379669189453
+        ],
+        [
+          550.3639984130859,
+          537.3379669189453
+        ],
+        [
+          550.3639984130859,
+          565.697021484375
+        ],
+        [
+          61.95494842529297,
+          565.697021484375
+        ]
+      ]
+    },
+    {
+      "title": "(iii) Explanations often do not make sense, or do not provide enough detail to understand what the black\nbox is doing.",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          61.685354232788086,
+          504.81788635253906
+        ],
+        [
+          548.8003692626953,
+          504.81788635253906
+        ],
+        [
+          548.8003692626953,
+          533.2239990234375
+        ],
+        [
+          61.685354232788086,
+          533.2239990234375
+        ]
+      ]
+    },
+    {
+      "title": "(iv) Black box models are often not compatible with situations where information outside the database\nneeds to be combined with a risk assessment.",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          61.82599639892578,
+          350.6824264526367
+        ],
+        [
+          549.8174743652344,
+          350.6824264526367
+        ],
+        [
+          549.8174743652344,
+          379.16900634765625
+        ],
+        [
+          61.82599639892578,
+          379.16900634765625
+        ]
+      ]
+    },
+    {
+      "title": "(v) Black box models with explanations can lead to an overly complicated decision pathway that is ripe\nfor human error.",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          62.216257095336914,
+          513.8877868652344
+        ],
+        [
+          549.9608001708984,
+          513.8877868652344
+        ],
+        [
+          549.9608001708984,
+          541.7589874267578
+        ],
+        [
+          62.216257095336914,
+          541.7589874267578
+        ]
+      ]
+    },
+    {
+      "title": "3 Key Issues with Interpretable ML",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          61.27923774719238,
+          69.02459907531738
+        ],
+        [
+          293.86791229248047,
+          69.02459907531738
+        ],
+        [
+          293.86791229248047,
+          86.8193359375
+        ],
+        [
+          61.27923774719238,
+          86.8193359375
+        ]
+      ]
+    },
+    {
+      "title": "(i) Corporations can make profits from the intellectual property afforded to a black box.",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          61.69914436340332,
+          177.4991226196289
+        ],
+        [
+          474.15220642089844,
+          177.4991226196289
+        ],
+        [
+          474.15220642089844,
+          192.23602294921875
+        ],
+        [
+          61.69914436340332,
+          192.23602294921875
+        ]
+      ]
+    },
+    {
+      "title": "(ii) Interpretable models can entail significant effort to construct, in terms of both computation and\ndomain expertise.",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          62.30031967163086,
+          152.7989158630371
+        ],
+        [
+          549.7376861572266,
+          152.7989158630371
+        ],
+        [
+          549.7376861572266,
+          180.945068359375
+        ],
+        [
+          62.30031967163086,
+          180.945068359375
+        ]
+      ]
+    },
+    {
+      "title": "(iii) Black box models seem to uncover \"hidden patterns.\"",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          61.32507133483887,
+          477.533203125
+        ],
+        [
+          332.6780776977539,
+          477.533203125
+        ],
+        [
+          332.6780776977539,
+          492.5769958496094
+        ],
+        [
+          61.32507133483887,
+          492.5769958496094
+        ]
+      ]
+    },
+    {
+      "title": "4 Encouraging Responsible ML Governance",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          61.289228439331055,
+          632.4244995117188
+        ],
+        [
+          346.7024917602539,
+          632.4244995117188
+        ],
+        [
+          346.7024917602539,
+          650.3523559570312
+        ],
+        [
+          61.289228439331055,
+          650.3523559570312
+        ]
+      ]
+    },
+    {
+      "title": "5 Algorithmic Challenges in Interpretable ML",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          61.481306076049805,
+          537.9781951904297
+        ],
+        [
+          358.98326110839844,
+          537.9781951904297
+        ],
+        [
+          358.98326110839844,
+          555.5083465576172
+        ],
+        [
+          61.481306076049805,
+          555.5083465576172
+        ]
+      ]
+    },
+    {
+      "title": "Challenge #1: Constructing optimal logical models",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          61.27898025512695,
+          114.68245697021484
+        ],
+        [
+          301.178466796875,
+          114.68245697021484
+        ],
+        [
+          301.178466796875,
+          128.74005126953125
+        ],
+        [
+          61.27898025512695,
+          128.74005126953125
+        ]
+      ]
+    },
+    {
+      "title": "Challenge #2: Construct optimal sparse scoring systems",
+      "heading_level": null,
+      "page_id": 10,
+      "polygon": [
+        [
+          61.87932014465332,
+          223.08334350585938
+        ],
+        [
+          325.63462829589844,
+          223.08334350585938
+        ],
+        [
+          325.63462829589844,
+          237.54705810546875
+        ],
+        [
+          61.87932014465332,
+          237.54705810546875
+        ]
+      ]
+    },
+    {
+      "title": "Challenge #3 Define interpretability for specific domains and create methods accordingly, including com-\nputer vision",
+      "heading_level": null,
+      "page_id": 11,
+      "polygon": [
+        [
+          62.13336181640625,
+          414.7646484375
+        ],
+        [
+          550.4030456542969,
+          414.7646484375
+        ],
+        [
+          550.4030456542969,
+          442.7530212402344
+        ],
+        [
+          62.13336181640625,
+          442.7530212402344
+        ]
+      ]
+    },
+    {
+      "title": "Discussion on Interpretability for Specific Domains",
+      "heading_level": null,
+      "page_id": 12,
+      "polygon": [
+        [
+          61.95948028564453,
+          586.2225036621094
+        ],
+        [
+          302.99317932128906,
+          586.2225036621094
+        ],
+        [
+          302.99317932128906,
+          599.8789978027344
+        ],
+        [
+          61.95948028564453,
+          599.8789978027344
+        ]
+      ]
+    },
+    {
+      "title": "A Technical Reason Why Accurate Interpretable Models Might Exist in Many Domains",
+      "heading_level": null,
+      "page_id": 13,
+      "polygon": [
+        [
+          62.07550621032715,
+          358.0773696899414
+        ],
+        [
+          511.8602600097656,
+          358.0773696899414
+        ],
+        [
+          511.8602600097656,
+          373.6566467285156
+        ],
+        [
+          62.07550621032715,
+          373.6566467285156
+        ]
+      ]
+    },
+    {
+      "title": "6 Conclusion",
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          60.99656295776367,
+          105.13126373291016
+        ],
+        [
+          155.8041229248047,
+          105.13126373291016
+        ],
+        [
+          155.8041229248047,
+          121.933349609375
+        ],
+        [
+          60.99656295776367,
+          121.933349609375
+        ]
+      ]
+    },
+    {
+      "title": "Acknowledgments",
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          61.763099670410156,
+          353.5298080444336
+        ],
+        [
+          177.8876495361328,
+          353.5298080444336
+        ],
+        [
+          177.8876495361328,
+          371.57733154296875
+        ],
+        [
+          61.763099670410156,
+          371.57733154296875
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 14,
+      "polygon": [
+        [
+          61.6662654876709,
+          493.9544677734375
+        ],
+        [
+          132.07608032226562,
+          493.9544677734375
+        ],
+        [
+          132.07608032226562,
+          511.3363342285156
+        ],
+        [
+          61.6662654876709,
+          511.3363342285156
+        ]
+      ]
+    },
+    {
+      "title": "A On the Two Types of Black Box",
+      "heading_level": null,
+      "page_id": 18,
+      "polygon": [
+        [
+          61.50339317321777,
+          70.29609489440918
+        ],
+        [
+          282.0892639160156,
+          70.29609489440918
+        ],
+        [
+          282.0892639160156,
+          86.8193359375
+        ],
+        [
+          61.50339317321777,
+          86.8193359375
+        ]
+      ]
+    },
+    {
+      "title": "B Performance Comparisons",
+      "heading_level": null,
+      "page_id": 18,
+      "polygon": [
+        [
+          61.64652442932129,
+          197.0247344970703
+        ],
+        [
+          253.22183990478516,
+          197.0247344970703
+        ],
+        [
+          253.22183990478516,
+          214.44036865234375
+        ],
+        [
+          61.64652442932129,
+          214.44036865234375
+        ]
+      ]
+    },
+    {
+      "title": "C Counterfactual Explanations",
+      "heading_level": null,
+      "page_id": 18,
+      "polygon": [
+        [
+          61.63537788391113,
+          420.17340087890625
+        ],
+        [
+          267.6371383666992,
+          420.17340087890625
+        ],
+        [
+          267.6371383666992,
+          437.7033386230469
+        ],
+        [
+          61.63537788391113,
+          437.7033386230469
+        ]
+      ]
+    },
+    {
+      "title": "D Interpretable Models that Provide Smaller-Than-Global Explanations",
+      "heading_level": null,
+      "page_id": 19,
+      "polygon": [
+        [
+          61.50101280212402,
+          68.95343399047852
+        ],
+        [
+          518.3048400878906,
+          68.95343399047852
+        ],
+        [
+          518.3048400878906,
+          86.8193359375
+        ],
+        [
+          61.50101280212402,
+          86.8193359375
+        ]
+      ]
+    },
+    {
+      "title": "E Algorithm Stability",
+      "heading_level": null,
+      "page_id": 19,
+      "polygon": [
+        [
+          60.906057357788086,
+          351.4904022216797
+        ],
+        [
+          208.00543212890625,
+          351.4904022216797
+        ],
+        [
+          208.00543212890625,
+          369.8573303222656
+        ],
+        [
+          60.906057357788086,
+          369.8573303222656
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          142
+        ],
+        [
+          "Line",
+          48
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          115
+        ],
+        [
+          "Line",
+          48
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          85
+        ],
+        [
+          "Line",
+          36
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          126
+        ],
+        [
+          "Line",
+          49
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          108
+        ],
+        [
+          "Line",
+          44
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          113
+        ],
+        [
+          "Line",
+          41
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Table",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "TableGroup",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          115
+        ],
+        [
+          "Line",
+          50
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          95
+        ],
+        [
+          "Line",
+          45
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 8,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          99
+        ],
+        [
+          "Line",
+          47
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 9,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          182
+        ],
+        [
+          "Line",
+          54
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 10,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          161
+        ],
+        [
+          "Line",
+          37
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 11,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          193
+        ],
+        [
+          "Line",
+          66
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 12,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          71
+        ],
+        [
+          "Line",
+          31
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Picture",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "PictureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 13,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          132
+        ],
+        [
+          "Line",
+          48
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 14,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          91
+        ],
+        [
+          "Line",
+          39
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "Reference",
+          7
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 15,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          134
+        ],
+        [
+          "Line",
+          43
+        ],
+        [
+          "Reference",
+          19
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Text",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 16,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          124
+        ],
+        [
+          "Line",
+          40
+        ],
+        [
+          "Reference",
+          20
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Text",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 17,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          155
+        ],
+        [
+          "Line",
+          42
+        ],
+        [
+          "Reference",
+          21
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Text",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 18,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          109
+        ],
+        [
+          "Line",
+          45
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "Reference",
+          3
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 19,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          103
+        ],
+        [
+          "Line",
+          45
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/Rudin_2019_Stop_Explaining_Black_Box_Models"
+}

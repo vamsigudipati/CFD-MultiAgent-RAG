@@ -1,0 +1,540 @@
+Thank you. Okay. Shall we start? Yeah. Great. Hi everyone. Thanks for being back. So, last time we were talking about spatial
+predictions and basically computer vision methods that can exploit the spatial patterns in your data to be able to make better spatial predictions.
+And, in that context, here we were looking at CNNs, or in particular, we were looking at the convolution operation and
+how different convolution filters can really process images differently. And one example was this one where, and it's interesting, when your input has different channels.
+And by different channels, imagine that you want to predict the weather tomorrow, and you're looking at satellite images from pressure,
+humidity, temperature, and flow velocity. Now, all of these images have different information, but potentially there's going to be correlations and
+cross causal relations across variables, across fields, and when your input is made up of different snapshots of different types, different modalities in a sense,
+being able to exploit correlations across those is going to be very helpful. And that's a bit the idea that I want to illustrate with this example,
+where the original image would be this one. That's a color image. So let's imagine that we don't use this as an input, but we use
+these three different channels as input. So basically I have the red, green and blue channels as input. So as we mentioned last time,
+the red channel is going to contain this information here, the green channel is going to contain this one, and the blue channel is going to contain this one.
+And the idea is that in the same example that I want to predict weather, therefore velocity, pressure and temperature are helpful.
+Here the red, green and blue pieces of information are all helpful. So that's the type of idea that I want to
+explore here. Okay. Hi, do we have the slides? You should have them in the system. If not, can someone from flow thermal lab let me know?
+You should in principle have the slides. But if not let me know and I will share them. Okay. So the point is that
+you can apply convolutions across all these kernels, find the cross correlations among channels, and then obtain meaningful predictions based on
+the relationships between these channels. Now, how do you apply a filter to an input that has different channels? Well, you apply the first kernel to the first channel, apply the
+second kernel to the second channel, third kernel to the third channel, and then you add up the three feature maps, which gives us an output of size
+five times five in this case. So that's a little bit the idea, that you can apply the different kernels to the different inputs and combine the
+information to get a consolidated answer. Okay. This is what we saw last time. I just wanted to give a little recap on how we can use
+information with multiple inputs. Make sense? Okay. Now how do I apply this in the context of fluid mechanics? Well, I can just come here
+and in this example, my input would be three channels. And remember that I'm trying to measure the quantities at the wall
+to predict turbulence above the wall. So the quantities that I measure at the wall are the wall shear stress in the
+streamways direction, wall shear stress in the spanways direction, and wall pressure. So I have three inputs and I also have three outputs.
+The three outputs are the three velocity fluctuations on a plane above the wall. Why can't we have a single kernel with depth three
+instead of three different kernels? Well, in practice, and this is a bit of nomenclature, I call kernel when it's a 2D filter, and a
+filter when I have several kernels together. So in practice what I'm doing here is basically have a filter of depth three. So that's exactly what I'm
+doing. But a filter of depth three has three different kernels. So basically three different filters of size, of dimension two,
+essentially. Okay. Okay, good. So in this example, what I have is a total of six hidden layers as we can see here. So each of these
+applications or the symbol you can see here is a hidden layer. So this is one, two, three, four, five and six.
+And this is important. In this example, my filter of the first layer has a kernel of size five times five basically. So
+25 entries. So 5 times 5 is the typical size of the kernel at the first layers. And as you go deeper the kernel gets smaller,
+so you make it usually 3 by 3. So what you have here is a kernel of size 5 times 5 and a
+depth of three. So a total of 75 parameters which is exactly the question that I got. Okay, so the filter has a depth of three
+and the kernel is size five times five. We apply a total of 64 filters. So one application of this filter will give me one plane here as an output, which is called
+a feature map. And a feature map comprises the most prominent characteristics after applying my convolution transformation. And I apply this 64 times. So I have a total of
+64 planes here, corresponding to those 64 feature maps. That means that my next filter on this layer will have
+a window, a kernel of size three times three and a depth of 64. So now when I apply my next convolution,
+and I apply that a total of 64 times or 128 times, what I'm doing is that I'm just extracting
+patterns with that depth of 64 and that kernel of size three by three now. So essentially, each filter identifies one or more features.
+The first layers are identifying simpler patterns, simpler features in my data. The last layers are identifying more complex patterns, more complex
+features. And because all of this is built hierarchically and non-linearly, as I go deeper in my network, this architecture is building hierarchically more and more complexity.
+So I start with simple features from my turbulent flow, and then I hierarchically add more and more complexity. And of course, neural networks work a bit in the same way as turbulence.
+Turbulence is also hierarchical. So there is a bit of an interesting connection here. And because neural networks are non-linear, that
+composability really helps to build progressively more relevant patterns that are closer to the structures in our flow. Do we use pooling layers as well? We can do that.
+In this particular example, we don't do pooling. In this particular example, this is a very simple CNN. In other examples that we'll see later, you're going to see that we do pooling as
+well. Okay? Sounds good. So this is a very simple CNN, a very simple convolutional neural network, and we can see how that applies to other ideas.
+Can you explain how these kernels are applied to the CNN, and how exactly you calculate the number of features for CNNs?
+Have I understood exactly what you are trying to convey? So the values in the kernels are obtained through training.
+So I train my neural network to be able to obtain the best performance in the output, and the training is adjusting those parameters in those
+kernels. Okay? Now, how are the number of features selected? So look, in this first layer, I apply the filter 64
+times, which means that I have 64 feature maps. That 64 is a number that I choose because I believe that
+the complexity of the patterns that I'm going to identify in my data requires this depth. Each of the feature maps is identifying
+one or more prominent characteristics of my data. And so the first plane here will identify some features of my data, second one, some different features.
+And then I do this a total of 64 times so that I can effectively learn, as I go deeper, different parameters of my neural network.
+Okay? So in a nutshell, the parameters of the kernel are adjusted through training. The number of feature maps here is a
+parameter that I adjust afterwards. 64 kernels? Yes, 64. Well, 64 different filters, okay? So the first filter, which has the
+kernels stacked up, I have three different kernels here. That gives me my first feature map. My second filter gives me my second feature map, and so on until
+64. That's for the first layer. And then in the second layer, my filters will have much more depth, a depth of 64.
+A kernel much smaller of three by three, and I apply that 128 times or something like that, right? So I can really
+stack together many more of these filters to, again, extract patterns progressively and hierarchically. Kernel can understand spatial features, but how temporal
+features are predicted. So in this particular example, on purpose, I am doing only spatial features. Okay? This is on purpose. Remember that the first
+block was about temporal predictions, and then my data was basically time series, and we used LSTMs, transformers, different architectures to recurrent networks to predict time.
+Now, in this particular example, I'm not considering time, okay? I'm considering only space. Later on, we will see examples
+where both space and time are predicted. In this example, my input is the information at the wall now, and my output is the information above the wall
+now. So it's a purely spatial prediction with only spatial patterns. I'm not looking at temporal information yet. But in starting layer three.
+So this is a bit... Yeah. You only apply 64 filters to only a part of the whole data. No, no, no.
+Remember that this filter is going to sweep through the whole input. Right? We talked about it last time. So this is a little window,
+but the window is sweeping through the whole plane, applying convolution operations on the whole plane. That's how this works.
+So we are Interrogating all the data, applying filtering operations to all the data, and the idea is that this is done with that kernel that
+sweeps through the whole image, and that kernel, by design, is extracting spatial predictions, spatial patterns from my data. So this information that we have
+here contains the spatial information in addition to the values of the pixels. Those spatial correlations, those spatial structures are exactly what I want to predict with my model.
+Okay? Okay, good. More questions?
+Okay. So now, let's continue. Here, what we have is an application of this. This is a study that we published in the Journal of Fluid Mechanics a few years
+ago, where exactly the idea was to use information at the wall, wall shear stress in the streamwise direction, wall shear stress in the spanwise
+direction, wall pressure, and information above the wall is the output. So this is a streamwise, wall-normal, and a spanwise
+fluctuations. And this method is going to be slightly different. So there's two different approaches here. One approach is using a fully convolutional network to predict,
+given the input, the complete output. So the whole plane is the input, the whole plane is the output. In this approach, which we're going to call
+FCN-POD, so fully convolutional network combined with POD, I'm going to bring in proper orthogonal decomposition. So in proper orthogonal decomposition, I decompose my spatiotemporal
+signal into spatial functions and temporal coefficients. The spatial functions don't change with time. They're just depending on space, and the
+temporal information comes basically in these temporal coefficients. So in the FCN-POD, what I do is that I predict the temporal
+coefficients inside these subdomains in such a way that I can combine and reconstruct the whole signal eventually. So FCN predicts the whole field directly.
+FCN-POD does a POD first, a proper orthogonal decomposition, and then predicts the temporal coefficients. So these are the results of the instantaneous velocity
+fluctuations for various methods. The first column is results at y+15. So if this is the wall, the results are close to the wall.
+The second column is at y+100. If this is the wall, this is the result. So farther away from the wall. Okay?
+What's the full name for FCN? Fully convolutional network. It's a fully convolutional network. So that means that I have convolutions from beginning to end.
+Can you please share the link to the paper? Yes, I will do that. Does the predicted performance of the CNN decrease as
+the target distance from the wall increases? Yes, it does. We're going to see that right now in this example that I'm going to show. The target distance will depend on
+your application. Typically, you're very interested in controlling the near wall region. So y+15, close to the wall, that's the region where you have the
+strongest fluctuation peaks. That's typically your most relevant area that you want to explore. So essentially, that's going to be
+our target. Okay, let me share the link to the paper. Just a second.
+So this is published in JFM. Here it is. Should be open access, so you should be able to access
+it. So here is the paper. How fast is the FCN-POD approach as compared to solving the flow field using a CFD? Now, I want to
+emphasize here, we are not doing modeling. This is just a prediction step. This is something that you would do in an experiment, for example, where you measure at the
+wall and you predict the flow above the wall. This is much, much faster than CFD. This is evaluated in milliseconds, right?
+You just evaluate the model. You need to train your model first. But once the model is trained, its evaluation is milliseconds,
+right? Hello, Professor. I think you are muted. We cannot listen you speaking. I'm not muted. Okay. Before, I think you were. I don't know.
+People were also speaking at the chat. But now it's fine. Can you hear me? Okay. So you lost for a second. Okay.
+Sounds good. So let's go back to the results. Is it all clear? Are there any other questions?
+Okay. So the first plane is close to the wall, the second plane is farther from the wall, and I'm showing instantaneous predictions, instantaneous
+stream wise velocity fluctuations. The third row is the DNS. So this is basically the ground truth, the very highly resolved data.
+The first row is extended POD, which is formally equivalent to linear stochastic estimation. This is a linear method, so basically a linear mapping
+between the input at the wall and the output that I'm predicting. And you can see that this linear method exhibits
+significant attenuation of the fluctuations and a lack of detail in the meandering of the structures. The last row, this is the FCN, so I take the
+full plane as an input and I predict the full plane as an output. And here you can see very good agreement close to
+the wall. So this is the reference. This is the prediction. The agreement is really, really excellent. And the second row here, FCN-POD, combines the convolutional
+neural network with a proper orthogonal decomposition. And here you can see that the predictions are actually pretty good here, far
+from the wall. So what's interesting is that close to the wall, there is such a broad range of scales, and there's so much entanglement of all the
+structures that the best way is to predict everything right away. Whereas far from the wall, the best thing you can do is
+to encapsulate the most energetic features in POD modes, and then predict the temporal evolution of those POD modes. So that's basically the best way to predict close to the
+wall, fully convolutional network, far from the wall, a convolutional network with POD. So those are the things to keep in mind here in these
+predictions. And this is for an instantaneous flow representation. I'm going to show you the results for the statistics as well. But this gives us an idea of how well the performance
+looks like. Hello, Professor. I have a question. You said that we need to use proper orthogonal decomposition, and after
+that we should predict the temporal evolution of these modes. But how so if the CNN is adapted to evaluate, for example, spatial
+distributions? I did not understand quite well. Yeah. This is in one method. This is in the FCN-POD. Okay? So in this method here. And the idea is that CNN will have as an
+input the spatial information of my flow field at the wall, and as an output, it will have the temporal coefficients of the POD,
+basically. Oh, okay. So the spatial information comes from the input that you have. Okay. Thank you. I believe this also answers the question of Asma, who is asking the difference
+between FCN and FCN-POD. In FCN, you calculate directly the whole output field. In FCN-POD, you calculate the POD coefficients.
+Now, someone is saying, you were saying something that is computed in milliseconds. Yes. That's when my audio apparently cut.
+So, the CNN predicts in milliseconds. CFD would take much more time, but the purpose of this is not to do CFD,
+it's to do sensing, which you could do in an experiment. Difference between the four methods. Well, that's basically what I was saying.
+So the first one is a linear method. So the input and the output are connected through a linear relationship. The second one is the FCN-POD, which is
+the neural network, where the prediction is for the temporal coefficients of the POD. The third one is the ground truth.
+That's the DNS, that's the simulation. And the last one is the FCN. So my input is the wall information. My output is the whole plane, but not coefficients.
+I'm predicting directly the whole function, the whole plane there. Can these models be trained on a set of boundary conditions be used for a different
+condition? So this particular model is a bit simple. It works for, let's say, narrow sets of cases. We have other models that generalize very well across
+cases. And for doing that, you need to use diffusion models and a latent representation. We have quite some work on that, on how to generalize across cases.
+But this particular example is for a narrow set of cases by design, because I'm choosing a simple architecture. For cases that generalize, we have other research as well.
+What is the difference between FCN and FCN-POD? I explained that. So basically you're feeding flow field images as an input. Yes, exactly.
+I'm feeding wall information as an input, as images to my CNN. This approach works if the system has a single time lag and the dynamics remain
+unchanged over time. Yeah. Exactly. Okay.
+So let's look at a more quantitative representation of the performance. These are the turbulence statistics. So stream wise, wall normal, and span wise fluctuations.
+In black, I'm showing you the DNS, so the ground truth. This shows the typical profiles. This is an open channel, by the way.
+And the squares are the FCN, so the fully convolutional network. The blue dots are the FCN-POD, so the convolutional network combined with POD.
+And in green, I'm showing you the extended POD. So this is the linear method. Okay? And what you can find is actually pretty interesting.
+So the FCN gives the best performance close to the wall. Remember that the vertical axis is the fluctuation and the horizontal axis is the
+wall normal distance in a log scale. So this here gives us less than 1% error. So the FCN gives us less than 1% error.
+The FCN-POD works a bit worse close to the wall, but as we go farther away from the wall, you can see that the FCN-POD is better
+because, again, it encapsulates the large energetic structures into few POD modes, and that becomes more effective when making my predictions.
+So the relative error there is 26%. So that's what you see when you are far from the wall, and the linear
+method is always worse. Now, the linear method is always worse because, as we talked about last time, it only accounts for the linear
+superposition, but no modulation, no nonlinearities. And the FCN-POD and the FCN, they exhibit worse performance as I go farther from the wall because the correlation between the input and the
+output field gets worse. Right? So the data is less correlated. There is fewer patterns that I can actually extract from both,
+and that's expected. I get worse performance, which is actually okay. Okay. Sounds good. Any questions? Makes sense. Now, if we go to the-- okay. There's a question.
+Why do we not have for a whole range of these models? Why we did not have whole range for these models? What do you mean?
+I don't understand the question. What do you mean for whole range? Sorry. The range you have, the length scales, DNS has that range more compared to these
+three models, right? Only few data points I see these three models. So you're talking about the wall normal locations?
+Yeah. So if you take minus 10 power minus one to 10 power two, I see whole range DNS calculations. Right?
+But I see only a few of them here, the three models. Yeah. That's because, remember that in this problem, the output
+is the velocity fluctuations on one plane. So I use the wall information as the input, and as an output, I predict the
+fluctuations at y+ 15, 30, 50, and 100. So I do it for different planes. We have a very recent paper where we did actually the whole 3D field.
+So the input was the wall, and the output was the whole volume. So we actually do the same, but exactly what you're saying, but the whole
+volume. I can copy it in the chat if you're interested. Okay. Thank you.
+But the idea is the same. The idea is to use convolutions to exploit the spatial patterns in the data.
+It's just that in this example that I'm going to show, this paper was published a bit later, there was more computational
+power available, so we could do the whole 3D field. The architecture is a GAN. I'm going to talk about GAN
+in a few minutes today. So you're going to learn about GAN. But conceptually, it's very similar. I just exploit the spatial information, and I make my predictions
+of the flow. Okay. Sounds good. I will go back to the slides then.
+So this is about the statistics of the predictions. There is something actually pretty cool that one can do here, which is called
+transfer learning. So transfer learning essentially implies using what I learned for one case in another case that is a little bit different.
+Not very different, but it's kind of different from the original one. That's when we transfer what we learn in one case to the other one.
+And I'm going to show you two examples of transfer learning. In the first example that you can see here, I consider a channel
+flow at Arita 180, which is a low Reynolds number. And I'm going to consider a network that was used to
+predict at y+ 15, so close to the wall, and I'm going to see how that information can be used to predict at y+ 30,
+so a bit farther from the wall. Now, the idea is that I'm going to freeze the three first layers,
+and I'm going to retrain only the three last layers. So for the predictions far from the wall, I'm going to reuse
+the first half of the neural network and only going to retrain the second half of the neural network. And the idea here is that the small
+features that are identified by the first layers are going to be similar at different wall normal distances, what changes is the
+large features. And remember, the earlier layers look at the smaller features, at the smaller structures, and then hierarchically through a nonlinear combination of
+operations, I build nonlinearities and complexity. Okay? So through training only these three layers, this is what the results look
+like. Comparing the fully trainable and the transfer learning, the errors are the same. Basically, I get the same performance.
+A little bit less error in the mean, but basically the same. But the savings are in the training time.
+So my training time is reduced by a factor of four. Why is that? Because instead of having to train the whole neural network,
+I only need to train half, and for the other half, I exploit, I reuse what I learned in another case, which
+was already trained. So I identify that the small features are going to be similar in both cases, and I
+basically transfer the knowledge from one case to the other one. Okay? Sounds good. FCN and FCMPOD, are they learning modes or features?
+We're not learning any mode here. Well, let me give a detail. FCN doesn't learn any mode. FCN works in the physical space, so I'm just predicting the whole
+flow field at once. FCMPOD doesn't learn a mode, but one does a POD first, a proper orthogonal decomposition. And FCMPOD, what it does is that it learns temporal coefficients of those POD
+modes. Okay? So FCN works in the physical space. FCMPOD predicts the temporal dynamics of the POD modes. Is it possible to investigate what kind of features are learned at each level?
+Will feature map values give that information? Yes, exactly. You're completely right. So what you do is that you can then look at each of
+these feature maps for each of these layers and see what they look like. And then there's quite some work on explainability and
+interpretability. I'll be talking about it also today and next time. So the idea is that those capabilities help you to understand the features that are understood in each
+of the layers. And that's actually really helpful when coming up with updates of our strategies and so on. More questions?
+Oh, yeah. If that will-- Just to extend on that last question here. Yeah. Because it will be interesting to see, right?
+If you cut an architecture, like cut a specific layer. Because I have seen this for the ordinary CNNs, like
+where you classify cat and dogs, right? Kind of thing where you cut at each layer and then see that, okay, some of the
+layers are learning the length of the mustache or something of that sort. Yeah. So here also, does your paper-- I can also go through your paper.
+Does it already cover some of the images from few of these layers? Because it's important to split this architecture into two, right? So that you can use the first part of
+architecture for the transfer learning purpose. So... Yeah, exactly. We don't show it in the paper in detail, but that's the type of argumentation that we have here.
+That the first layers are looking at smaller features and simpler edges, streaks, and the last layers are looking at more complex features in the
+flow. So you can do that. You can always train your network and inspect the feature maps. The explainability actually helps because that indicates what parts of your data
+are actually more closely connected with which predictions. So that's the type of ideas that we explored here. Okay. More questions?
+Yeah. One more question from my side. So when we do transfer learning, and then now you have two parts, right?
+The part which was trained from based on the previous data. And then you have attaching a new layer to that.
+Yes. Correct. But now you have to train for the new weights. But in the process of training the new weights, will the
+weights of the previous layer, the one which was already trained, will also get updated in the process? No, the idea is that you
+set up your network for your new case. That network is initialized with all the weights of the previous one.
+Okay. And then the three first layers are frozen. So those weights don't change at all. So when I train my neural network, I only change the weights of the three last
+layers. Okay. Yeah. And then there was a question in the chat. If we are not training the other networks and just transferring information, will
+they not be redundant? No, they're not redundant because we are only transferring the information for the three first layers. We are retraining the three second layers.
+And the idea is that there is some information that is redundant. The small scales at the two locations basically
+contain redundant information. It's basically the same. That's why we transfer it. And then the last layers are basically retrained.
+So, Professor, what is the new thing that is being trained here? What do you mean? What is the what?
+Already the three layers are trained. Yeah. And we are introducing three more layers. And- Well, we are not introducing three more layers. We always have six.
+The only point is that the three first layers are frozen. They're not retrained. We only train the three last layers.
+Make sense? So is it just to give an initial input to the three layer? In this particular example, it's not just to give an initial input.
+We are freezing these three last layers. The weights of these three last layers for the second case, farther from the wall, are exactly the same
+weights of the three first layers for the case close to the wall. So in this example, it's not only providing the initial input, it's actually
+providing the weight values for the three first layers. The three last layers, I start from the old values, but then I keep training, and then when I keep training, that's when I get
+basically the same performance, but with a lower cost because I don't need to train the whole thing. I only need to train part of it.
+Make sense? Hello, professor. Oh. Yeah, I just wanted to make sure that the previous question was clear. I still don't get. If there is already some weights in the three layers,
+why do we need to reproduce it in the second part? Is it not sufficient? So let me explain it differently. You have neural network number
+one, okay? To predict close to the wall, to predict here. Okay? And then you have all these weights for these six layers.
+Is that clear? Yeah. Okay. Now we have neural network number two, and I'm going to draw it in a different color. Okay?
+So neural network number two, if this is the wall, I'm going to predict farther from the wall. Make sense?
+Yeah. Okay. So in neural network number two, I have the same architecture, also six hidden layers. The first three layers, one, two, three.
+These ones, the weights of number two are exactly the same as the weights of number one. Okay? Make sense?
+Yeah. For these layers here, the weights of number two are not the same as the weights of number one.
+And how are the weights of number two obtained? Through training. We train to get these weights in that particular part of the network.
+So the architecture is the same, the number of layers is the same. I am fixing the weights of the three first layers.
+The three last layers are retrained to update those weights. Because my idea is that the three first layers are looking at very similar things
+in case number one and case number two, whereas the last layers are looking at different things in case number one and case number two.
+Does that make sense? I think I have to look at it once more. What is not clear? What I get through the CNN is it is
+trying to approximate the whole fluid flow equations. Yes. And if I already have these weights, so why do I need to
+create a duplicate of it in another part? Which is basically same function similar to the first which I have got.
+It's not a duplicate, it's a different model. It's a different model, but part of it reuses information from the
+previous model because that part of the model is looking at features that are consistent with those of the previous model.
+So I'm just basically creating a model reusing previous information that is not needed anymore. Okay. Okay. Let me look. There are some questions in the chat.
+Hello, professor. I have a question as well. Yeah. Let me go back to the questions in the chat before, and then I come back to
+you. Oh, yes. As you say, the last three layers are trained. What is the purpose of the training? Because as you saw in my
+schematic-- Okay, so as you saw, the last layers are predicting the features that were not captured in the first training or learning different complex features.
+They're learning different things because the second network is for a different task, right? It's for a completely different problem.
+I'm predicting farther from the wall. So the first network is solving one problem. The second network is solving another problem.
+And what I'm saying is, part of the information of the first network can be used for the second one, so I don't need to retrain the second one completely.
+But it's a completely different problem. Make sense?
+So is there a simple code for a CNN on the examples you have shown? So yes, in the paper
+that I showed the link, there are codes that you can download and you can work with, no problem at all. And in the practical sessions, you're also going to learn
+about CNNs. So I believe that Sergio also has some practical sessions on CNNs that you can work with. Okay?
+Okay, good. Leonardo? Yes. I have a question. Would you recommend using CNNs, for example, to predicting the temperature profile, for example, or any other scalar
+property on a iso-surface based on training the CNN based on another iso-surface of your flow? Would you recommend using
+CNNs in this particular application? Well- Because I saw that- Yeah ... in your application, you're predicting over a planar surface.
+Yeah. But can it be used also on any arbitrary iso-surface, for example? Are you talking about predicting a line or a volume, things like that?
+Yes. It can be a iso-line, for example, of a particular scalar property. For example, a iso-line of temperature, and
+train a CNN to predict based on this temperature iso-line, the iso-line at another location. You can do that. You can do it with a CNN.
+And there are other computer vision tools that are more powerful also than CNN. So CNNs are the basic, but you can also use GANs, as we're going to be looking at
+later, or transformers, or kind of diffusion-based models. There are many tools now that are capable of extracting spatial information very efficiently from your data.
+But CNN would be the first thing to try, basically. Okay, thank you. So they are not constrained, for example, to planes and-
+No. Okay. They allow to extract the spatial information. Now, there was a question if I'm going to cover GNNs, graph neural networks.
+I'm not going to cover in particular graph neural networks. I'm going to cover different computer vision methods. The difference between a graph neural network and a CNN, and you can apply
+graph nets for any levels of complexity. But the idea is that you need to have a structured mesh for a CNN
+to apply the kernel and the convolution and so on. When you have a very complex mesh, you cannot apply a CNN right away,
+but you can apply something called a graph neural network, which basically encodes the connectivity of the mesh. So the kind of
+complex node connections that you have in a very difficult, very complicated mesh, that is something that can be encoded with
+a graph net, basically. And conceptually, they're very similar to the CNNs. It's just that they add that encoding of the mesh connectivity.
+Let's say we have RANS training data as first training layer. Can we use data to train LES as second half?
+Well, it doesn't work as you are describing it. You can use a model that is trained, or you can train a model based
+on RANS and LES data, and that's something called multi-fidelity. But that would be a different architecture compared with the one that we are
+looking at here. Is this approach similar to low-rank adaptation? You can use it for similar things, but the method is completely different.
+So graph nets are more generically applicable to CFD problems as compared to CNNs since it can handle unstructured meshes.
+Yes, you can say that. Of course, graph nets are much more expensive and difficult to train, and you can always take the CFD data, interpolate it on a
+regular mesh, and use a CNN, for example. Right? So you can do different things depending on what's the purpose of
+your problem. More questions.
+Can CNNs be applied if there are Lagrangian variables in a CFD simulation? Well, depends on what you want to do.
+You know that with Lagrangian tracking, you're not looking at the field in an Eulerian way. You're tracking the individual path of that particle or that feature.
+But if you do that for different snapshots, with a CNN or any other computer vision method, you can track its evolution
+across snapshots. So in principle, you can do that. But CNNs are more aligned with the Eulerian framework than the
+Lagrangian one, although you can extract meaningful information for Lagrangian particles and other features. Okay, sounds good. Professor, I have just one last question.
+Yeah. If you have a 3D iso-surface- Yeah ... and you have, for example, the temperature distribution on a 3D-
+Yeah ... iso-surface, and you want to- Yes ... predict the temperature distribution in another 3D iso-surface- Yes ... you could project this
+3D field onto a 2D image in order to predict, for example, the temperature distribution on this other iso-surface? You can do it in 3D directly. So CNNs can work in 3D as well.
+You don't need to project to 2D. Okay. So it's no problem at all. Okay, you should provide a 3D
+matrix in order to- Exactly. Okay. In fact, later in this block, I don't know if today or next class, I'm going to show you
+predictions of 3D flow fields. Not with CNNs, but with similar architectures. Okay, thank you. Okay. Which method would be more suitable for Lagrangian variables like bubbles,
+particles? What do you want to do exactly? It depends on what you want to do.
+I want to predict the evolution of bubbles in the system. You can do it in different ways. Technically, you could
+do graphs, for example. So you can analyze your data and then look at the position of those particles for different instances of time, and then use some graph
+approach to reconstruct the evolution. If it's only time, actually, you could use some temporal prediction method. Like for each particle, you know the coordinates, and those depend on time.
+So you can do it with some transformer-like architecture or some recurrent network architecture. And then you could also build
+a sort of representation. So you can compress the information where you are just looking at the mask with the
+regions where there are particles, and then predict those in some latent representation. So there are different ways to do it.
+But I think I would start with maybe tracking the revolution from the data that you have, see what the graphs look like, and based on that, one can
+decide a good model to predict that. More questions? Yeah, no problem. Okay. So I'm going to show you another example of transfer learning.
+This is a little bit different. So in this example, what you do is you train a neural network for a
+low Reynolds number case, and you want to reuse the information for a high Reynolds number case. And what you do
+is that you are going to take the high Reynolds number case and use the same weights, all the same
+weights as the low Reynolds number case as an initial condition, and then you're going to keep training. So you don't start training from scratch or from some random
+initialization. You start training from a plausible set of weights obtained from the lower Reynolds number. Does that make sense?
+So in this example, just to avoid confusion, neural network number one is at Re Tau 180, so that's a low
+Reynolds number. Neural network number two is at Re Tau 550, which is a higher Reynolds number. And then these weights are used only for
+initial condition, only for the initialization. But then we retrain. Okay, we retrain completely the network, but starting from this set of parameters here.
+Sounds good? So with this in mind, what we do here, what I'm showing you is the loss function, so basically the errors,
+for the 550 case, so number two, where what you have is in orange, the random weights. So basically, the weights where I don't reduce
+anything. And I use 100% of the data set, so all the training data. And then I start to reduce the amount of training data that I'm
+having. So, for the transfer weights with the whole data set, 50% or 25%. So the brown line corresponds to a
+case where I initialize the training from the values of the low Reynolds number, and I only use one fourth of the training data.
+And the results are basically the same. So I get the same level of performance with one quarter of the
+data and basically the same model capabilities just by reusing what I learned at low Reynolds numbers. What are the implications of this?
+Well, a simulation for Re Tau 180 can be run on a few hours on a laptop. A simulation for 550, it requires a
+supercomputer and many, a few weeks. Sorry. So if now I can do most of the training with only the cheap data from the laptop, and I can reduce the required amount
+of expensive data to 25% of the original, then I'm having a pretty efficient way to train my neural network.
+I'm saving in computational time, I'm saving in performance, and I'm having a very accurate solution also, just being much more efficient in how I train my model.
+Does this make sense? Any questions? Yeah, it looks to me here at Y+15- Yeah ... you have more discrepancy between these transfer weights,
+right, versus the reference value. But far from that Y+, I think we see good agreement, right? More near. It's the same Y+. The only difference is the Reynolds number.
+And I transfer the weights for basically starting the training at the high Reynolds number case. So the advantage of requiring less data is that I start the training from
+a better condition. Sounds good? Yeah. Thank you. More questions?
+From the table, 50%, we have totally different values. So how can we be sure that 25% of the data works?
+So keep in mind, these are the errors, and these are not completely different values. These are the errors. So what we are showing here,
+for example, for Y plus 30, is for the stream-wise fluctuations, the level of the errors that we have are very similar. So 8% error for the full original
+model, and actually 7.15, 7.11, or 7.74. So the error levels are very, very similar. We get exactly the same level, or pretty much the same level of performance in these
+different levels of data. So yes, I would argue that this is pretty good evidence, and you can see that also with the loss
+function evolution, that the error levels are very similar using much less data. Okay. Sounds good. Do you have that perform, the time taken for transfer learning
+weights also upon how much it is decreasing here? Yeah. So the amount of training time is comparable, is also
+a fourth, more or less. You need much less data, and then you need to train much less. Okay.
+Okay. More questions. Are you aware of any deep learning-based tools available in the market that can be used for tracking Lagrangian variables?
+Well, yes, many. But that's pretty much what I was saying before. At the end, depends on how you want to set up your problem, but you can
+predict flow fields. You can use this tool, the CNN, and predict the flow fields for different snapshots, and that will also include the evolution of the particles that you want to have.
+So if you want to look at the particles in your field and you want to see how they evolve, you can do it with
+CNNs and computer vision tools. There are many ways to do it, but that's one way to do it. Okay. More questions.
+Are CNN's predictive performance mesh dependent? What do you mean with mesh dependent? If you change your mesh or your discretization in
+space, you might have different results. For example, when you train your model with the previous mesh that you were using, for instance.
+If you don't do any retrain? Oh, okay. Understand. The point is that CNNs, they're not designed to generalize very well across cases.
+They're designed to work well for certain cases. But the models that generalize very well across cases are generative models, like
+diffusion models, for example. Those ones are pretty good at generalizing, and that's a whole different paradigm. But I need to explain you CNNs before explaining generative models.
+So yes, basically, these type of models, they give you good performance. Let's say that if you change the mesh, but the case is the same, the
+performance is going to be very similar. If it's the same type of mesh. If you change the mesh and you change the case, the physics,
+then the performance will vary. Because this model is not designed to generalize. This model is designed to make spatial predictions.
+If you want a model that generalizes very well across cases, then a generative one will be the answer for you.
+Okay. Thank you. More questions. Professor, I have a quick question. Yeah. Can I train the data with the, suppose, mixed
+steady cases and mixed unsteady cases, both? What do you want to do? I want to check the transition, probably.
+The transition to turbulence? Yeah. Transition to turbulent or transition from 2D flow to three-dimensional flow. Well, then what you have is a series of
+snapshots which change over time- Yes, exactly ... and then-- Yeah. So the best way to do that, to model that type, because that becomes a spatiotemporal problem, right?
+Yes. Because you also have the temporal. Yes. The best way to predict that is, in our next session, we're going to look at
+reduced-order models with autoencoders and transformers. So you basically- Compress space and you predict time. That's the best way to do that.
+But I can leave a link here in the chat, so you can start reading a paper that can be- Okay ... helpful for this.
+Okay. And we're going to look at that in the next class or one of the next classes.
+Okay, so you can see the paper here. Okay, more questions.
+Okay. Wait, there were some questions in the chat. Let me just go back to sharing the screen.
+In transfer learning, is there a preferred optimizer or a strategy? You would train your model in the same way as you would do it without transfer
+learning. When deciding what to transfer, basically, you would follow your physics knowledge and intuition about the problem. So that's the conclusion.
+So I know that the small scales are going to be similar for different wall normal locations, therefore, I can use that information to kind of
+decide how I'm going to do the transfer. Okay. More questions? Good. So let's go to the next section. In the next section, we're going to be looking at coarse measurements.
+So everything that you saw so far was assuming that I know all the information at the wall, and I can predict all
+the information above the wall. But in reality, in experiments, my data is coarse. I don't need to have detailed information on the wall.
+I typically have sparse sensors here and there, and then that means that I may need to do a step of increasing the resolution of my
+input. Because the physical size of the sensors is not small enough to capture the full resolution. That requires a different type of computer vision method, which is
+what we call GANs. So GANs are generative adversarial networks, and they're not so popular anymore, but they're helpful for certain things, especially for
+super-resolution or for certain predictions. So GANs work as follows. Let's imagine that I have a low-resolution data, and I want to reconstruct the high-resolution data here.
+So the high-resolution data with my ground truth, and I want to make sure that from the low resolution, I can reconstruct as accurately as possible the high
+resolution. And the reason why I want to do super-resolution is that my input is coarse, and I want to increase the resolution of my input, basically.
+So the GAN architecture has two different neural networks. One is the generator, one is the discriminator. The generator is a
+neural network which has the role of producing from the low-resolution data, very accurate high-resolution data, as accurate that I can hopefully trick the
+discriminator. The discriminator is a neural network which has the job of deciding if a particular high-resolution field comes from the original dataset
+or from the generator. So these two neural networks, they have antagonistic roles, and they're trained together using game theory. So basically, you
+want to make sure that the generator becomes so good at deceiving the discriminator, such that the images are very realistic.
+The high-resolution images here are as realistic as the ones in the original dataset. So that's why they're trained together, and the discriminator
+wants to identify whether these produced images are good enough, and then both networks get together better. And so the discriminator gets better at identifying
+the fake ones, and the generator gets better at producing high-quality images. So what we are doing here, this is my input
+information. So basically, the stream-wise and spanwise wall shear stress, and the wall pressure. The first step is to produce high-resolution images at the wall.
+So from the coarse data, I produce high-resolution data at the wall. And then in the second step, with this information,
+I will make the predictions of u, v, and w above the wall. So I start from coarse information at the wall.
+We basically increase the resolution, and with that increased resolution, I make predictions above the wall. And this is actually giving us pretty remarkable results.
+You can find the details in this article in Physics of Fluids. This is the wall shear stress you can find at the wall obviously.
+This is the reference from the DNS, and here I'm reducing the resolution progressively. So I reduce the resolution by a factor of four, eight,
+and 16 square. So you can see here how coarse this field looks like. And the second row is the
+prediction. So you can see that as I increase the downsampling, so as I make the input coarser, the prediction gets worse, obviously.
+But interestingly, if you compare these three fields, which are the predictive fields, with the reference, what you can actually see
+is that in all the cases, the streaks, which are these long structures, they are where they need to be.
+They have the right size and the right intensity. Okay? They're losing a bit of detail here, but you can see that the
+structures are where they need to be. And that's key if I want to do flow control, and if I want to characterize
+my flow. And look at this, even from this very coarse input, where you cannot see pretty much anything, I reconstruct
+very accurately these very little flow structures over here. Yes, Chandra.
+Chandra, you have raised your hand. Do you want to ask a question? Hello, sir, yeah. So is the GANs opposite of the autoencoders?
+Because autoencoders they use the encoder and decoder, and here they're using generator and discriminator. They're not the opposite. They're different.
+Okay. They're completely different networks. They're completely different. An autoencoder can be used for super-resolution as well, although typically, in an autoencoder,
+you want to reconstruct the same data as in the original data set. So you want to reproduce the same data.
+As part of that process, you can try to do some upsampling and try to improve the resolution, but basically, autoencoder is used for something else.
+They're typically used for modeling. So you start with one flow field, you make a very compressed representation of that flow field, and you reconstruct it.
+And when you reconstruct that flow field, well, you can really create a reduced order representation of the original data set.
+This GANs is used for something else. In this example, for super-resolution of my data. Okay. Make sense?
+In the generator, we are limited by the construction of FC and POD. In this case, I'm not using FC and POD.
+In this case, I'm using the whole flow field as input and the whole flow field as output. For step two, do we need to provide the DNS ground truth?
+Well, that's a good question. So we train the network in two steps. The first step is to have a high-resolution data at the wall.
+The second step is to have high-resolution data above the wall. Now, the loss is focused on this. So we
+are not trying to get the best possible prediction in this step because this is just an intermediate step for us. Okay?
+So we are focusing on this. That's our final goal. So in a way, this is not necessarily trying to produce the
+best super-resolution of the wall. What it's trying to do is produce the best intermediate data to produce the best predictions here.
+That's what this step is doing. Make sense? Okay.
+So more questions. Yes, there's one more question. Got it. Thanks. Okay, perfect. So let's look at the prediction of this model above the wall. Okay?
+So this was for the super-resolution of the wall information. Now, if I use this information to predict above the wall, this is what
+happens. The first row is the DNS. So this is the ground truth. The columns are y+15, 30, 50, and
+100. So I'm increasing the distance from the wall progressively. And the different rows here are decreasing the resolution of the wall.
+So by a factor of four squared, eight squared, or 16 squared. So the best prediction is comparing these two panels because the downsampling is small, and the
+distance between the input and the output is small. And the prediction is actually really good. If now I compare the hardest prediction is
+this field, which is the highest distance from the wall at y+100, and this is the prediction with the highest downsampling.
+So the smallest amount of information at the wall. Very coarse wall information. And obviously, if you compare this and that, there are differences. But something interesting
+is that the main patterns, the main important structures are actually identified. So this blue line here corresponds to this blue line.
+This red and red correspond to this red and red. So the large-scale features can be sensed from the wall because they have a footprint. Sorry.
+They have a footprint at the wall. If I want to control those very large-scale features, I can get a pretty good approach
+Through this GAN-based reconstruction, even if I'm missing details, because I will be able to pinpoint, I'll be able to find the key
+features from those important structures. Okay? Does it make sense? Any questions? And this is a spatiotemporal data. So here I'm doing only spatial predictions.
+So for one snapshot, I'm doing the super-resolution and prediction on that same snapshot. For a spatiotemporal data, the best thing is to
+use this autoencoder-based approach that I have in this paper that I pasted at 10:19 Eastern Time. More questions?
+Does this also need equal spacing grid or a complex grid will also work? So you need a structured grid. It doesn't need to be equally
+spaced because if you have a non-equally spaced grid, you can always weight your information with the volume of its cell, and then you can make your predictions based on that.
+The problem is, so if the grid is structured, you can use it, no problem. If the grid is unstructured, then you need to go for a GraphNet sort of approach.
+Yes, Chandra? Actually, I think we already discussed last week also about that. So, in the previous slide, you were telling about the sparse reconstruction from
+the measurements. So as I'm a PAV measurement-- I do a lot of PAV measurements. So the super-resolution is like you are increasing the small
+scales, basically. Yes. With the large scales, they can predict easily, but the small scales, super-resolution means we're increasing the scales.
+Mm-hmm. Yeah. So with the PAV measurements, we lose the information at the small scale. Noise completely spoils the image, basically.
+Yeah. How the super-resolution going to differentiate between the noise and the scales? Because we don't have the ground truth from these measurements.
+Yeah. That's a good question. You can use PINNs. Remember that we talked about PINNs- Yes ... for improving the measurements.
+In that case, what you do is that you use the governing equation. Right? Yeah. And then that can actually de-noise and improve the resolution of
+the measurements. So in the last lecture, I showed, and I have a couple of papers on doing that, using
+PINNs- Yeah ... for that. Okay. More questions?
+Okay. So if there are no more questions, let's continue. The next section is on near-wall predictions. So what we have been doing so far is use wall information to predict
+above the wall. But what if I want to use information from far from the wall to predict close to the wall?
+And the motivation for this is wall models. We are not developing a wall model, but we are providing some machinery that can help to develop wall models.
+And this is a little bit the idea, right? That you can use training at the red plane to predict at the
+orange plane. So I can actually go from far to close to the wall. And you can find the details of this in
+this paper in International Journal of Heat and Fluid Flow, also using convolutional neural networks. The idea is the following.
+Originally, in 2013, there's this article by Mituno and Jimenez, who, what they did was the following, create a wall boundary condition by taking information far from the
+wall and rescaling it and pulling it close to the wall as a boundary condition. And the assumption here is that in the
+overlap layer, you have a certain self-similarity, and that self-similarity can be potentially exploited to generate or predict what the flow close to the wall looks like.
+Now, that self-similarity is a leading-order effect. Of course, there's nonlinearities and other effects, and that's where neural networks can actually help to get better performance.
+So we are going to be using our channel flow at Reynolds number 550, and we're going to be using the data at y+100, which is far from the wall,
+to predict the flow at y+50, which is closer to the wall. Okay? But still both of them in the overlap layer, in the log layer.
+So here I'm showing you the columns from left to right, the streamwise, wall-normal, and spanwise fluctuations. The first row is the data far from the wall, from the
+reference. Second row is the data closer to the wall from the references. And the third row is the prediction
+of the data close to the wall. And you can actually see, if you compare the u, v, and w fields, the u is actually in pretty good agreement.
+V and w exhibit similar patterns, although they present some small deviations. And the reason is the following. If you want to predict from the wall to above the
+wall, I actually have most of the important information already at the wall. And then I'm predicting from small things, larger things.
+But if I take the information far from the wall and I need to predict closer, I have large things, and I don't have the small scales that
+I need to be able to generate closer to the wall. In other words, I have a small receptive feel and I miss
+scales. And this is based on CNNs, a GAN-based approach, or a diffusion model may be able to help in this regard.
+But if you look at this, this is the spectra. So this is a two-dimensional pre-multiplied power spectral density at
+y+50. Horizontal axis is the strewn-wise wavelength. Vertical axis is the span-wise wavelength. In gray, you can see the original spectrum.
+In orange, the predicted spectrum. And you can see that the larger scales are actually pretty fine, is this gap here,
+this gap here, and this gap here, which are the smaller scales. That's what is missing in our model. And our predictions are between 19% and 30% error, which
+are decent predictions. They're not perfect, but they're decent. And there are ways to improve this prediction with more genetic-based
+approaches. Okay? One important conclusion of this paper also is that if we increase the number of layers, for the same number of parameters, increasing
+the number of layers gives me better performance, because in turbulence, the interaction of the scales is nonlinear hierarchical. So if I go deeper, I can reproduce much better that hierarchical
+interaction of scales. And here, I'm going to show you something that is going to be very helpful in the
+next part, is the residual blocks and skip connections. So in this neural network, the input is here, the output is here,
+and I'm just applying convolutions all the way. The key is that I can connect with this red line, the feature maps here at the beginning of the network with the
+feature maps here at the end of the network. And then when I make these predictions at the end, when I apply my convolutions
+and my filter operation, I am applying that on some feature maps from the beginning of the network, which identify simpler
+things, and some feature maps from the end of the network, which identify more complex and larger things. And that combination of both
+small and large feature maps together really increases the performance. So these residual blocks and skip connections are going to be
+something that I'm going to be using quite a bit, and you're going to see in the next slides how this actually helps to predict turbulent flows.
+Questions so far on this? All clear? Then let me go to another very interesting section which has to do with
+explainable deployment. Okay, there was one question here. Why are we using equation in the previous slide? Which equation? FD?
+Sorry, what do you mean? Which equation?
+Resolution wall Y slide. I don't know which slide are you talking about. I'm sorry. Which slide are you talking about?
+This slide. What equation do you mean in this slide? Comparing sparse. Comparing sparse. This one here? Ah, this one here?
+Yeah, you can read the paper for the details. This equation basically gives you a measure of the downsampling based on the resolution that you have.
+This is kind of like a detail. I didn't want to really confuse by bringing it up. But basically, it allows us
+to determine the downsampling rate that we have when we have different resolutions. So downsampling is not only skipping points, but also skipping
+resolution levels, and you can read all the details in the paper. Does this work on breaking flow profiles near the wall using CNNs
+somehow into developing the label wall function? Yeah. So the point is that this type of method can be used for developing wall functions.
+But I believe the most promising approach would be with something that is on the loop. So something that gives you a posteriori and
+not only a priori performance. So it needs to be coupled with the solver, not just predicting the near wall information, but also do it
+on the fly as the simulation is running, basically. And there are different considerations for that. But yes, these are
+the type of things that we typically have.
+More questions?
+Okay, Chanda. This is a bit of an outside question. So we always need to have some training data. So how far we
+are away from the foundational turbulence models? Foundation models for turbulence? Yes, exactly. Yeah. We have a pretty good paper on, we have a foundation model for turbulence and fluid
+mechanics, and not based on more advanced things, but we have a pretty good paper on that. I can copy it in the chat.
+Okay. Thank you.
+Okay. So you have it here. So have a look at it, this foundation model for turbulence, this is more
+advanced than these methods. It relies on generative approaches with autoencoders, transformers, conditional latent diffusion. But you are going to see many of the
+ingredients for this foundation model in the next lectures. Okay. Let me just look at this. Can a residual network be used with POD to learn the missing physics that POD
+cannot capture? Technically, yes. You can define an architecture like that. Does your work span into this area? So we are not doing right now wall models.
+But we're doing related things with SCS modeling, and we will probably be doing wall models as well. So actually, one of the important ideas that
+I think are really key for modeling is identifying what is important in the flow. So let me share with you
+the next steps, because I think the next section is going to be very relevant for this. Okay? So, the next section is on understanding turbulence through explainable AI.
+So we want to define the most important regions or most important structures in the flow. This question has been approached by Angelina Jimenez from
+an intrusive point of view, so really adding perturbations and seeing how those perturbations grow in your problem, and from a
+non-intrusive point of view, and that's through causality and information theory. So basically, creating model decompositions of your problem and then removing the
+certain time series to see how that removal affects the predictions of the other time series, and in that sense,
+create these causality maps. What we propose, in our case, using explainability, is something a bit in between. So we're going to be using deep learning.
+We're going to create a model that is intrusive on the surrogate model, and is applicable to also experiments and cases where we don't have so much
+data. That's the biggest advantage of our approach. We're going to consider a turbulent channel flow, like this one. And we're going to be looking first at Reynolds intense
+Q events or Reynolds stresses. So these are three-dimensional regions, volumes where the UV is intense. So the UV is
+the correlation of the streamwise and wall normal fluctuations. They are intense with respect to the RMS of U and the RMS of
+V. And there's here a percolation factor, which is telling me how I can define these structures, basically. Okay? So basically,
+we are going to be looking at regions in 3D of intense Reynolds shear stress. Does it make sense?
+Okay. There's a question. Please share these slides by the end of today. I am finding difficulty in Flow Thermal Lab site. Okay, sure.
+I'll share them. Actually, I will put them in the chat, and then, so if you guys from Flow Thermal Lab are around, can you put them in the
+system?
+And just putting them in the chat right now. Okay, so you can have them. And, yeah, I would like to confirm from the guys from Flow Thermal Lab that you
+can put them in the system. Okay? Let me just go again and share the part on the explainability.
+So the way that this works is with, well, game-theoretic algorithm. So you have your flow field now, and these are three-dimensional flow fields, so we're going to make more
+challenging predictions now of the u, v, and w fluctuations. So 3D field of u, 3D field of v, 3D field of w. And I'm going to create a neural
+network that is going to predict the u, v, and w fluctuations in the future. That's few viscous units into the future.
+And then what I'm going to do is identify these Q events, these Reynolds stresses in the input. And then I'm going to use a game-theoretic algorithm
+called SHAP, Shapley additive explanations. So basically, I'm going to take this biggest structure here, I'm going to remove it, I'm going to repeat my prediction, and if the
+prediction error increases a lot, that means that this structure is very important. If my prediction error doesn't change very much, that means that this structure was
+not very important. Okay? And I'm going to do that for each structure on my domain. This is published in Nature Communications,
+by Andres Jimenez. So we have quite some work on explainable deep learning. Sergio Ollas, who is part of this cohort, is also an author of this
+work. So you can find all the details of this methodology in this article in Nature Communications here. Okay, good.
+So, I repeat. I have my flow field now, u, v, and w, so three-dimensional flow fields. I use a neural network to predict the future state of that flow field.
+Okay? So u, v, and w in the future. And then I remove a structure. So I remove this 3D region
+here, and I repeat my prediction. If my prediction error increases a lot, that means that this structure is very important.
+If my prediction error does not change very much, that means that this structure is not very important, and that's applicable to all the single objects of my
+domain. Okay? To make my prediction, I'm going to be using something called a U-Net, and a U-Net is based on convolutions. It's a bit similar to what I was showing you
+before, but with pooling layers. And some of you asked about pooling layers, so I'm going to combine CNNs, pooling
+layers, and also residual blocks to create this U-Net. In this U-Net, my input is the three-dimensional flow fields now. My output is the three-dimensional flow fields in the
+future. So this is my input. I apply several convolutions up to this point. Here, I do a max pooling, and in a max pooling, what I do is
+from each kernel, I don't apply a convolution, I just take the maximum value. So that means that I'm reducing the resolution,
+and that takes me to this level here. I apply more convolutions and another max pooling layer here. Max pooling, again, from the kernel, from the nine values, I take the
+maximum. So I'm really reducing the resolution. You can see the resolution here, which gets smaller and smaller. Okay? So this is the lowest resolution.
+I apply more convolutions here. Here, I do basically a transpose convolution. So now I'm copying values to increase the resolution.
+More convolutions, another transpose convolution here, and all the way to the output. Okay? So I have basically reduced the resolution two levels and increased it again two
+levels. This is why this architecture is called a U-Net, because it has the shape of a U. And this green arrow here, this is a skip
+connection. So this skip connection is basically what I showed you before, connecting feature maps from the beginning of the network
+with the feature maps at the end of the network. So essentially, this skip connection allows me to combine feature maps,
+and this architecture here gives me very good performance. So this gives me basically the most accurate way to predict the 3D flow fields in my turbulent flow, which is going to
+be necessary for the explainability analysis. Okay? This is a good place to stop because in the next time, we're going to have more
+predictions and more explainability. Any questions? When removing structures, are you removing structures in all time and all length scales, or are you just removing
+at a particular range of length scales? You remove it in your physical domain. So for one snapshot, you remove the fluctuations of this point in the physical
+domain. Oh, okay. Mm-hmm. You are not removing at this, isn't it? Right. I'm removing these structures in the physical domain.
+Oh, okay. So not in spectral space, but in physical domain. Okay. Can you recommend reference material for understanding more about CNNs?
+Yes. There is several computer vision books. So the Goodfellow and Bengio deep learning book is very good on CNNs
+and other computer vision tools. What are the blocks doing? This is basically like a CNN, but with different resolutions. Right?
+So this is what the neural networks are doing. So a CNN with a full resolution, I reduce the resolution,
+more CNNs, I reduce the resolution, more CNNs, transpose convolution here, more CNNs, transpose convolution here. The reference I mentioned. So the reference I mentioned is a book called
+Deep Learning by Goodfellow. Let me give you a name. Goodfellow, Bengio, and Courville. And this is Courville. So this is a good reference.
+What is a transpose convolution and what is the purpose of using it? That's what I mentioned before. The transpose convolution is going to increase the
+resolution again. And what you do is that instead of taking one point, right, you copy that point several times, so you now have more resolution.
+And through the convolution operation, you can continue at this level with this resolution over here. You're welcome. More questions? Okay, Leonardo.
+Yes. Is SINDy also an algorithm that is used in explainable AI? SINDy. So that's something else. So SINDy gives you equations, right?
+And then with equations, you can model certain systems with the equations. Explainability is more about understanding what are the parameters that matter the most for your
+predictions. They're connected, but they're different. Okay. I got one question from my side. So for this particular model that you have built,
+during the training phase, what is the data that it is being trained on? In the sense, will it be seeing-
+It's a series of flow fields ... Yeah. Series of flow fields. Okay. So will it be seeing one snapshot at the present time,
+and then- Yes ... the output, it will be seeing the ti plus one? Yeah, exactly. A repeated pattern of this is what is being used, right?
+Yes. But keep in mind that it's not the next snapshot, it's a snapshot a few viscous units into the future.
+And a series of those kind of pairs, right? Yes. Exactly. Okay. Sounds good. Thank you so much for today, and
+yeah, see you next time. Take care. Bye-bye. Thank you. Thank you.
+

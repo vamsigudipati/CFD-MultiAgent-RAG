@@ -1,0 +1,564 @@
+Yeah, you can start. Yeah. Shall we wait more, or we just start? Yeah, we can start now. Okay. Yeah, and hi, everybody who's also writing in the chat.
+Okay. So where we left it last time was in PINS, Physics-Informed Neural Networks. This meeting is being transcribed, so you have also access to everything
+later. Let me share my screen. Yeah. So we were discussing the general methodology behind PINS. If you remember, the idea is that we just provide as an input the
+coordinates of our problem. PINS are typically multilayer perceptrons, so we are just training these parameters on this part of the architecture to find the unknowns of the problem.
+So we're looking at the incompressible 2D Navier-Stokes equations, RANS equations. So the unknowns of the problem are the mean
+flow and the Reynolds stresses. Using the automatic differentiation, we can build the partial derivatives such that we can construct the terms of the momentum and
+continuity equations. And therefore, we can get the residuals, and if the residuals are not low enough, then we basically go back and keep
+iterating with the weights of our neural network such that these values satisfy the residuals. And as an additional condition, we also have
+known information in the domain. In this example, it's the red points, so boundary points, but they don't need to be in the
+boundary. They can be inside the domain as well. So that's important. You can use known information. In the example that we're going to set up here, the known information is boundary
+conditions, and the unknown information is basically inside the domain, which will correspond to minimizing the residuals of our problem.
+Okay. So in a nutshell, what we're doing is that we are solving a total loss, where the first part is unsupervised, and the
+unsupervised part of the loss is basically minimizing the residuals of the governing equations inside the domain at these black points here, which will be
+collocation points. And, also minimizing the supervised loss, which corresponds to the values at the boundaries, which are the red points here. Okay?
+So we want to minimize this joint loss, supervised plus unsupervised. You can decide to have different weighting factors for the supervised,
+unsupervised parts. In this example, we take them to be of equal weight and essentially train the network to basically
+minimize this quantity. Okay, so let me look at the chat because there's already some questions. How are the initial velocity and pressure calculated in PINS?
+Is it just like weights and biases? And how are the boundary conditions applied? Also, since we know the boundary conditions, how do we get a loss of it?
+So, I will start with the boundary conditions. This is basically what I just mentioned. The boundary conditions are imposed through a supervised loss.
+So if you look at this L, that's a total loss. The first part is the unsupervised, which is the residuals of the
+equations. This LB is the loss at the boundary, which is basically this term over here that's a supervised loss.
+So I want to minimize the difference between the computed quantities and the given quantities at the boundary. And then regarding the first part of the question,
+the weights are initialized here with Glorot_Tombaggio or any other initialization algorithm, and that will give us an initial guess for these quantities,
+basically. You can always try to take a guess from a laminar solution, maybe, and then try to predict that and have that your initial guess.
+But typically, if you initialize the weights, that will give you a set of values here, and that should be enough as a first guess for your problem.
+Okay, so another question. Will an actual algorithm for this PINS implementation be shared with us? So, yes. If you go to this paper here,
+which is published in Physics of Fluids, 2022, all the code, all the data, and all the algorithms are available here
+in GitHub. So you can just download it, play with it, and you're going to see that the implementation is actually very straightforward.
+It's actually very simple. In fact, I can show you the implementation right now. So this was with TensorFlow 2.
+This was some years ago, but if you run it with Jax or something more recent, it should still be okay.
+It should allow you to run it. So the architecture is an MLP, a multilayer perceptron. You guys are familiar with them because we covered them in the previous classes.
+So eight hidden layers, 20 neurons per layer, and the tanh, the hyperbolic tangent activation function, which again, is a non-linear function.
+To normalize the data, you use the Adam optimizer, and this is essentially the general setup of the problem. And the implementation is very, very simple.
+You can see here, it's just a few lines. So we're using the automatic differentiation, which you use to train neural
+networks, to build terms in your governing equations. So basically, you are extracting in the UV variable the information that you have from your problem.
+Whatever problem you have to do, because you need boundary conditions as well. And you are assigning the different columns of this data set to u, v, p, and the Reynolds
+stresses. And this is where it becomes very easy. The ux would be the partial u partial x, right? And that's used with a gradient operator.
+So you calculate the gradient of u with respect to x, that gives you ux. Same way for uy, vx, vy. Second derivatives,
+same thing. So the second derivative of u with respect to x would be the gradient operator applied on ux, which was already the
+first derivative, and then you have the second application to x. So pressure gradient, partial p, partial x, and Reynolds stresses.
+So the partial of u with respect to y would be the gradient operator applied to uv with respect to y. So pretty straightforward, pretty easy.
+At the end of this section of this routine, you have the three governing equations, f1, f2, and f3, which is going to give you the
+residual for those three equations. So the first momentum equation, you just need to come here and copy-paste, basically. So you just get the definition of the governing equation, and then you get u
+times ux, plus v times uy, plus the pressure gradient, and so on. And of course, all of that, you
+bring everything to the left-hand side so that you make sure that this needs to be zero. Okay? So you basically come, all of these terms are
+on the left-hand side, so you make sure that both f1, f2, and f3, all of them need to go to zero.
+So once again, the implementation is easy. It's a few lines. You go to this paper over here, and you can download the code, and everything is open access there.
+So you can just access it, you can play with it, you can work with the code, implement things, add new data sets, whatever you want.
+Questions? And I see one question in the chat by Leonardo. In PINN, you add an additional term to the loss function. Yes.
+In order to minimize the residual of a set of governing equations or boundary conditions, is it possible to add an additional term to the loss function that aims
+to minimize the residual between the results from a lower fidelity simulation and a high-fidelity simulation with the objective of obstructing effects from the
+high-fidelity simulation which are not observed in the simulation with lower fidelity? So I would not do that with PINN
+because PINN is not very good with unsteady problems or high-dimensional problems. And if you do DNS, it's going to be an
+unsteady high-dimensional problem. So if you want to create basically closure models, there are other better methods than PINN, and we will cover those. So generally, I would use PINN
+for steady problems or statistics. If it's a turbulent problem, then you're going to look at the RANS equations. So that would be a better usage of PINN.
+So, more questions. Does this make sense?
+Okay. Good. So then let's continue. This is the implementation of PINN on this particular paper, aiming at the RANS equations.
+Let me show you the results that you get in different flow cases. So the first example is a very easy flow, is the
+Falkner-Skan boundary layer. As you know, or many of you know, a Falkner-Skan boundary layer is a laminar boundary layer with a pressure gradient.
+And those, because they're laminar, you can just get closed-form solutions. So you use similarity variables, and then you get an analytical
+solution for that. Well, analytical or very easy, actually very easy numerical solutions. So let's say that the right approach to solve this type of problem
+is through a similarity variable, which in this case is this f, and then you solve this equation numerically. Okay?
+That would be the easiest way to do this. And remember that the Falkner-Skan boundary layer is an extension of the Blasius solution to pressure gradients. Okay?
+So you just can go and solve the pressure gradient laminar boundary layer. And the original equations for this particular problem,
+since this is laminar, there are no Reynolds stresses. This is the x and y momentum equations. This is the continuity equation.
+All of this information, when you apply similarity, gets lumped into this equation over here. And this is something that you don't need PINN to solve because this is quite
+trivial. So this one with Python or MATLAB, you can solve in seconds, this equation over here. But because it's a very easy problem,
+I want to compare against that and see if PINN gives us something reasonable in this case. So with PINN, we don't solve this similarity solution, we solve the
+full equations. Again, as we said before, getting the variables, calculating the partial derivatives, building the terms and building the residuals, et cetera.
+And then with this, we just show you what the prediction is compared with the reference. So on the left here, I'm showing you the PINN's prediction for the
+stream-wise velocity, the wall or velocity, and the pressure. So this gives you the pressure gradient. And on the right, I'm giving you the reference from the similarity solution.
+And you can see that they are in excellent agreement. So you get less than 0.1% error in u and v,
+and the error in the pressure is basically zero. So this is a very first, very simple example of how PINN can solve problems in fluid mechanics of
+relevance, although it's an easy problem in this case, but it can solve it quite well. Questions about this? Will the code give different solutions for different initial conditions?
+Can PINNs be used to get the right balance between boundary conditions and differential equations? So this is a steady problem,
+so there is no initial condition really. Okay? What you have is an initial guess for the iterative solver, and
+PINNs has been shown to be pretty robust. So regardless of the initialization, you will get the same result in principle.
+Now, can it be used to find the right balance? Well, you don't use PINNs to find the right balance. You just basically try it yourself somehow, right?
+So you use the loss, in fact. So in the loss, you would get, if you go back to the slides,
+so here. If you go back to the slides, this is the loss that we're talking about. And then you can play with the weighting factors for the first and second term.
+So if you want to give more weight to the governing equations, the weighting factor for the first term will be higher. If you want to give more weight to the boundary
+conditions, then you'll give more weight to the second term. In this example, they have the same weight. So basically, one and one, so 50%
+for each of those losses. Is this generally true for all PINN-based CFD problems? In other words, unlike traditional numerical methods, do PINNs not require
+assumptions about grid size or mesh solution? Instead, is the primary focus on selecting and tuning the neural network and
+hyperparameters? So that's partly true. You still need to do something. You still need to choose the points where you will evaluate your residuals, which are these black
+collocation points here. And these points need to be distributed such that the information in the domain gets propagated to the boundaries effectively.
+So you can actually have a pretty good balance between the loss in the supervised and unsupervised parts. So there is some aspect of choosing the mesh
+in the sense that you need to choose the collocation points adequately. When modeling long-time transient or highly chaotic unsteady
+flows, how does exactly the PINN architecture or loss function need to be modified to prevent the optimizer from failing or getting stuck?
+We're going to look at an example later, which is unsteady. But in a nutshell, it's difficult for PINNs to deal with unsteady problems. Okay?
+So if you have an unsteady problem, in your input, in addition to the geometry, you have also time, normally an additional
+variable here. And then, if you use an MLP, a vanilla MLP for such a setup with the time as an additional variable, then
+it will be quite difficult to get good convergence. But if you use some sort of LSTM-like architecture to take care of the time, things will work a bit
+better. Okay? But again, I'll show you an example of an unsteady PINNs case. But in general, the performance is not always super good with PINNs in unsteady
+problems. Okay? More questions. Thanks, professor. You're welcome. Okay. Can I unmute and ask a question? Yeah, go ahead. Professor, I think one doubt that I still haven't gotten cleared is usually in MLP,
+we are updating the weights and the biases to- ... calculate the output in a way. Yes Yes. Mm-hmm. Here our output is the velocity and the pressure and the Reynolds stresses-
+Yes ... let's say. Yes. So for all these parameters, are we calculating a weight and a bias, like for the velocity, pressure, Reynolds stresses, and then keeping on updating them?
+Is that how it works until we get an output? No. Then we substitute that or? The loss is not calculated based on these quantities.
+The loss is defined here. Here, this is the loss. So the loss is the residual of the governing equations and the deviation of the predicted quantities with
+respect to the known quantities at the boundary. So those are the loss functions. Then you calculate the weights and biases with respect to those.
+So the loss gets calculated based on these quantities over here, not the u, v, p, et cetera. Okay, got it. Thank you, sir.
+Yeah. Okay. More questions. Why PINNs are not good for unsteady? It's another input variable time, and denial time derivative is in loss, right?
+Yeah, it's not good for unsteady problems because if you look at the architecture and you treat time as another
+input variable, and you do that through an MLP, we learn in the first class that MLPs are not very good for unsteady problems, right?
+Because they don't learn very well the temporal dependencies of the problem. And if you try to use an LSTM or some other architecture
+that deals with time explicitly, then it's not always very robust. The training process of the residuals and the losses, plus the unsteady,
+the temporal dependency of the architecture, that's not always very robust. So I would say that it's not the easiest type of architecture to train.
+But in some cases, it works. I would just not prioritize unsteady problems with PINNs. One question from my side.
+Is the MLP architecture-- Yes, exactly, Krishna. Sorry, go ahead. You were asking a question Yeah. So we are calculating LB, right?
+The boundary loss there. And then when you back propagate it, it will be basically dou LB by dou X.
+But LB, given that, okay, this UB and LB depends upon the UB values and UB predicted, which is not a function of X or Y. These are constant values provided, right?
+So when you take that- Is that, mm-hmm ... because essentially my thought is that it will go to zero because
+dou LB by dou X is zero because UB- Yeah. But it's not exactly like that. So you use partial U, partial X, partial U, partial Y to build these terms.
+But when you back propagate the error, you're calculating the partial derivative of the loss with respect to the parameters of the network, with
+respect to the weights of this layer. And then with the chain rule, you back propagate. So you are getting the loss with respect to the parameters of
+the previous layer and the previous layer and so on. So partial U, partial X is used just to build the terms of the equation.
+But to calculate the loss, you don't do it with respect to the spatial variables. You do it with respect to the weights of the network.
+Sounds good? Yeah. Okay. Can't we have the time variable as an input and time derivatives as an output, and then residuals based on time derivatives in the PINS framework to solve an
+unsteady problem, but you are saying the MLP framework will be computationally efficient in comparison? No, exactly. You can do that, and we have done it.
+It's just that the MLP is not good at learning temporal dependencies, and the LSTM doesn't work very well combined with
+the whole residual and loss definition that we have here. So it tends to give problems for training. But if you want to try to do it, you would do it like that.
+You have T as an input, and then you would use the partial, the automatic differentiation to calculate partial U, partial T.
+So you can do that. It's just that the architecture doesn't always work well for these unsteady settings. Okay? Professor, I have a question. I have already heard that PINS are not good at
+predicting signals with high frequency. Has this already been solved by applying another architecture, for example? Are you talking about PINS?
+Yes. Well, again, because PINS are good for steady problems or statistics, so high-frequency information could be obtained when you are
+looking at instantaneous data, right? If you're looking at instantaneous fields, then you look at which are the temporal frequencies that you're predicting better or not.
+But in general, PINS is not so good with unsteady problems. So therefore, high frequency or low frequency, it doesn't really matter because it's not super
+good with unsteady problems. And that's because MLPs, they are not good at inferring- Yes ... temporal correlations in the data, right?
+Yes. In a nutshell, yes. Okay. Thank you, Professor. Yeah. Welcome. Okay. More questions? Good. Then let's continue. So this was the
+Falkner-Skan boundary layer. The next example is already a more realistic case. This is a turbulent boundary layer. A zero pressure gradient turbulent boundary layer.
+So you have a flat plate, and the boundary layer develops in this direction. You see the Reynolds number range, so it's up to Re theta 7,000.
+So it's not a very high Reynolds number, but it's turbulent. And there's different quantities that you can use to define this boundary layer.
+And again, this is now something that is turbulent, which means that we will look at Reynolds stresses. We will see how well PINS can develop a
+closure for this problem. And if we look at the statistics, what I'm showing you here on the left is the U, which is the stream wise velocity, the V, the wall or my
+velocity, and the UV. So the UV is the Reynolds shear stress. On the left is the prediction from PINS, and on the right is the reference from,
+in this case, from basically a DNS, so a very high-resolution simulation. And you can see that the boundary layer development is very
+similar. The V distribution is quite good, and also the UV is in quite good agreement. So these two figures show the evolution of the shape factor.
+The shape factor is the ratio of the displacement thickness and the momentum thickness. So the reference and the prediction are in good agreement, not
+only for local profiles, but also for the boundary layer development. Same with the skin friction coefficient, which is in very good agreement.
+And these three lines here denote the three profiles where I'm going to compare the U plus, which is the mean velocity in energy units, and
+UV plus, which is the Reynolds shear stress in energy units. And here I'm comparing the lines and the solid and dash
+lines, which are the reference and the PINS. You can see that the agreement is excellent. So I can get very good results. In fact, for the mean
+velocity, I get 1% error, and for the Reynolds shear stress, I get 6% error. Now, to give you an idea,
+for industrial CFD solvers, well, the level of accuracy for the Reynolds stresses is very low, right? Because most of the solvers, they are using some
+Boussinesq approximation, some sort of isotropy of the Reynolds stresses or things like that. So getting this level of accuracy in the Reynolds shear stress is
+very unique And also, I would argue that for the mean flow, getting this level of accuracy in U is also pretty remarkable.
+So we get something that is really much more accurate than you would get with a typical CFD solver, with a RANS solver that you would use
+in industry. If we compute invariants and add them to the loss, will we have better predictions? Well, the problem is that the invariants are defined--
+Well, typically, you would probably complicate a bit the definition of the loss for this particular setup. So I would not do
+that. I think that it would give you more problems to converge the network, and you would not get better results. That's my guess.
+Is prediction using MLP and reference using-- So the reference is DNS. The reference is direct numerical simulation, which is a very highly resolved
+simulation. Okay. Sounds good. Okay. Good. So let's look at more flow cases. So this is a zero-pressure gradient boundary layer.
+We can go to a more complicated case with a pressure gradient boundary layer. So in this case, this is a turbulent boundary layer where the flow is subjected to
+an adverse pressure gradient, which means that the flow is being decelerated. And you can find this data set in JFM, in this article over here.
+So what you have here on the left is the prediction and on the right, the reference from the DNS.
+So this is U, V, Reynolds shear stress UV, and here you have the pressure. And the pressure is important because this is a
+pressure gradient configuration. So once again, the shape factor is actually in pretty good agreement. The skin friction coefficient is very well reproduced.
+I'm showing you the mean velocity profile and the Reynolds shear stress at three different locations. Again, in very good agreement between the PINNs
+and the DNS profiles. The mean is less than 1% error, and the Reynolds shear stress is about 8% error, which again, for this type of
+configuration, this is much more accurate than you would get with an industrial solver. So this is again, something that is really
+much better. Okay. This is for a pressure gradient boundary layer. A more complicated case would be a turbulent wing, like the one that you can find
+here. So I did a bunch of DNSS quite some years ago. So you can go to this reference. This is from 2018,
+and this is the type of airfoil. This is a NACA 4412 wing section. Here you can find data up to a Reynolds number of one million.
+Here we're going to consider 200,000. And very highly accurate representations of the flow. And the statistics and the data we can find here are very
+accurate. So you get all the turbulent budgets, all the mean flow and statistics and stresses, instantaneous snapshots. If you're interested in analyzing turbulent wings, this data set is going to be
+very helpful for you. And we're going to try to predict the flow, in this case, with PINNs as well.
+In PINNs, we minimize PDE residuals computed through automatic differentiation, and the solution can be surprisingly accurate. Yes. Compared with traditional CFD, is balancing the different residual and
+loss terms more difficult or time-consuming? What can go wrong if the total loss is small, but the physical solution is
+still inaccurate? This can happen. It depends on how low you-- Let's say that you give a lot of importance in your loss to the
+boundary terms and not so much to the residual terms, then you can have a pretty inaccurate solution, right? You will be having a very good boundary condition
+reconstruction, but not the flow inside. So this is not a completely-- It's not a unique approach as you would have in CFD.
+You need to play a little bit with the weighting between the supervised and unsupervised parts of the loss that you are working with.
+But in general, you can adjust the weight of the unsupervised loss to get a pretty good representation of the flow. So in general, this should
+work quite well for problems that are steady. For unsteady problems, that's another story. Can PINNs predict the reduction in the Reynolds shear stress that is observed in
+the viscous sublayer? Yeah, of course. If you look at this one. So this is the Reynolds shear stress in a pressure gradient boundary
+layer. This axis is the y plus, so the wall normal distance. And you can see that obviously, when you go closer to the wall, the Reynolds
+stresses diminish, and this is very well predicted by the PINNs approach. So yes, it predicts that very well. Okay. Do you have any use case where PINNs combined with commercial
+codes to enhance model accuracy, solver speed up? So, yeah, I would not use PINNs with a commercial code together.
+They're basically different ways of doing the same. In a commercial code, you're using a numerical discretization, let's say finite volumes, and then you are
+minimizing the loss of the problems, where you are introducing some models, some modeling assumptions to the Reynolds stresses, and that's how you solve the problem.
+In PINNs, what you're doing is that you are basically using the machinery to train a neural network to solve the PDEs.
+So in both cases, you're solving the PDEs. So you cannot use PINNs to improve the commercial solver accuracy, but there are other approaches.
+So we will see other approaches to improve simulation accuracy, just not with PINNs. In PINNs, should we add assumption of equilibrium, not equilibrium, or does it just
+learn it directly? Yeah, it learns it directly, especially from the boundary conditions. You get the free stream distribution that gives you what type of flow you're looking at.
+If it's equilibrium or non-equilibrium, it will learn that directly. When applying Neumann boundary conditions to a PINN, the optimization
+landscape often becomes unstable. Are there specific loss weighting techniques or regularization strategies you recommend to balance the Neumann boundary loss with interior PDE residual?
+Yeah, that's a good question. So I got this question also last time. I have not done personally Neumann conditions
+with PINNs. They should be possible, right? Because you can calculate the automatic differentiation and set that up. So it should be possible, but it's going to be more unstable.
+So it's going to require, I would guess, more resolution of collocation points close to the boundary and quite some
+neural network architecture tuning to get that completely right. Now, good question. Which is faster, CFD or PINNs? In general, CFD is much faster than PINNs, in general.
+If you take the same mesh, for a problem solved with PINNs and with a CFD solver, the CFD solver is going to be an order of magnitude faster for sure.
+But PINNs has other advantages. In PINNs, you can usually get away with a coarser mesh because of the automatic differentiation.
+So now you may be in a case where your cost is similar for PINNs and for CFD. And CFD usually involves a modeling
+assumption for Reynolds stresses and PINNs doesn't. So PINNs solves the Reynolds stresses without a model. And you know that the RANS models, they're not very accurate for the Reynolds
+stresses, I mean, in general. Whereas the PINNs approach, what I'm showing you here, is that they can predict quite well the Reynolds stresses in quite some complex
+cases. So my answer is, there's no solution that will work better every time. And in general, CFD is the go-to solution, in
+general, but PINNs can help in certain cases. That's how I would frame it. Can PINNs be used for multi-phase scenarios?
+If yes, how efficient is it when compared to traditional CFD? They can be used, and they have been used.
+There are additional complications in the stability of the algorithm because of the interface, right? But they can be used.
+And regarding the efficiency, the answer is the same as before. It is slower than CFD, but you can probably get away with a coarser mesh, so that can make up for that.
+Okay. Questions? Okay. All good.
+How different is ROM compared to PINNs? They're different things. So PINNs is solving the governing equations, the full governing equations,
+with a neural network. And in ROM, what you're doing is that you're using data to take a fraction of the physics of the original problem.
+So you're basically truncating your representation of your problem, and you can use, with ROMs, the governing equations at the end if you do a Galerkin projection, but you don't
+have to. And typically in ROMs, you use more data, and in PINNs, you use more of the equations, in general.
+More questions? So PINNs are more accurate. It depends. Depends on what you're looking for. They can be more accurate,
+but it depends on the problem because you need to have the governing equations. In some cases, you don't have the governing equations.
+And typically, you need to have good boundary conditions for the PINNs problem. Otherwise, you will not get a good solution with PINNs.
+So, yeah, you cannot say they are always more accurate. It depends a lot on what you're trying to do.
+And we're going to be looking at reduced order modeling approaches later in this course that are incredibly powerful, that will give you really very strong
+performance. In finite elements or finite volumes, there are stability studies to establish convergence. Are there similar approaches to PINNs, and does it always converge?
+Yeah, I would say there's not such a formal definition for convergence, although you can do it. You can really look at different collocation points, different distributions,
+different parameter distributions to see how the performance looks like. And so I would say typically it always converges and not always to a correct solution with PINNs.
+So you have to be a bit careful depending on how you choose. If you choose your boundary conditions appropriately and your collocation points
+appropriately, then you will be fine. But you have to be careful because a CFD solver will not converge to a wrong solution
+or completely wrong solution. Unphysical, let's say. PINNs can technically converge to unphysical solutions, so you need to really keep an eye on
+it. Okay? No problem. More questions?
+Okay, good. So let's continue with the wing results. The wing results are actually very exciting because as you can see, this is a much
+more challenging case, right? So here in the wing, we also looked at three different profiles, three different locations on the wing.
+So you can see on the section side of the wing, these regions, one, two, and three are the three profiles that we're going to be looking at in the
+next slide. So this is the mean flow, and you can see that the pressure gradient is increasing from bottom to top,
+and the agreement is great. This is the UV, the Reynolds stress. Here I'm showing you the stream-wise velocity fluctuations.
+So again, this is a very challenging quantity to predict, especially with the outer peak, and actually PINN's does a pretty good job at reproducing
+this. And this is the wall normal fluctuation, which again shows a very good agreement. So for all these quantities, the results
+are actually really good. The mean flow is very well reproduced with less than 2% error. Even the Reynolds stresses are about 10% error.
+So we get very good accuracy. And I would say that one remarkable aspect here is that this is a very quickly
+growing pressure gradient, a quite challenging scenario. Industrial solvers will have no chance of getting the Reynolds stresses right in
+this case. And here, the very pronounced anisotropy of the Reynolds stresses is very well captured by the PINN's framework.
+So these results, I would say that they are really encouraging. Okay. And the final case that I wanted to show in this section
+is this one, which is a periodic hill. So a periodic hill is a case that is widely used for testing
+models in the context of turbulence modeling. So what you have is basically two plates. So at the top and at the bottom,
+the wall has this shape of some sort of hills, and the boundary conditions are periodic in the stream-wise direction.
+So what this means is that, because of this shape, typically there is a separation zone, or a circulation zone, right?
+And reattachment and the flow, because it's periodic and the top boundary is closed. Well, this is actually pretty nice
+setup. You don't need to deal with weird outer flow conditions or upper boundary conditions. This is periodic and clean and nice, and
+it's basically a test for separation and reattachment. The separation point will happen around here, and you can see in blue the mean velocity profiles at different
+locations. In orange, the prediction. The agreement is actually pretty good. And you can actually see here there are circulation zones, so you can see
+the vector fields. There is a very large recirculation bubble and the prediction is on the left, the reference is on the right.
+As many of you probably know, predicting separation in turbulent flows with complex geometries. This is incredibly challenging for RAMs, for LES
+even. And in this case, PINN's gives us a remarkable accuracy in this separated case. So this is a pretty fantastic result.
+In a separated case, the mean velocity has 3% error, so that's really fantastic. And the Reynolds stresses are between 15% and 30% error, which of course
+that's higher, but remember that this is a separated flow. And again, numerical solvers from a more traditional industrial setting would be much more
+challenged by this. So even in this case, the performance is actually really good. Okay. Questions about this?
+No questions? Does it make sense? Okay, so let's look at a few more examples of PINN's. Okay, there is one question.
+Can we ever later talk about choice of norms to use L2 or L1 for sparsity? So that's a little
+outside the scope of this. That's kind of simpler, more basic stuff. I recommend you to do one thing. If you go to my YouTube channel,
+I have quite some lectures online about that, actually. So sparsity, I have a course on... So this is more machine learning for fluid
+mechanics and engineering. In my YouTube channel, I have a course that is more general machine learning, and there I have a
+lot of discussions about regularization of the loss, essentially. So if you go to my YouTube channel, which is Vinuesa Lab,
+I can actually leave the link here. You can find quite some discussions of that. So let me just find you the
+playlist. It should be here, a playlist that you can very easily access. Just a second. Yeah. So if you go to this link,
+then you will find... Okay. Yeah, perfect. I think someone had already shared it. Very good. So if you go there, you will find a pretty good description, and this is an
+introduction to machine learning. So it's going to be more basic than what we see here, because here is more specific
+to fluid mechanics, but there should be some helpful material there for you. And if you still have questions, feel free to ask.
+Professor, where does exactly Physics Nemo sit in with respect to PINS implementation? Do you use it? So Physics Nemo is the
+set of libraries from NVIDIA for generative AI. In my group, we are actually contributors to Physics Nemo. So we have a couple of contributions on
+optimal sensor placement and a foundation model for fluid mechanics. So we have quite some work with them. But that's not for PINS, it's more for generative AI, so a bit more advanced
+concepts that we will also see in this course. By nature, all turbulence is transient. PINS work well in test case five. Why is it not working for
+other transient cases? Well, if you look at case five, case five is also-- I'm looking at the statistics. I'm not looking at the unsteady
+predictions. So all the cases that I've shown you so far, of course, it's turbulent flows. They are unsteady, but I'm predicting their
+statistics, not the instantaneous flow fields. Okay? I'm going to show you now one example where I'm going to be
+predicting the unsteady, the instantaneous flows. But what I have shown you so far is just the statistics. The deviation seems to be more at the wall in the recirculation region.
+Does allocating more points to the area can improve the performance? Maybe, but it's not guaranteed. This is a very complex flow,
+okay? With the separation and all the Reynolds stresses interacting with the pressure redistribution to give the proper separation. So it's not guaranteed that you will get better
+performance, but it might be. Thank you. You are welcome. Okay. Very good. And let me know also if you have questions about
+my lectures in the YouTube channel. There is also some content there, and of course, if you subscribe there, you will
+get a lot of my research. I publish videos on my YouTube channel as well, so you can get more
+information there. Okay. So let me show you a couple more examples of using PINS for fluid mechanics. There's two articles here that you can see
+published in Measurement Science and Technology. So the references are here at the bottom. On the left, there is one example to improve measurements.
+So let's imagine that we're in a wind tunnel. We're measuring a zero pressure boundary layer, and we're using PIV,
+particle image velocimetry. So I measure the mean velocity, I measure the Reynolds stresses, and the V, that's the wall normal velocity. And the PIV measurements
+are in blue. The reference LES is in black. So the mean is okay, the V is terrible. The measured V is really bad,
+and the Reynolds stresses are not perfect. PINS, the red line, will give you the correction. And you can see that the Reynolds stresses get a little better.
+We get a little closer to the reference. But you can see the red line for V, for the wall normal
+velocity, is now in fantastic agreement. So we go from a terrible signal because keep in mind that the wall
+normal velocity is three orders of magnitude lower than the mean velocity, right? So this is very hard to measure accurately.
+But then the wall normal velocity corrected with PINS gives me a fantastic agreement. And this is in this paper, Measurement Science and Technology.
+The other example is this one where I have an unsteady problem, and I model that with some sort of LSTM approach.
+So the key is to eliminate noise. So I'm having the flow on a 2D cylinder. The reference is at
+the top at two different snapshots. In the middle, I have added noise artificially, so Gaussian noise, and you can see that the signal is very noisy.
+And in the third panel, we use PINS to de-noise the data. So imagine that we have a noisy experiment.
+We can use PINS to actually eliminate the noise. And you can see that the agreement is fantastic. So we have really managed to remove the noise pretty effectively, and the
+evolution of the POD modes that you can see here on the right is actually really good. So PINS can be used to
+eliminate noise and can be used with unsteady problems. Okay, Subash. Do you have a question? Yeah. I don't see V in agreement with
+PIV. PIV is a measured data, right? So- Yeah, and it's wrong. I want to correct it. Oh, okay. So the reference is the LES.
+The correct information is the black line. Oh, okay. So PIV, you are saying that the measurement was not correct?
+Exactly. Okay. It was not correct because the V profile is so small that it's very hard to measure accurately with PIV.
+So I'm correcting it with PINS, and then I get a very good agreement with LES, which would be the reference here.
+Okay. Thank you. Chandra. Hello. I'm actually a researcher doing some PV experiments and all. Yeah. I want to know about the denoising.
+Basically, you're talking about the inaudible noise using the PINNs. I know there is some methods like denoising based on
+autoencoders. I think we'll come back to that part later. So the question here is, I want to do some kind of a blind denoising because as a measurements-
+Okay ... if I do the PV noise- Yeah ... because I don't have any reference cases. So how to do some kind of a blind denoising using PINNs or autoencoders?
+Well, there's many methods to denoise, right? But what you have here with PINNs, it's-- And you can read the paper, all the codes and data are there.
+But basically, we're using the governing equations to denoise. So whatever the measured quantities are, they need to be compliant with the governing
+equations. That's basically how you would do it. To denoise, you can train many computer vision methods with autoencoders, with transformers, to denoise.
+Actually, generative AI methods are the best way to denoise, because the diffusion models are trained exactly with learning to denoise
+images. So that could be another approach to really consider generative AI methods for denoising. We can do denoising. Okay. I have DNS
+snapshots. I can put some noise into it, and I can train it. Yeah. So that the neural network can learn from the reference cases.
+Because of the PV- Yeah ... you don't have any reference cases. You just directly get from the experiments. So there is a lot of-
+Yeah ... PV noise, basically. So- True. But you can find a canonical case, right? That you have run with DNS, with high-fidelity simulations, and that can be your
+ground truth. Okay. Thank you. Yeah. Now, the advantage of using PINNs to denoise is that you don't need a reference case because
+you just use the governing equations. So that could be an alternative to think about. Okay. Thank you so much. Yeah.
+Okay. Leonardo? No. Yes, you just have answered my question. I did not quite understand how would you use the governing equations
+to eliminate the noise from your signal, but you just answered the question to Chandra, I think. So thank you.
+Okay, good. And Hans Pal? Hi, Professor Ricardo. Hi. Yeah. I just wanted to understand what is the biggest benefit
+of PINNs over CFD. Is it better quantification of things like turbulent stresses, which are not reliably measured using RANS simulations or computed using RANS
+simulation? Or what exactly is the biggest benefit of PINNs, actually? Well, the advantage of PINNs here is that you will get much higher accuracy
+than with a RANS simulation. Because, in RANS models, you need to introduce a modeling assumption, right? If you go here
+to the governing equations. These are the RANS equations, and then you would need to add models for the Reynolds stresses, right?
+And those models may or may not be accurate. That depends a little bit, right? But here, with PINNs, you don't need to model the Reynolds stresses to solve them, and
+that gives you higher accuracy. Great. Thank you so much. Yeah, no problem. Okay, more questions. Okay, all good. So this is a little summary of what we covered here.
+We have used PINNs for solving the RANS equations without any model. That's the important thing. So no model assumption.
+We don't need much data. We just need the boundary data, in this case. And the cost is similar to that of a RANS solver.
+The performance is excellent for mean flow quantities. They're helpful for industrial applications and also for augmentation or correction of experimental data.
+So PINNs have really been very helpful here. Okay? And that finishes this first block. Are there any other questions?
+Okay. If not, I think this is a good place to stop for 15 minutes for a short break. In the next block, we're going to look at convolutional neural networks and
+other computer vision tools. Now, if you remember, we started with MLP, which is the simplest point prediction neural network.
+And then we realized, well, when our data has temporal structure, we need to learn the temporal dynamics. So then we use the LSTM or the transformer to
+learn the temporal dynamics, because these are architectures designed to learn the temporal dynamics. What about when the data has a spatial
+structure? So you have images, you have flow fields. Well, then we're going to consider neural networks that are designed to learn the spatial structure.
+So once again, your data is not just matrices or vectors with points. There's also additional information in your data in the temporal correlations and the spatial correlations.
+So you need to use the architecture that can help you to exploit the temporal information and help you to exploit the spatial information as well.
+So that's the idea. Okay? So we're going to learn how to use architectures that help us to exploit the spatial information in the data,
+such that you can learn those dependencies more efficiently. Okay. So if there are no more questions for now, let's take a 15-minute
+break, and then we meet here back in 15 minutes. Thank you.
+Okay. Shall we continue? Yes. So good. Let's start with the next block, which would be about spatial predictions. Okay, so
+this will be a whole new section.
+Can you see my screen? Yes. Okay, good. So we are going to do spatial predictions in the context of sensing.
+So being able to measure the flow in some parts, and based on those measurements, to predict everybody else or everywhere else.
+So we'll start with non-intrusive sensing. We're going to talk about sensing from coarse measurements, predictions, and a very important
+chapter on explainable deep learning. So you will be learning more about that and how one can use explainable deep learning to really understand
+very fundamental aspects of turbulence. So we will be learning a lot about those things. And when I'm saying turbulence, this is applicable to other fluid flow problems or
+in general, other engineering problems. So motivation, and as you know, in terms of image classification, because we're going to be looking at spatial predictions, so
+basically, we're going to be looking at images. There has been a lot of success thanks to ImageNet. So ImageNet was this challenge where
+a huge benchmark was created with images of different categories, different kinds, and then the neural networks were trained on this common benchmark to be able to
+basically assess publicly the relative merits of the different methods. So for example, one would have to classify the images in terms of the vehicle, in terms of which
+craft in particular, or which watercraft was being observed in the image. This was, again, the ImageNet challenge. And it's actually quite interesting because the classification errors
+of these neural networks, this is again, many years ago, but they reach levels way better than those of humans.
+So it became quite prominent that these methods could perform much better than humans. And of course, that led to machine learning being adopted in
+predictive text, speech recognition, data analytics, finance. Perhaps an interesting example is that of chess. So Games are used to test the capabilities of machine learning models
+because the games are interesting challenges. They have well-defined rules, and they are somehow bounded. They're somehow isolated. A real large-scale engineering problem has
+many different inputs from many different categories. The rules are not always fully clear, but the game does. So a game is a good environment, a good isolated environment to
+test how well these methods actually perform. So in the case of chess, maybe many of you know the example of Garry Kasparov playing against the IBM Deep Blue
+supercomputer. This was in 1997, where, as you can see here, so Kasparov lost against Deep Blue, and he didn't take the defeat very well.
+Of course, chess was thought to be an intellectual activity that was only accessible to humans. So a machine being able to defeat the world champion was a
+huge deal at the time. And of course, nowadays, it's clear that machines are much more powerful than humans at chess. So all the
+best champions train against machines, and the competition, the world championship, is between humans. And it's very clear that machines are better at chess than humans.
+And something like this is happening in other areas as well. But the point is that chess is a quite
+easy game to play for machines because essentially with brute force computing, one can actually play. There are not so many combinations.
+If one looks at the game of Go, which you can see here at the bottom. The game of Go was popularized by
+DeepMind, and it's a more Chinese-inspired and Chinese-originated game, which is much more complex than chess. If you look at
+the number of possible moves in a particular turn, and you raise that to the power of the number of turns of a particular
+game, you can define a measure of complexity of a game. So you can take this M raised to the power of T.
+Moves raised to the power of the turns. And you can see that the number for Go is 200 orders of magnitude higher than the number for chess.
+So chess, to some extent, can be played with some sort of brute force computing, analyzing all the options and looking at the best one.
+Go, you can't. Computationally, you can't. So you need to develop some sort of intuition to select the best moves. You need to be a bit more strategic rather than just
+computing all the options. And that's what made Go kind of like, in a way, an achievable almost challenge for machine learning because
+the thought, the understanding was that machines could not develop such sort of intuition. They could be very fast at computing, like in the case of chess, but they
+could not be such good at intuition. And that's what the DeepMind team actually proved wrong about 10 years ago.
+So they published a couple of papers in Nature where they showed, first of all, the AlphaGo algorithm. The AlphaGo algorithm
+was shown the games from the best human players of Go, and it learned from the best players. So here you can see this. So Lee
+Sedol from South Korea, he was the world champion of Go, and he played against AlphaGo, basically. So the algorithm from DeepMind.
+And you can see, he got really perplexed. He got really surprised by some of the moves that the AlphaGo
+algorithm will use against him. And the final score was four against one. So actually, AlphaGo defeated the best human player of Go,
+which is quite remarkable, just by learning from the games of the best human players. But even more remarkable is what they did one year later.
+That's what they published also in Nature, is the AlphaGo Zero. So AlphaGo Zero is an algorithm which was not shown any human
+game. It was just given the rules of the game. Okay? So no human input, just the rules. And using reinforcement
+learning, and I talked a little bit about reinforcement learning in the first class. One of the last blocks of this course will be also on reinforcement learning, so
+we'll be talking more about it later. But the point is that AlphaGo Zero was just given the rules of the game, and they made the
+algorithm play against itself. And because the game of Go has well-defined rules, one can assess learning, and one can assess and develop newer strategies purely by
+trial and error. So you can see here the Elo rating, so basically the performance of this AlphaGo Zero algorithm as a function of training time.
+So basically training against itself. The purple line is the AlphaGo with supervised learning, and the horizontal dashed line is the model that defeated Lee Sedol.
+So basically, the best model that received human input. And this blue line here is the performance of the model
+that does not receive any human input. It just plays against itself. And you can see that the initial performance is terrible, but very quickly it
+goes Quite high up, and in less than two days it achieved superhuman performance. So basically, it became much better than humans after less
+than two days of training against itself. So he would find, or this mechanism, this framework would find moves, strategies, and approaches that had not been
+discovered by humans in thousand years of playing this game. Which is quite remarkable, and it gives you an idea of how these
+complex high-dimensional systems can be really examples of challenges that machine learning models can beat, and where they can actually learn
+and develop quite efficiently. Okay? So this is just to set the stage, just to show you a bit the
+importance of benchmarks and the importance of these models in ImageNet for image classification. In the context of fluid mechanics, there have been many successful
+applications of machine learning. For example, so this is now more than 20 years ago, Milano and Koumoutsakos measure and
+model the near-wall region of a turbulent channel with neural networks. Beck and others, they developed large eddy simulation strategies
+for developing sub-scale models few years ago. Fukami and others used neural network models for inflow conditions and super-resolution. Duraisamy in Michigan, he developed good approaches for RANS modeling.
+And PINN, which I mentioned in the previous block, with Raissi and George Karniadakis, they developed very interesting approaches basically for reconstructing the flow.
+And Steve Branter and others have shown many other applications for flow control. So many different areas which show us great
+potential in the context of fluid mechanics. And here I want to also highlight this approach. We have an article in Nature Reviews Physics, where we show how machine learning
+can help experiments in fluid mechanics. So I recommend you to have a look at this paper. In the vertical axis, we show the complexity of the machine learning
+implementation. In the horizontal axis, I'm showing you the experimental complexity. So basically, how difficult the experimental setup is. We show three different categories: improvement of measurement techniques,
+experimental design and modeling, and flow estimation and control. And when we try to improve experimental techniques, the low complexity would be calibration and corrections.
+The high complexity would be super-resolution. When it comes to experimental design, the low complexity would be data enhancement through uncertainty quantification.
+The high complexity data fusion with digital twins and similar methods. And when we talk about flow control, which is very involved experimentally, the low
+complexity will be flow estimation and sensing, which I'm going to talk about in today's chapter. And flow control with reinforcement learning,
+that will be the next chapter. That will be the next approaches that we're going to be talking about, where there is quite some
+potential to improve current experimental techniques. Okay? So this is all a bit of an introduction to the second section
+of distilling spatial information. Are there any questions so far?
+All good? Okay. So let's start with this. We want to talk about non-intrusive sensing, and by non-intrusive sensing, what we mean is that we're going to try to measure a fluid mechanics problem
+without directly putting a sensor in the place that we want to measure. This is to avoid disturbing the flow.
+So if we have a wall here and the flow is above the wall, instead of measuring with a sensor here, basically with
+a probe that is moving to measure the flow, what we're going to be doing is measure at the wall, some quantity at the wall, and
+with machine learning, based on the wall information, predict the flow above the wall. So what's happening above. Without directly putting the sensor,
+but measuring from the wall through non-intrusive sensing. That's going to be the idea. So, this was initially done by Hasegawa's group, and
+also by Jimenez group, through linear stochastic estimation. So linear methods. So the quantity at the wall was connected linearly with the quantities above the wall.
+And more recently, we had an article in JFM, which you can see here with Sasaki, where we used both linear and
+non-linear transfer functions to connect the quantity in the input, which was at the wall, with the quantity at the
+output, which was above the wall, essentially. Now, what we found here, and this was not with deep learning at all, but basically data-driven methods.
+We found that the non-linear transfer functions gave better results than the linear transfer functions. And this makes sense because turbulence is a non-linear problem.
+So in turbulence, when you're talking about the scale interactions, there are basically two mechanisms. One, if this is the wall,
+is the linear superposition. So you have large scales that are sitting at the wall and linearly amplifying the information close to the wall.
+That's a linear method that can be reproduced very well by linear stochastic estimations or linear transfer functions. But there is also a non-linear method, which is called
+modulation And the modulation has to do with different frequencies interacting with each other, which cannot be reproduced with linear
+methods. So if you use a linear method to predict turbulence, what you get is only the superposition, so only the linear
+part of the turbulent mechanisms, but you don't get the modulation, which is the non-linear part. An example of that is shown here.
+Again, this is our work from 2019. If you use a linear transfer function, if you use a linear method to predict the flow at y+15,
+so if this is the wall, a plane close to the wall, here is the reference, and here is the prediction.
+And you can see that the prediction looks a bit like the reference, but there's a lot of information missing. Lots of details.
+The intensity of the streaks is attenuated. The meandering of those streaks is not very well captured. So in general,
+these streakiest structures here that you can see, these are streaks. So these are very well-known turbulence structures in a wall-bounded turbulent flow, and those streaks are not very well
+reproduced by the linear method. Okay? So a non-linear method is going to be more helpful. If you compare with the first block, in the first block, we used a reduced-order
+model, and we only predicted the temporal dynamics. Here, we're going to be looking at the whole flow field. So we're going to be looking at the spatial information in my data.
+And the methods that I'm going to be using are going to be designed precisely for that spatial information. Questions?
+Is this a snapshot took at a particular instance in time? This- Correct. Okay. And this work was developed to avoid using wall functions
+in wall-bounded turbulence in the sense or not? So not exactly. That will come later. This model was developed with an
+experiment in mind. So I'm using information at the wall to predict information above the wall, and that's because if I want to control the flow,
+it's not very practical to stick a sensor in the flow because I'm going to disturb it, right? But if I measure at the wall, I'm not
+disturbing the flow. And then if I can predict what happens above, then I can do better flow control without disrupting the flow.
+That's the main motivation of this. Okay, so it was in the flow control framework. Okay. That was the main motivation. For our wall modeling
+motivation, I'm going to discuss some ideas for wall modeling as well in this section later. But you would not use wall information.
+You would use information far from the wall to predict information closer to the wall, such that you can, in principle, replace the
+whole near wall region with this boundary condition. That would be the motivation of a wall function. Or a wall boundary condition. So what I'm showing you here is
+going from the wall to the near wall region. While for our wall model, you would go from far from the
+wall to close to the wall, essentially. Does that make sense? Yes. Thank you. Okay. More questions? Okay. One question in the chat. Professor, can you once again explain the
+gist of this example? Yes. So the idea is the following. Let me draw. So I have my wall here, right? I have a turbulent channel flow.
+And then I have my flow here above the wall, so you have no-slip condition, and this is the velocity profile. Right?
+So this goes like this. And of course, this is turbulent, so this is changing instantaneously. So the idea is,
+instead of putting a sensor here to measure the velocity at this point, right? Instead of doing that, can I just put sensors here at the wall,
+because these sensors will not affect the flow velocity, and based on this information, predict what happens above the wall.
+Okay? That's the idea. Does it make sense? Yes, thank you. Okay, you're welcome. Velocity at the wall will be zero. Sure, but we're not
+measuring the velocity at the wall. We're measuring the wall pressure and the wall shear stress. How to isolate the modulation effect and train neural network? Well,
+you're going to see that. In our case, we're going to train everything together. So we're going to train neural networks that will predict both the superposition
+and the modulation, both of them. Okay?
+Okay. More questions? So let's get to it. The setup looks like this. You can look at this paper by Luca Bastoni in JFM.
+All the data, all the codes and all the repositories are available online open access, so you can always access the data and play
+with it yourselves. The idea is that at the wall, I'm going to measure the two wall shear stress components, stream-wise and spanwise wall shear stress, and also the
+wall pressure And I'm going to use that information to predict the u, v, and w fluctuations above the wall.
+So the input is at the wall, wall shear stress, and wall pressure. The output is on a plane above the wall,
+which is going to be the three velocity components. And we're going to consider different wall normal planes, so y+15,
+30, 50, and above. Y+ is the inner scale wall normal coordinate. So we're going to go from closer to farther away from the wall.
+Okay? And as I mentioned before, the motivation is the closed-loop control. So we can understand what the flow is doing, and we can
+develop better control strategies to tackle this control. Questions? Okay. So we use DNS data, so direct numerical simulation data,
+of a turbulent open channel flow. An open channel flow looks like this. You have the wall, you have periodic boundary conditions in the streamwise and
+spanwise directions, and in the upper boundary, instead of a wall, you have a symmetry condition. So basically, the channel is open,
+and you have a Neumann homogeneous condition at the top. I'm going to consider two Reynolds numbers, 180 and 550. 550, there starts to be
+some scale separation, so it's a reasonable Reynolds number. 180 is turbulent, so we can get some relevant initial results there.
+And we're going to be using numerical simulation data to be able to train a neural network where the input is the
+information at the wall, and the output is the velocity fluctuations above the wall. Okay? So that's the idea. Sounds good?
+Now, as you imagine, and as you can see from this figure, the planes that I'm using as input and output, they contain
+spatial information. They contain turbulence structures. They're not just time. They contain space, spatial information. So if I use a fully connected neural network like an MLP,
+what I used in the first section, I'm going to have a problem. And the problem is that I will take all the
+pixels of my input matrix, of my wall information, I don't know, 1,000, 100,000, whatever number of points on that input,
+and that will be introduced as a long array in my neural network. That means that even if I have a small idea
+of where each pixel is because of where the position that it takes in the input layer, since that's a vector, I cannot really
+effectively extract the spatial patterns to make my predictions. Also, this will lead to a very large number of parameters because all the
+neurons of one layer are connected with all the neurons of the next layers. So if I have a very large image, that's going to give me a very
+big neural network model if I use a simple multilayer perceptron. Now, instead, I can use the architecture here at the bottom.
+This is something called convolutional layer. And the convolutional layer works as follows. I have my input image here. Okay? That's my input,
+my image that I want to analyze. I'm going to consider this little window. That's a kernel. Okay? A kernel is a 2D filter. That little window
+has a size, let's say, of three by three or five by five. In this example, it has a size of three by three, so nine values in this
+window. And this window is applied to the data here on this image. These nine points of the kernel are affecting nine points of the input.
+And after applying a convolution operation that I will tell you more about in just a second, the output is one grid point
+after applying the convolution. Okay? So this is what is called the feature map. This is the output of the convolution operation.
+Each point here receives information from nine points here. And this kernel, by the way, is moving through this input image. So all the points are used to
+extract and apply information to all the points of the output. Now, this is a very widely used method in computer vision because
+this window, this kernel, allows to extract the spatial information from this image and use that spatial information to improve my predictions in the context of turbulent flows.
+So this is actually very helpful to understand turbulence predictions for turbulence. Okay? And this is, by the way, the simplest
+architecture that extracts spatial information from the data. So the simplest architecture for computer vision is the convolutional neural network, and it's based on this
+kernel and the convolution operation that I'm going to be showing you in just a second. This allows me to understand and extract spatial
+patterns that will be used later on for my predictions. Any questions? Does this make sense? Okay, sounds good. Now, let's use that for a practical case.
+A convolution operation is defined as follows. And I'm going to use that in these examples of image processing because at the
+end, this is computer vision. These are images, and all the models that we're going to be developing here are going to be used to
+deal with images. So what you can find Sorry. What you can find here is an original image, this house,
+this haunted house, which is going to be defined by a function f, which depends on x and y, and f is the intensity of the
+pixel on each point. This is a grayscale image, so basically, the intensity of the gray will be given by a value on each
+pixel, and each pixel is defined by an x and y coordinate. So I have my input image. This over here is going to be a kernel.
+So this kernel has three by three entries, so nine. And I'm going to apply the convolution operation on all the pixels of the input image to obtain an
+output image that you can see on the right. The convolution operation is defined here. Okay? The kernel omega depends on s and t, which are the local
+variables in that kernel. So the filtered image g, which you can see here on the right, g depends on x and y as well.
+So g of x and y is the convolution of the filter omega star f, where f is the input image and omega is the filter.
+So the convolution operation is defined like this. So g will be omega of s and t multiplied by f of x minus s and y minus t.
+So this is the mathematical clearly defined operation. In practice, this is very easy. In practice, what this looks like is
+for the convolution operation, I take the first matrix, so the kernel. I take the columns and I swap the order, so the first column
+becomes the third one, the third column becomes the first one. I take the rows and I also swap the order, so the first row becomes the
+third row, and the third row becomes the first one. So I do both permutations, and then I do the element
+by element multiplication, and I add up all the numbers. So if we look at this operation, the first matrix is
+composed by letters and the second one by numbers so that I can give you an easy example. So this particular convolution operation
+will be when I swap the columns and the rows, this I letter will move to the top left entry, to the 1,1 entry.
+Therefore, I'm going to multiply I times one, so I times one. When the third row becomes the first row, the H
+letter will go to the one-two entry. So H multiplied by two, H multiplied by two, and so on up to the nine entries.
+Interestingly, because I swap the rows and the columns, the center value here, which is letter E, does not change
+position, and that will be multiplying directly the center value here, which is number five. So here I have E5. Okay?
+All the eight entries are the result of the permutation of columns and rows. So I1 plus H2 plus G3
+blah all the way until A9. Since I swapped columns and rows, A goes to the 3,3 entry, and then A multiplies the 3,3 entry on the second matrix. So that's A9.
+That's what you have here. Does it make sense? This is the definition of the convolution operation. Are there any questions about this?
+Okay, that's good. So if I apply this convolution operation to the initial image, well, this kernel that you can see here
+is called identity. Okay? That's the name of this kernel. Why? Because when I swap the columns and the rows, I'm going to be moving around zeros, and the
+only quantity that doesn't move is the central quantity, which is number one. Right? That's the E here. So when I take this kernel and I move it through the pixels
+on this input image, the only thing that's going to happen is that each pixel from the image is going to be multiplied by one
+and nothing else. So the result of this convolution operation will be basically exactly the same image because I applied an
+identity filter. So the filtered image in this case is exactly the same as the original image because I applied an identity filter.
+Does this make sense? Are there any questions? Okay. And I'm using this analogy with images and image processing because the turbulent fields that we're going to work
+with are also images. So I'm going to be working with filters, with filtering operations, and all of them are going to be
+affecting the turbulence data. Okay? But with these images, things are going to be a bit easier to understand. The next filter that we're going to look at as an example here is the
+box blur. Okay? So this looks like this. And if you compare with the previous one where I had a one at the middle,
+what has happened is that I have spread the information which was at the middle, number one, over the nine entries. So now the information is not focused on the
+middle. There is one-ninth of information on each of the nine entries of this matrix So basically, what I'm doing is diffusing the
+information. Instead of having it concentrated at the middle, I'm diffusing it. So each of the points contains now one piece,
+one-ninth of all the information which used to be contained at the middle. Now, when I do the column swap and row swap,
+I take this matrix, and I apply it to each grid point of this image. What I have is basically that
+the value of each pixel is going to be difuminated, is going to be dispersed and shared among all the surrounding
+values. So now I don't have the crisp, focused information on one point, but I'm going to be a bit
+diffuse in that information among its surrounding. And when I apply this convolution operation to this image, what I obtain is the
+image on the right, which as you can see, is basically a blur version of the original one, a blurry version, right?
+It's not as defined. It's a little bit more blurry, like if you're not looking at it so well, because the
+information has diffused, right? So this filter is actually diffusing the information. And you can see now why these filters are so important.
+When I train a convolutional neural network, I am actually training the values of these filters so that I can effectively perform
+my convolution operations, right? When I do my convolution operations, then I can hopefully get a pretty good outcome at the end of the network and get
+the best possible performance. Okay? And one more example. This is called edge detection. So edge detection has a value of eight at the middle, and
+the remaining eight entries have a value of minus one. So this is a filter of contrast. So I'm introducing contrast into my
+image. So the values around the central one add up to minus eight. So when I apply this filter to the original image, I'm going to
+introduce a very sharp contrast between the information at the center of the pixel and the surrounding information. In other words,
+I'm going to obtain what you can find here, where in white, I'm finding the edges of the original figure, and in black, everything
+else. So any edge, any salient feature in the original image, which is like a dark line, is going to be highlighted by this
+filter because of that contrast, because of that detection of edges that I have. So the result of applying this filter to this image
+is basically this edge detection, which gives me a pretty nice assessment of the contrast that I have on my original image.
+Does it make sense? Any questions? Okay. Results seem to differ if the direction of application changes, like whether I apply this filter from top to bottom or bottom to top.
+Is it true? What do you mean? Why would it change? What I'm going to do with this filter is that I'm going to take it and sweep
+through the whole image. So every pixel will be exposed to the effect of this filter. So what do you mean that it will affect depending on how it's
+applied?
+While you answer, in principle, it shouldn't affect, in principle, because you're going to be applying... Yeah. Okay, good. How the filter kernels are decided, that's how you train the neural network.
+So the neural network will basically adjust the values of the different filters such that the output prediction is the best
+possible prediction. So that's basically what we are adjusting in this convolutional network, the values of the filters. So basically, in this neural network setup, we are training the pertinent elements
+of the filter matrix. Yes, exactly. That is correct. And there's also a nonlinear activation, like before, but in this case, you have those filters that are
+extracting spatial information from the data. Okay, any more questions? Okay. One last detail before we finish. When you have different input channels, so let's imagine that
+now I have an RGB image. Different input channels may contain different information. So in this figure here, the red channel contains the information of this
+red region, the green channel contains this information of this green region, and the blue channel contains more information here for this blue
+region. Now, if you have images or input data with different channels, I can apply my filters across the channels,
+so I can actually find correlations across those channels as well. So basically, I have a first kernel applied to the
+first input channel, second kernel applied to the second input channel, third kernel applied to the third input channel, and then I have the three feature maps, so one, two, and three,
+which gives an output of five by five. So this is to show that sometimes My data can contain temperature, velocity, and pressure
+in different images, in different fields, and I can use all of them as input. And my convolutional network will extract
+correlations and patterns across those fields to get the best possible predictions. So it is possible to use filters with a certain depth
+based on how many input channels I have in order to achieve better performance in my predictions. Okay? So any questions before we finish today?
+Or any more questions? In signals, convolution function is used to filter frequencies. Similarly, CNN is thinking of images in whole or sum of
+sinusoids. So in a way, it's identifying features, and they don't need to be sinusoids. So what we're going to learn is that these
+feature maps that happen here, so the output of the convolution has different shapes and identifies different features from the input.
+It can be elongated regions, it can be regions of recirculation. And the first layers identify simpler things. The last layers identify more complicated things.
+All of this we will see in more detail in the next class, which is next week. I believe it's next Tuesday. So I think it's August 4.
+Yeah, August 4 at 9:15, from 9:15 to 11. There will be no break, so we will start just 15 minutes later
+in the next class. So we will learn all of this in more depth in the next lesson. Okay? So for now, thank you very much to everybody.
+Is it better to use a single CNN or two parallel branches? So we will see that next class. But
+in general, if you have a deep CNN, you will get all the different scales. You will hierarchically build larger scales as you go
+deeper into your network. We will see that in more detail in the next class. Thank you for coming, and see you, everybody, next week.
+Bye-bye. Thank you. Thank you. And the slides will be in the portal. You should find everything in the portal.
+Bye-bye.
+

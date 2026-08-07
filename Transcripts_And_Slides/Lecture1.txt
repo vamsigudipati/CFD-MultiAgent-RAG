@@ -1,0 +1,602 @@
+Yeah, you can start now. All right. Very good. So let me go back to my slides. So if you guys remember, last time we
+left it with a multilayer perceptron. I don't know if you remember where we left it. I'm just going to share
+my slide. Can you see the slide? Yes. Okay, good. So what we were discussing last time was the structure of a
+simple multilayer perceptron. I'm just going to keep an eye on the chat also. Okay. Yeah. Hi, everybody. Perfect. Very good.
+So feel free to write in the chat if you have questions or just unmute yourself and feel free to interrupt me so we can be very dynamic.
+So if there was no nonlinear activation function, this would be just a matter of matrix vector multiplications. So each layer would be a matrix which contains the weights
+multiplying the inputs of the previous layer, which is this matrix vector multiplication, which gives us a result, a vector, and
+we would add up the bias vector. So then the result would be just a vector for this layer over here. And if we repeat all of those
+matrix vector multiplications, this means that I would be able to compress the whole depth of a neural network into one single matrix operation,
+which means that there will be, in principle, no point of having a deep neural network, since I could compress all of those matrix operations into one
+by basically multiplying all those matrices. The difference between basically a matrix vector operation of what neural networks do, or the difference
+between linear regression and what neural networks do is the nonlinear activation function, which in this case, you can see
+here. This is an example of that nonlinear activation. So the point is that you perform a matrix vector multiplication, you add
+the bias vector, and to that result, you apply this nonlinear operation. In this case, you have basically a sigmoid function and this
+type of nonlinear operation here. So when you perform that nonlinear operation, now you have two things. One is you cannot compress all of the matrix
+vector multiplications into one because the nonlinearity makes it necessary to perform the operations separately. Therefore, it makes sense to have a deep network.
+And also, that nonlinearity allows me to represent very complex functions. So the predictive power of neural networks comes from this nonlinear
+activation function. And if you look at it, this nonlinear function over here is filtering the output. So my output is going to be in this range,
+and that's typically from minus one to one. That's a typical range value that you have, so that my output is
+bound in a certain range, and it's kind of representing this nonlinear operation here. Also, an important aspect of neural networks under training
+is that it basically boils down to obtaining the values of the weight matrices and the biases. So those are really the values that we want to adjust when we
+perform a neural network training. This is typically done with a stochastic gradient descent and a backpropagation. So backpropagation, the
+idea is that you start from the back of the network, from the output, and you calculate partial derivatives of your loss function with respect to the
+weights of the different layers. Since this is a compositional function, you can apply the chain rule such that you can express the partial derivatives of one
+layer with respect to the previous ones. So I can keep going back and basically propagate the errors to the input.
+And in that sense, I can essentially calculate my loss function pretty effectively. The stochastic gradient descent relies on these partial derivatives to do my gradient descent, to do
+my error calculation. And the reason for it to be stochastic is the fact that I have very high numbers of parameters, so typically millions or hundreds of
+millions, and typically many data points as well. This can be thousands, tens of thousands, or even more. So instead of
+calculating all the partial derivatives with respect to all the data points at once, which would be a problem very hard to compute,
+in stochastic gradient descent, this is done in batches. So I take a subset of the whole data set. I calculate my partial derivatives with respect to that batch.
+It's literally called a batch. And I select those batches randomly from the whole data set. So if my whole data set has
+100,000 points, I may take batches of 100 points, calculate my partial derivatives with respect to those 100 points, and then do
+it for 1,000 batches. And when I have calculated my partial derivatives for the whole data set, so for all the batches
+containing the whole data set, then I have done what is called an epoch. So an epoch is a pass through the whole data
+set to calculate those partial derivatives that allow me to determine the parameters of the neural network. And again, the goal is to determine these values, the weight
+matrix and the bias vector. So those are the unknowns, the parameters of my neural network. Okay? Any questions? Does it make sense?
+They have, are they... Let me see the Sorry, Navraj. I don't know if you're asking a question. I cannot hear you very well.
+It's very hard. No, I'm not asking any question. Sorry, there's a background noise, so I'm just canceling this now.
+All right. No problem. Maybe, yeah, please mute yourselves, guys, just to make sure that we don't get... Yeah, perfect.
+Okay, any questions about this? All good? Okay. So then, let's move on to some implementation or some details about
+this training process. So this is a few years old. So at that time, we used TensorFlow. Now, JAX is the
+current implementation that we have. The key is the following. We have a number of time series, and from those time series, each of those time series have
+many instances of the flow field you want to explore. It's typical to divide your data set into training and validation.
+Training is the part of the data set that you use to adjust your parameters, and validation is a part of
+the data set that is used to test the performance of the model on data that has not been used during
+training. So validation is going to test how well we are generalizing beyond the data that has been seen. So training used to adjust parameters,
+seen data, validation, unseen data. And that's typically 20% of the total of the data set. There are different possible error functions or loss
+functions. In our case, we're going to use what is called the mean squared error, because remember, in our problem, we're predicting nine coefficients in
+time. So our loss function is going to be basically the difference between the predicted value of the coefficients and the true value
+of the coefficients squared, just to be able to count equally positive and negative deviations. And this one half is something that comes from that
+tradition of optimization, because I want to eventually calculate the partial derivative of the loss function with respect to the
+parameters of the network. So this square here, when I calculate the derivative, will basically cancel with this one half.
+So it doesn't really matter. It's not strictly needed, but it makes things look a bit cleaner. There's a question. Let me just go to the question.
+The mean absolute error versus mean square error, which one is better and why? So it depends. Typically, the square error--
+It all depends on how you normalize the data. So if you are able to keep your data in a range from -1 to 1 or
+from 0 to 1, taking the square error, so basically the expression that you have here, it will keep you within that range without problems.
+And it will allow you also to not bias your prediction towards positive or negative errors. So typically, this is a very good choice.
+And the reason to keep this one half is because of the square that you have here. So at the end,
+the square error is the one that is most widely used. Do we need to learn both PyTorch and TensorFlow?
+Can we just stick to one of them? You don't need to learn any in particular. So TensorFlow is not around anymore.
+It's JAX, the current implementation. PyTorch is very good too. So I think the important idea here is that you understand the concepts and you understand the fundamentals.
+There are several notebooks that you have access in the practical sessions. So become comfortable with the practical sessions and the codes that you will have there, and that
+will make your life easier. So you don't need to stick to one particular implementation. They're actually similar. The most important thing is to understand the concepts.
+Now, as I mentioned before, the epoch is a pass through the whole training data set. And we are going to consider here a nonlinear activation function, which
+will be the hyperbolic tangent, and an initialization that was proposed by Glorot and Bengio, which in the end, the weights are basically randomly
+initialized, and then they are adjusted after each epoch when the data is used to minimize the error of our
+neural network. So in this figure, and by the way, all the details can be found in this article in Physical Review Fluids.
+So you can just go there and find all the details and all the codes to play with. So you can play a lot with these codes.
+What I'm showing you on the left is the value of the loss, and this loss is basically the value of the error of the neural network as
+a function of the number of epochs. So the epoch, again, is when I have used the whole training data set
+for adjusting the parameters of my network. Remember, I need to pass through the whole data set many times, not just
+once, because I don't take the whole data set at once. I take small batches from the whole data set.
+That's the stochastic gradient descent, and therefore, the more I take passes through the whole data set, in principle, the better
+performance. In principle. In this figure on the left, I'm showing you two lines, train and validation. In blue, I'm showing you the training loss,
+which is the error obtained on data that was used to calculate the neural network parameters. So seen data. And as you can see, the more passes through the whole data set, the more
+epochs this error decreases. So that means that my neural network is predicting better the more data we use or the more times that we use data for training.
+And the orange line, which is the validation. The validation loss is the validation on the data that was not seen
+during training. So this was not used to adjust the parameters of the neural network. Well, that error is going to be typically larger because the
+data was not seen. We are using the network on data, but in principle, different from the one that we use to adjust these parameters.
+But the idea is that the neural network should be developed in such a way that it can generalize. So when it generalizes,
+the error on the validation set should not be very large. It should be a bit larger than that on the training set.
+And crucially, if the training is going well, the validation loss should also decrease with the number of epochs. Okay?
+Question. Actually, two questions. Would it make sense in some cases to weight the error in case for near wall, et cetera?
+Yes. In this case, the time series has a constant time step, so all the data points count the same.
+If you do a spatial predictions with non-uniform measures, you should use a weighting with respect to the volume of each grid point. Absolutely.
+What is the best practice to decide confidence level of the network? Both training validation fitting should be acceptable loss.
+Okay, let me finish this slide because this will become clear after this slide. And if it's not clear, feel free to ask Liam.
+Okay, just a sec. I just want to show you this over here. So if everything goes well, that's the case to the left,
+both errors decrease with the number of epochs. So the more times I see the whole data set, both the training and the
+validation loss go down. Okay? When do I stop training? When the validation loss reaches a value that is acceptable to
+me. Why the validation? Because the validation will be my true test on new data that was not used for training.
+And how low is low enough? It depends on your application. In some cases, a 10% error is acceptable. In some cases, 0.1% error is not acceptable.
+So this should be low enough for you to consider that the accuracy is acceptable for your application. If you look at the panel to the right, the figures, the
+plots look a bit different. So in this case, the training loss keeps going down, okay, as I increase the number of epochs, but the validation loss
+goes down first and then it goes up. This is something called overfitting. So in overfitting, what happens is, I do so well in the data that I use to train my neural
+network in the seen data, that when I am trying to use the model in unseen data, the model gets progressively worse and worse because it
+fits too well the seen data. It's not generalizing so well. This happens in two cases. So it can happen
+when the number of parameters of my neural network is too large for the complexity of the data set that
+I'm trying to model. So my data set is simple, and I have a super big neural network. That neural network is bringing in additional parameters that are not
+needed. Then I get overfitting. Or if my data set for training is not diverse enough. So maybe I need more diversity, maybe I need more data
+with a bit more complexity to be able to train a model that can generalize beyond the training set. So
+this is one of the possible errors that you can encounter when you're training neural networks. The solutions are either make the neural network smaller
+or increase the amount of data. But there is another possibility, and it's what we call early stopping. So you can see that this neural network,
+the validation loss is going down, it reaches a minimum, and then it goes up. If this value here of this error is acceptable to you,
+let's say 2% error. If this is acceptable to you, then you can stop your model here. Even if you train a bit
+more, when you see that the error starts to increase, you can recover the checkpoint here, and then use this model instead of this one. And this is like in Who
+Wants to Be a Millionaire? When you are answering questions and they tell you, Do you want to continue answering questions or do you stop now? Right?
+If you stop now, then you keep all your money. If you continue answering questions and you fail, then you lose your money. Right?
+So that's a little bit what happens. You can just stop here, not continue training, if the performance here is acceptable to you.
+This is what's called overfitting. So I am fitting too well my training data, and I'm not able to generalize so well. There is another possible error which is what
+we call underfitting. So in underfitting, both the training and validation losses are high. Maybe both lines, maybe both errors go down with epoch number,
+but the level of the error is high. If I have 50% error and I want 5, then I am underfitting.
+And in that case, my problem is my neural network which is too small. So I don't have enough parameters
+in my neural network to represent the complexity of the data set that I'm trying to model. And therefore, I need to basically increase my neural network and
+make it a bit more capable of representing the patterns that I have. Okay? So two important errors, underfitting when my errors are too
+large, or overfitting when my training loss goes down, but my validation loss goes up. Okay? Those are the two most important errors
+that I can encounter when I am training neural networks. Questions about this? I have one question. When we have underfitting in the case of neural networks, does it mean that we have
+to make, instead of linear basis functions, we have to go with more complex basis functions? So these are not exactly basis functions in the series
+expansion sense. Because what we are using is just those weights and biases. The activation function is an operator applied after the matrix vector multiplication.
+And typically, the activation function making that more complex does not really improve the performance of your model. The activation function is there to add nonlinearity to your
+system so it can represent nonlinear functions, but it's not there to add more predictive power to your system. What adds predictive power is typically
+either making the neural network deeper, because when you make it deeper, then you can hierarchically build. If you remember from the first class, the
+first layers identify simpler features and the last layer more complex ones. So as I go deeper, I hierarchically build more
+complex features. So that's one possibility. Or change the architecture. Maybe this multilayer perceptron that I'm explaining today is a bit too simple, and I can go for something a bit more
+complex. All right. Thank you. Okay, so there are some more questions. Is early stopping preferable over dropout regularization when overfitting is
+identified during training in ML? It depends. Dropout regularization can help as well. But it's a bit case dependent. So it depends a little bit on the application that
+you're looking at, and the temporal dynamics and the spatiotemporal complexity. I would say that regularization can help you when you're having also a very complex network and you want to
+simplify a bit some of the expressibility of your network, then this sort of regularization can help you. After training the model for a given epochs, the test data
+should be tested only once. Just after taking the final values of training, why are we doing test data also for number
+of epochs? So the test data is a bit different from the validation data. The test data, and this is also a bit optional, but it would
+be another 20% of the data. So you could do 60 for training, 20 for validation, 20 for testing. The validation is tested after
+each epoch. The testing is used at the very end. If you want to then-- you have your training loss, which is low,
+your validation loss, which is low, and then you want to test your statistics at the end of your problem in an unseen case, then you can use test
+data there. So the test data would be an additional test, additional check on new data also. Underfitting means both train and validation error are large.
+Why they not generalize well? So underfitting is not related with generalization, it's related with being able to represent the data.
+You don't have enough predictive power to represent the data. Typically, both the training and validation errors are large in
+underfitting. What does the vertical dotted line represent when we reach a certain point for the number of epochs? That's an example. This is a cartoon.
+This is a schematic. But the vertical line, which is this one over here, this is a good place for early stopping.
+So if you have overfitting, the validation loss starts to increase, whereas the training loss keeps decreasing. And if at this point the validation loss
+value is low enough for you, then you can stop there and keep that model, keep that checkpoint, and then this would be a point for early stopping.
+Early stopping means that you don't train anymore and you retain that model. Can we restart the training from the early stopping of the epoch to get better
+optimization by changing the hyperparameters and such? You can, but in this particular case, the problem would be the size of the network.
+So you typically can. However, if you change the network very much, like let's say that you are in this example here and you have a network with 100 million
+parameters, and then you start to observe overfitting. So you want to here change to a 50 million parameter network so
+that you are not overfitting so much. Then you're going to have a problem transferring the weights to the new network.
+Because the architecture is different. So in that particular case, it would not help you to start from this point.
+It will help you if you are maybe changing the learning rate and things like that, then yes, then you can start from a checkpoint,
+change the learning rate, and continue training. During training, we are finding weights and biases going through different epochs. What are we looking during validation?
+Adjusting the weights and biases? No. The weights and biases are adjusted during training, as you say very well, and the validation is evaluating the model with
+those weights and biases on the unseen data. So during training, I use the training data to adjust weights and biases,
+which are the parameters of the network. I finish one epoch, and then with that model, with that set of weights and biases, I evaluate the model and I see what my
+performance looks like in unseen data. That's the validation step. Okay. More questions? Sounds good. Okay, thanks. Yeah, you're welcome. Okay, good.
+Now, let me show you the performance of this model on the fluid flow problem that I was showing you the last time.
+So this particular example is this nine equation model. When I do my superposition of the temporal coefficients and the
+spatial modes, I obtain a spatial temporal flow fields, so the velocity as a function of space and time. I'm going to consider one neural network with three hidden layers,
+90 neurons per layer, nine is the number of coefficients that I'm predicting, and 500 input parameters, input steps. So this is important. I'm using to predict the nine
+values of the coefficients in the next step. I'm using 500 previous steps. Why is that? Because the multi-layer perceptron, which you can see here,
+it only does point predictions. It doesn't really take into account the temporal dynamics of my problem. So I have a very large input,
+500 steps times nine coefficients, 4,500 input values to predict nine output values. So again, because this architecture doesn't take into
+account the dynamics of my problem, I need a huge input to predict my output. That's what the instantaneous flow looks like.
+So from the front view, you can see the stream-wise vortices. This is a lower speed streak, and this are-- actually, this is a high-speed streak, and these two are low-speed
+streaks. So the front view looks more or less correct. If I look at the top view, you can see these arrows, which
+represent the span-wise meandering of the streaks, and you can see that the meandering is not very pronounced. So let me compare these two with the reference, which we saw last
+time. If you can see, this instantaneous field, these arrows were much more pronounced with much more span-wise movement of those streaks. This suggests
+that with this neural network, the performance seems okay, but it might not be great. And to assess the performance, we're going to look at the turbulence statistics.
+So here on the left, I'm showing you the mean stream-wise velocity as a function of the wall normal distance, which has a value
+of minus 0.5 on the lower wall, plus 0.5 on the upper wall. On the middle, I'm showing you the stream-wise velocity
+fluctuations, which has two peaks. And on the right, the Reynolds shear stress, which is the u v bar. Now, these are typical turbulence quantities.
+In blue, I'm showing you the reference from the original system, and in red, the predictions from the neural network architecture.
+So basically, the model that I'm trying to learn. And you can see that the mean flow is pretty good
+and the Reynolds shear stresses are pretty good, but for the stream-wise fluctuations, there is quite some disagreement. There are two peaks or so kind of, but the model doesn't agree
+so well. If I calculate the relative error, and the relative error is defined like this. So basically, I'm calculating the local difference
+between the predictive and the model velocities, and I divide by the maximum of the profile just to be able to normalize this properly.
+So the mean velocity profile has about 11% error, and the stream-wise fluctuation is about 36% error. So we can see that the
+error levels are actually not huge, but they are not very low either. The first thing that we can do to try to improve these errors is to
+play with the architecture of the neural network. So what we did was to change the number of hidden layers, change the number of neurons per layer, and change a little
+bit the architecture. And the results I showed you before were with this neural network with three hidden layers and 90 neurons per layer.
+And what we found is that increasing the number of hidden layers to five, so this would be an example of underfitting because my error was not big enough and
+was not low enough. So I made the network deeper. I increased the number of hidden layers to five. Then the mean flow has now a relative error of 3%, which is pretty good,
+but the velocity fluctuations still have an error of almost 19%. So the mean is okay, but the fluctuations still exhibit error levels that are a bit too high.
+Okay? Questions about this. Does this make sense? Could you just once again, please explain the number of inputs, because I
+understand it as weights and biases. So what are the weights and what are the biases in the model? Yeah, the weights and biases, if you look at the neural network,
+the weights and biases are parameters on each of the layers. So to obtain this value here and the value that exists in this layer, I'm going to take all the
+values over here, right? And I'm going to multiply them by a matrix, which is basically made up of the weights.
+And then I'm going to add up a vector b. That's going to be the bias, right? So this value here will be the
+result of multiplying the weight, w11, by this value, plus adding b11, and then also taking this value, multiply it with the correct weight
+value, and adding the bias that will come here. And with the last one, I will multiply by the correct weight value
+and add the bias. So all of those contributions from all of the values on this layer are weighted with the weight
+matrix, and then I add the bias vector to contribute towards this value over here. Correct. So the input vector is 4,500 dimensions?
+Correct. And that is the point that I was not able to understand how it came to 4,500. Yeah. That's because we are using 500 time steps
+in the input. So my input has nine coefficients multiplied by the number of previous time steps that we use to predict the
+next step, and we're using 500 steps, which is huge, right? It's like to predict the weather tomorrow, I'm using the
+weather of 500 days, right? It's a lot. But the reason why I need such a large input, so many previous
+days, is because this neural network does not understand temporal dynamics. So it just needs data, raw data, to be able to make the next prediction.
+I see. Now, very soon, I'm going to show you another neural network which understands temporal dynamics, and then instead of 500
+days to predict the next day, I only need 10 days, so that the information is used much more efficiently than
+with this first example over here. Okay. All right. Yes. Thank you. You're welcome. So this is really very important,
+and that's something that I will repeat a few times. Your data is not just a matrix of values. It also has
+temporal and spatial correlations. So in this example, you have a lot of temporal correlations, and if you don't use the right neural network, you're wasting part of your
+information. Because in the case of this neural network, I need such a large number of inputs, such that I can learn dynamics out of a sheer
+large amount of data, that I'm not really being efficient in how I use my data. If I use a different neural network that learns temporal dependencies, I use
+my data much more effectively because it's not only the values at each step, it's also the temporal dynamics across steps
+which is allowing me to make my predictions. Does that make sense? Yes. One more question. How did you know that you had to take 500 and
+not more or not less? Yeah. This was a bit trial and error. So with smaller numbers, the errors were very large, and with larger numbers,
+the network was just too complicated to train. So you had to adjust not only p values, but also then
+the number of neurons and the layers. All of these were the parameters that you played around with. Is that what you're-
+Well, not exactly. What I played around with was the number of hidden layers and the number of neurons. The number of steps,
+that's something that we tried out a bit at the beginning, based also on the temporal correlations of our problem.
+But at some point, you freeze that. It doesn't become an open parameter. You know that you need a certain amount of data in your input, basically.
+I see. Okay. All right. And by the way, here there is some heuristics of trying, changing the architecture. Nowadays,
+most of this is done automatically. There are optimizers of the hyperparameters to do this faster. But I'm trying to explain a little bit the process if you were to do this more
+manually. Yes. Got it. Thank you. No problem. Could you please share this reference paper here? Is it possible for you to share the rudimentary Python notebook or code for
+implementation on this problem? Yeah. So, I'll share the paper and all the codes. Everything is available in the GitHub
+connected with this paper. So you can easily-- Let me just get the paper for you. So you can just download the
+data and work with that. I'll just give you the link in the chat. Okay. So, for that link that you have now in the chat, you have the paper that I'm talking
+about, the nine equation model, and there is basically a repository connected with this paper that you can find there,
+where all the data is available. So you can download the code, download the data, play with it, and if you have any problems, let me
+know. I think I'm actually going to copy that repository here as well so you guys can find it easily.
+Nine equation model. Yeah. So here in this link, you can find all the repositories from my group, and the one in particular that I'm talking about here is this nine equation
+model. So this one is the one with a nine equation model. Okay? And I will also put the paper in the chat.
+Because someone says that they don't have access to it, I will just copy it in the chat. It says Srinivasan et al.,
+2019. Okay? So you have it there now. Okay? More questions? Okay. All good. Then let me share the screen and continue where I was, which
+was in the variation of the parameters of this architecture. Now, everything that I showed you so far was for the
+multilayer perceptron. So a neural network which takes point predictions but does not necessarily understand the temporal dynamics of the problem.
+There is another type of architecture, which is what is called a recurrent neural network, which you can see here.
+In a recurrent neural network, you're not only taking data points as my input, you're also understanding the temporal dynamics of my problem.
+And this architecture, by design, connects the output of one step recurrently with the input of the next step. You can see the direction of this arrow.
+These inputs are here, so this would be the temperature today, temperature yesterday, temperature two days ago, and the output here will be the temperature tomorrow.
+And the temperature tomorrow connects with the next day. So that recurring connection that you can see here is the
+key to really capturing temporal dynamics in my problem. Okay? That's the recurrent neural network. And these recurrent neural networks,
+they allow us to learn temporal dynamics, but they have one problem. The problem is when I go too far into the past, those
+recurrent connections tend to filter out the gradients, the variations of my problem, and therefore it becomes very difficult to
+learn from very old information, even if it's important. That's why there is an architecture by Hochreiter and Schmidhuber, which is the LSTM. This is a
+very famous architecture. Let me just make sure that I point you to the right place. So in this architecture,
+what we have is the recurrent connection, okay, like before, but with another particularity. That recurrent connection has a gating mechanism.
+So essentially, in an LSTM, I still have that recurrency, that the output of one step is the input to the next
+one, but also I need to understand how important is the recent information and how important is the past information.
+Because some past information may be relevant. If I'm trying to predict the weather tomorrow, maybe there was a storm three days
+ago that matters, and today's weather is not so important for tomorrow's. So that's something called a gating mechanism. Okay?
+To understand the importance of different levels into the past for future predictions. Is there a particular reason why the MLP was
+able to predict the Reynolds shear stress instead of the Reynolds normal stress in this particular application? Yeah, that's a good question.
+The Reynolds shear stress is generally easier to predict. It appears in the mean momentum balance, right? The mean was actually okay also in terms of predictions.
+So the mean momentum balance in a channel flow has the mean and the Reynolds shear stress, and those quantities are basically
+essential to get a minimal mean description of the flow. So that's why they are usually easier to predict. If I go for other Reynolds stresses, the normal stresses and higher order
+moments, then that's more difficult to predict in general. Now, the gating mechanism works as follows. You have these forget, input, and output gates.
+And instead of having one single matrix vector multiplication and nonlinear activation function, what I have is three different weighting matrices, three different biases, and
+activation functions. So the forget gate is here with its own weight and bias. The input gate is here with its own weight and bias. And the output gate is here
+with its own weight and bias. So the forget and input gates are weighing how important is the past information.
+That gets merged with the output gate, which is associated with the current information that I have. And that gives me the total
+output of my LSTM model. So essentially, this is a bit more complicated, but in a nutshell, the idea is I want to judge how much
+of the old information I retain in my model, how much of the new information I retain in my model to be able to
+learn. And the recurrent connections are basically what retain and learn the temporal dynamics of my problem. Okay? Questions about this?
+Okay. Sounds good. So what does the LSTM performance look like? Well, if I go here, I played with the
+number of-- the P is the number of steps. So now you can see that I'm using 10 steps or 25, so the
+input is much smaller than before. N1 and N2 are the number of hidden layers in the, either one or two hidden layers.
+So actually, this is a much smaller network. But keep in mind that one layer, instead of having one weight and
+bias parameters, what I have is three. The weight and bias matrix and vector for the input, forget, and output
+gates. So essentially, even if this architecture has fewer layers, each layer has more parameters. I'm going to show you a little bit the performance that we can achieve.
+When I increase the number of training datasets, so when I increase the amount of data that I use for training, my errors keep going down.
+And the best architecture of all of them is this one, LSTM1 with 10,000 datasets. That reduces my mean error to
+0.45% and my error in the fluctuations to 2.49%. So the performance is actually pretty good with this neural network, which can account for the
+temporal dynamics in my problem. In fact, this is what the instantaneous flow looks like. So once again, I can find the low-speed streak and the high-speed
+streaks. This is the top view where the spanwise meandering of the streaks now is much more correct. So instantaneously, the
+flow looks much better. The mean flow is actually really good, 0.45% error. The streamwise fluctuations are actually really good, where the two peaks are actually well
+captured. Again, 2.49%. And the Reynolds shear stress is actually great. It's actually really good. In fact, this is a comparison between models.
+This is the best model that we can achieve. And in fact, if I look at the higher order moments,
+what you can see here, the comparison for the wall normal fluctuations, which is excellent. This U cube is the skewness, and U to the
+fourth is the flatness. So these are higher order moments of my problem. And here at the bottom, I'm showing you the
+root mean square of the vorticity. So the vorticity fluctuations in the streamwise, wall normal, and spanwise directions. So you can actually see that the
+LSTM network, which is a recurrent network with a gating mechanism for taking into account how important is the old information and how important is the present information.
+With all of this, my performance is actually really good, even in statistical quantities that are actually quite complex. Okay? Sounds good?
+Questions about this? One question from my side. So basically, like the architecture or the network, it will be predicting nine coefficient values, right?
+Yes. And nine coefficient values, it means it will be predicting for a single location in the flow field, or it'll be like giving a vector for different locations as well?
+So in this example, I'm not looking at locations. I did a model decomposition, and I'm only predicting temporal coefficients.
+So if you remember, I'm going to go back a bit to the beginning of this section. So if you remember, my velocity field, U function of space and
+time is decomposed like this. So I have nine spatial modes which contain the spatial information, and these are frozen. They only depend on space. They don't change with time.
+The only temporal information are these nine temporal coefficients. Okay? So the only things that I'm predicting in this example are the nine temporal
+coefficients, which, when multiplied with the spatial functions, produce the spatial temporal velocity field that you can see here. Yep. Clear. Thanks.
+Sounds good. More questions. Okay, there is something in the chat. Does this mean LSTM is the way to go for these kind of problems?
+That's a good question. We're going to see more of this. So for now, what you know is that the LSTM,
+when you have problems with time series, is better than the MLP, because the LSTM can learn temporal dependencies better than the MLP.
+Spoiler alert, the LSTM is not the best option. The LSTM is a very old architecture. This paper is from-- You can see
+that the LSTM was proposed in 1997, right? So this is now basically 30 years old. What I'm going to show you is, for problems in
+turbulence involving temporal dependencies, transformers are typically a good option. And the transformers are the technology behind large language models like
+ChatGPT. So I'll tell you more about it. But I'm not going to start with the transformer, which is a very complex
+architecture. I want to start simple. So the LSTM is better than the MLP when you have temporal problems. Does it make sense?
+Can you once more explain the benefits of the LSTM over the MLP? Yes. So the MLP. In the MLP, if you see this,
+all the input data is basically laid out as a long vector here. Okay? A very long vector here. That's my input data.
+That means that I have a long array for all the input data, for all the different time steps, but I'm not really learning so much
+the temporal information in my time series. In the recurrent neural network, you can see that the output of one step is the input to the next one, and the
+output of one step is the input to the next one. So the different steps are connected like this. And that connectivity between steps is basically,
+in the network, creating a temporal structure that allows me to learn temporal dependencies much better. So that's the main difference between the LSTM and the MLP.
+The LSTM is built to learn temporal dependencies, whereas the MLP is not. In the MLP, all data is a bit mixed up between time
+steps. Does that make sense? What is the problem... Yeah? It's not possible to predict the field as such, right?
+Just one variable at some location, probably. It is possible. Okay. But that's not what we are interested in. No, not with LSTM. Yeah.
+Well, the problem of LSTM, the LSTM predicts time series. Okay? So in this example, when we are doing this
+reduced order representation I'm only predicting nine values, right? Nine coefficients with LSTM. If I want to predict the whole field, this is going to be probably, I don't know,
+let's imagine 100,000 points, something like that, right? Okay. So predicting 100,000 time series with LSTM is not very effective.
+Okay. That's why it predicts only time series. If you want to predict the whole flow field, then you're going to use a different type of architecture that can
+exploit spatial information. Okay? And that will be the next chapter. So this is only temporal information. So things that look like this, temporal series.
+Yeah. Okay? And the space is encapsulated in these spatial modes. So I'm just predicting a temporal part. If I want to predict the whole flow field with a 3D structure and the spatial
+correlations, I'm going to use other architectures that are good for that. Make sense? Yeah. Makes sense. So let me go back to the chat. There were a couple of questions.
+What if the problem has many temporal scales, such as seasonally in wind data? Yeah, that's exactly why the LSTM is not so good when you go to turbulent
+problems and at high Reynolds numbers, because then you have more scales. So that's exactly the point. That's where the transformer is a better option.
+The transformer, and I will explain that later, is much better at capturing the multiscale character of turbulent problems. What is the difference between RNN and LSTM?
+The LSTM is a type of RNN. So the RNN, the recurrent neural network, is a neural network with this type of
+structure, where the output of one step is the input to the next one. That's a recurrent neural network. And the LSTM is a particular type of recurrent neural network
+that uses this gating mechanism to judge whether the past information is important or not, and it gives weights to the past information and so on.
+So the recurrent neural network is more general. The LSTM is a type of recurrent neural network, but there are
+other types of recurrent neural networks typically changing this gating mechanism, typically changing how we judge the importance of the old information and of the present
+information. Does that make sense? One question from my side again. Suppose we have a problem where we are working on a flow field, and then
+for this past data from last 10 seconds, and we are having an LSTM network with us which takes the last
+10 seconds data, and it will give you the prediction for 11th second. Okay? Okay. Which is perfectly fine because we have data for last 10 seconds.
+Now, if I need to calculate it for the 12th second, I need to have it start from the first second to the 11th second. Right?
+That should be fed into the- ... LSTM model again to get the value for the 12th one. But the problem here maybe like the 11th--
+The problem that I see here is that the 11th data point is a predicted one, which will be again predicted the model.
+Yes. So that means as we extrapolate a little bit, the errors start to accumulate. Yes. Will that be a potential problem if we use that approach? Yeah.
+Yeah. So that's a very good point. That's exactly the next part that we're going to talk about, how the error
+accumulates and so on. That's exactly the next part. I will get to it in just a second. So are there any reference books you suggest to go through
+for ML applied to CFD in general? There are not many reference books for ML and CFD, I would say.
+There is, of course, the book by Steve Branton on ML for dynamical systems, which can be helpful for fluid mechanics problems.
+And I would say that for CFD, it's pretty helpful with this article that we wrote some years ago. So let me just copy the link here.
+Here. So that article gives a pretty good overview of machine learning for CFD, if you're explicitly interested in CFD.
+For machine learning and dynamical systems, Steve Branton's book is great, and Steve Branton is an author of this paper also that I'm mentioning.
+Machine learning and CFD is a pretty good overview there. Okay. More questions. Okay. Now, let me start with the next section.
+We're going to take a 15-minute break in three minutes, but let me start with the next section. As one of our colleagues mentioned,
+when you start to predict into the future, the error accumulates, right? This is well-known for any chaotic system. For a
+small error, even if you know the governing equations, a small error of 10 to the minus 6, it accumulates over time.
+This is the butterfly effect, right? And therefore, you end up in a different trajectory. What happens here, I'm showing you here a time series of the nine coefficients.
+In red, the prediction from the neural network, and in blue, the reference. And you can see that at the beginning, the time series are on top of each other,
+and as time progresses, the time series are not on top of each other. We have deviations in those time series.
+The error is about 13%, more or less. But one thing that is interesting to observe is that the dynamics seem to be pretty similar.
+So you can see that these large values are observed also in the time series from the LSTM, just at different moments.
+So the question, and of course, the key is that this is a chaotic system So the question is, even if I learn my original
+equations with a very small error, and in this case, the small error is on the order of 10 to the -6,
+that error will accumulate. The question is, even if the instantaneous values deviate, do I learn the dynamics of the system
+properly? And that's what we're going to study after the break. We're going to study the dynamics of the system through Poincaré
+maps and through Lyapunov exponents, which are quantities that allow me to determine the chaotic behavior of my problem. Okay?
+Any questions for now? Let's take a quick break, 15 minutes. We get back in 15 minutes, and then we continue here.
+Thanks for coming, and I'll connect again in 15 minutes.
+Okay. Shall we continue? Are there any questions about what we saw before the break? Is this a RANS model that you had presented, or is it something
+to do with LSDNS kind of a system? No. It's a reduced-order model. It's a model decomposition. So it's a reduced-order model of the Near Wall cycle.
+Okay. Because remember, we're predicting the temporal coefficients, right? So this is a model decomposition. So my velocity is decomposed into nine spatial modes and nine temporal
+coefficients, and I'm predicting the nine temporal coefficients. So it's basically a reduced-order model. Of a steady state or unsteady state flow?
+Unsteady because it depends on time. Time. Okay. All right. And we are looking at the statistics, and so this is a turbulent flow, basically.
+It's unsteady. Okay. If it was RANS then, and I were to consider it, let's say, on an average kind of steady state flow, how would this equation
+change? Well, RANS can be unsteady also. If you do URANS. If you do RANS, regular RANS, which are for the mean
+flow- Mm-hmm ... then this would not really help, right? Because this is for temporal predictions. Right. It's for temporal dynamics. But actually, after this section, I'm going
+to be telling you how our method based on physics-informed neural networks pins for RANS. So we're going to talk about RANS actually pretty
+soon. Okay. All right. Thank you. Okay. More questions? So, as you indicated before, yes, the error accumulates, and therefore the
+instantaneous values exhibit larger errors of 13%. But we're going to try to understand if the temporal dynamics are actually well
+captured by my product. The first way to assess the temporal dynamics is with the Poincaré map. So the Poincaré map that you can see here, this is the intersection,
+which is basically a joint PDF, a joint probability density function, of the first and the third coefficients. And in red, I'm showing you the LSTM, and in blue, the reference.
+And you can see that the correlation between the first and third coefficients, that's very well captured by the neural network.
+So the instantaneous values change at some point because the error accumulates. But even if the instantaneous values are different, the correlation between the
+first and third coefficient, that's properly retained. So the temporal dynamics are actually properly retained. And the other dynamical quantity that is important is this one here, is the
+Lyapunov exponent. So this quantity, what it does is measure the evolution of a perturbation in my problem. So I introduce a very small perturbation of the order of 10 to the minus 6,
+and then what I'm showing you here in the vertical axis is the deviation of the nine coefficients with respect to the original trajectory.
+Since I perturb it, I'm going to go to another trajectory, as again in the butterfly effect, as a function of time.
+So in blue, I'm showing you the evolution of the system when I introduce a small perturbation. The vertical axis is logarithmic.
+So this straight line here means an exponential evolution. So the system exponentially deviates to a different trajectory until it saturates.
+And when I do the same with my LSTM prediction, so I introduce a perturbation as small as the error of the neural
+network itself, the deviation exhibits exactly the same slope. So in other words, I learn my original dynamics up to an error of 10 to the
+minus 6. If I introduce that error of 10 to the minus 6 on the original system, I will go to a different trajectory because this is a chaotic system,
+and my neural network makes the same error as what the original system does. So I have learned the dynamics of my original system up to this level of
+accuracy. This means that the LSTM is reproducing the dynamic behavior pretty well, and the discrepancy is due to the chaotic nature of the system.
+So I cannot get exact values all the time because of that chaotic nature, but I can learn the dynamics with very high accuracy.
+Okay? So that's the main idea of this, that I can learn the dynamics with our LSTM system of my original
+nine-equation model. Does this make sense? Questions? I have a question, please. Yes, go ahead. If we take the Lorenz system, it's kind of chaotic,
+and we know that the LSTM is having a hard time to predict the performances and the trajectory. And the Lorenz system is a
+reduction model of Navier-Stokes. What make us trust the LSTM network for the turbulence models? Well, here I'm not using a Lorenz system.
+I'm using a nine-equation representation of the Reynolds system, which is simpler than the turbulent flow. So what I am showing here
+is for this simplified system, the predictions are pretty good. If we go to the full dimensional turbulent system, let's see what the
+prediction looks like. Okay, we're going to start to look at more complex systems. But for this system, so far, the predictions are good. Does it make sense?
+Yes. It makes like it's working good for the reduced-order model, but not for the full turbulence. Well, because I haven't shown you that yet, but it works very well for it.
+For the full turbulence, it works incredibly well, actually. Okay. Not the LSTM, because the LSTM is a bit of a simple model.
+But in the next classes, when we go to more complex models, you're going to see that we can predict full turbulent flows with very, very high accuracy.
+Okay. Thank you. Thank you. Does this reduced-order model consider different turbulence length scale as the wall is approached? Often turbulence length scales tend to decrease when we get
+closer to the wall. So this nine-equation model reproduces all the different scales of the near wall region. It doesn't account for the outer scale dynamics, but it focuses on
+the near wall region and considers the scales there. As I just mentioned, I'm going to show more complicated problems later with full turbulence.
+But even for this problem, which is pretty chaotic, the performance is actually pretty good. Are we comparing with experimental analysis or the conventional simulation?
+What is the Reynolds system here? So the Reynolds system, as I mentioned, is the nine-equation model, is a reduced-order representation of the turbulent flow,
+which is not exactly the turbulent flow itself. It's a reduced-order representation of it. But we're going to go to more complex problems in the next lectures, and actually
+later today, too. Okay? Sounds good. More questions? What are Lyapunov exponents? Well, this is what I showed here. The Lyapunov exponent, this lambda,
+I can express the deviation with respect to the original trajectory as an exponential because you can see that this straight line in a
+logarithmic axis is actually an exponential. The slope of this straight line is basically the argument of this exponential or the exponent.
+So this slope lambda over here, this is the Lyapunov exponent, the leading Lyapunov exponent. It measures how quickly I deviate
+with respect to the original trajectory. Okay. I have a question, please. Yeah, go ahead. If we take, for example, the LES simulations and
+in the sub-grid- Sorry, which simulations? LES. LES? Yes. Large Eddy Simulation. LES, yes. Yeah. And we know in the LES, we use some sub-grid models, and these-
+Yeah ... in sub-grid models- Yeah ... we try to model the universal turbulence. Is it- Well, not really the universal tur-- I mean, yeah.
+Yes. LES models- Yes ... but yeah. We try to model something within. Okay. Yes. Okay. Is it right now is better idea to use machine learning
+to estimate the scale of this turbulence than using the current models? Is this a better performance? So that's an open question. I mean, you can read the paper that I put in my
+chat before about ML and CFD, and I have some comments about this in some lectures coming later on. Right now,
+there are machine learning-based turbulence models that are better than the classical ones, much better, and it's going to get even better than that.
+So yes. I would say the traditional turbulence modeling paradigm is going to be outperformed by new machine learning-based turbulence models. Yes.
+Okay. So we will expect that the closure equations will change in the future. Well, not the closure problem itself. I mean, the models, right?
+The way- The models ... that you close. Those models are being changed already now with machine learning. So there are machine learning models that are creating
+closures better than traditional ones, yes. Okay. And I will show you a bit more in some of the future blocks
+of the course. Okay. Thank you. More questions? Okay. So this is an example. You guys were asking about a complete
+problem, a complete turbulent problem. Look at this article here. We are not looking at the nine-equation model, but a minimal channel. Okay?
+So this is a turbulent channel flow at the NS. Now it's not a reduced-order representation. It's a full-order representation, but the domain is a bit
+narrow. So a minimal channel, in case you're not familiar with the concept of minimal channel, is a DNS of a
+turbulent channel flow. But because the domain is a bit small, it's a bit narrow, the dynamics are a bit simplified.
+You don't have the full extent of the whole cycle and all the scale interactions. You have a somewhat simplified set of interaction across
+scales. So that's part of the question. And then, in this case, if we try to show you what you realize is that you have multi-scale behavior, right?
+You have smaller scales and larger scales. One LSTM- Cannot handle all the scales. But what we did was to split the temporal
+dependencies of our model representation with POD. So we had fast POD modes, intermediate POD modes, and slow POD modes, and have LSTMs,
+different LSTMs for the fast, the medium, and the slow timescales, and that worked very well. So when you start to have a broader range of scales larger than the
+nine-equation model, then having several LSTMs is a better idea. And you can find all the details in this paper. Okay?
+So this is kind of like an intermediate stage of complexity. Sounds good? Does that make sense? So this is for our minimal channel.
+If we go to more complex problems, so let me look at this example of a turbulent inflow. So I want to create, I have a boundary layer, and I want to cut part
+of my domain and replace that part of the domain with an inflow that comes from machine learning. And this is what I wanted to come before
+about the scales. Instead of using the LSTM or several LSTMs, what we use here is a transformer. Okay? You can see the details in this Journal of Fluid Mechanics paper over here.
+The transformer, which is the technology behind large language models like ChatGPT, works as follows. Let me make a little schematic here.
+So if you have a temporal sequence like this, okay? So these are turbulent measurements, and I want to predict the next step.
+In the recurrent neural network, so the MLP that I showed you before, the MLP, I put all this data at once
+and hope that I can learn something about the dependencies. In the MLP, this one is connected with this one, with this one, with this one, with this
+one, with this one, with this one, with this one, and with this one, and then I make this prediction. Okay? That's the recurrent neural network.
+So the output of one is the input to the next one, the output of the next one is the input to the next one. That's interesting,
+but the problem is that not all of this information is equally important. And because of these recurring connections, the very old
+information might be lost. So what does the transformer do? The attention mechanism. So I have this sequence again, and I want to predict my next
+one. So I have all these snapshots here. Okay, like this, like this, like this, and like that. The transformer is designed to work with text, right?
+And if you think about it, in a sentence, the most important words are not always together. The object of the sentence might be at the end, and the
+subject might be at the beginning. And a transformer uses something called attention. So the attention is a measure of what parts of my
+sequence matter the most to predict the next token, which is the next word or the next part of the next word. Right?
+That's how large language models work. So if I use this to predict turbulence, what this transformer is going to do is create attention scores where it
+will realize, well, to predict this value, actually the most important measurements are this one, that one, and that one. Okay? Those are the most important.
+And everything in between is actually not so important. What does that mean? It means that for turbulence, I have some
+quick timescales, I have some intermediate timescales, and some slow timescales. And the attention mechanism will focus on the points with
+my time series that matter the most to the next prediction, regardless of where they are. In the LSTM, since they need to be connected, I may have
+to use a lot of information that is not helpful and lose the past information. In turbulence, large scales are
+slow, smaller scales are faster, and the attention mechanism looks at the important information regardless of where they are. So this point here corresponds
+to a large scale, which is slow, so its action takes a long time to matter for the next prediction, but it does
+matter eventually. Right? So that's a little bit the idea. That you have this multiscale character of slow and fast
+events, and the transformer mechanism based on the attention score is capable of reproducing the important slow and fast events that matter for my predictions.
+So that's why you have a look at this paper in JFM. The multiscale character of turbulence is very well predicted with a
+transformer. So if you're looking at time series in turbulence, transformers are, in general, a good idea. Although the transformers are more expensive and more difficult to train
+than the LSTM, but they are much more suitable to capture the multiscale character of turbulent flows. Can I ask a question, please?
+Yes. We were talking in LSTM when we have many scales of turbulence. We do each LSTM for each scale of turbulence. And right now for the
+attention mechanism, I would like to ask if can we make our network closer, similar to the equation? What I mean by that, in the
+equations, we are talking about the mixing length When we have a higher scale turbulence, the length that is to
+get affected by the other scale, there is a mixing length. Is it the same idea in the attention? Well, the mixing length is a very crude turbulence model, right?
+You simplify things a lot- Yes ... with the mixing length approaches. Here, in this example, we're not doing any modeling.
+We're not simplifying the equations or getting any ad hoc model per se. What we're doing is predicting the temporal dynamics.
+So we have the original equations, the original system, and I just want to advance those in time, basically, with the attention mechanism.
+Now, naturally, what happens is turbulence is multi-scale. The mixing length hypothesis is not really also bringing all that multi-scale
+character. So the multi-scale features of turbulence are actually quite well-reproduced with the attention mechanism of the transformer. Well, I have a question. Quite often, when you have high
+Reynolds numbers, you're going to have a broader range of time scales and also length scales. Yep. So is there, for example, if you have a
+Reynolds number that is high, probably you're going to use a lot of LSTMs to train a huge number, for example, of-
+No. You don't use LSTMs, you use a transformer. Transformers- Oh, okay ... are much better than LSTMs. Oh, okay. Is there a certain threshold so that I can say, for
+example, above this Reynolds number, I'm going to use a transformer, and below this Reynolds number I'm going to use a-
+If it's turbulent and it has multi-scale character. If it's turbulent, use a transformer, don't use the LSTM. The LSTM-
+Okay ... is 30 years old. I showed it to you so you can see the evolution from the MLP, which doesn't learn any temporal dynamics, to
+the LSTM, that learns some temporal dynamics, but forcing you to look at all these recurrences, right? And then the next step is the transformer, which doesn't force you to go through
+all those steps. It just goes directly to the important information. So long story short, use the transformer directly, actually.
+Okay. Thank you. I'm going to- So one quick- Just a sec. I'm going to leave in the chat a paper
+where we use the transformer for reduced-order modeling, which I think will be quite relevant to many of the questions that you
+guys are asking. So yeah, I will just leave it here in the chat and you can read it. It's open access.
+You can access the code, so everything is available. Yeah. So just have a look at that paper over there.
+In general, I would argue, there's no reason to use an LSTM nowadays. You just use a transformer. There's another approach, which is DeepONets.
+You can use DeepONets also, which are pretty popular as well. But in general, I would say the transformer works very well.
+Does the transformer take as input the snapshot of the flow, and what about the RNN? So the RNN takes not
+snapshots of the flow, but time series. Okay? The recurrent neural network works with time series. The transformer, in general, also works with time series.
+But there are vision transformers that combine also or extend the concept of the transformer for images. If you're going to work with images or with flow fields, have a look at the paper
+that I just copied in the chat, because that will help. So you basically encode the space with autoencoders and the transformer will be able to predict a
+time series in the latent space. So yeah, have a look at that paper. Will we cover the transformer in depth? We will cover the transformer with more
+depth than this, yes. But this is not a course about transformers, so you will get more information, more codes, and you
+will be able to understand better in future lectures. Can we upload all these references to the materials on the
+portal? It's hard to track in the Zoom meeting. You have the slides. So in the slides, you have the references to all the papers.
+So you can go there to find them from the slides. Okay? Sounds good. Yes, please. Harishnan, you can ask.
+Yeah. So just one question. So in the transformer, I think, where to give the attention? I think that's mainly coming from the training during the training phase,
+right? Yes. So in temporal systems, say for example, that the eddies can eventually die out, and then how would it know? How would it predict that phenomena?
+Because it's focusing on attention based on probably the length scale and probably the intensity of turbulence and things like that, right?
+But how it can know that that attention has to be changed from the initial time versus probably- It will know because
+that's the attention scores that give the best predictions. So it will store the attention scores, which give you the best predictions of the future evolution of the system.
+So it naturally adjusts the architecture and the attention to provide the best performance, essentially. So you mean to say the attention score itself will change over a period of time?
+Yeah. Or it's going to... Okay. Oh, it changes. Yeah. Okay. Yep. Thanks. More questions? Okay. Sounds good. Great. Let me use the pointer.
+So this was the first block or the second block, let's say, about deep learning applications, where we learn about point predictions with a multi-layer
+perceptron, and also we learn about the temporal predictions with LSTM, and we learn a little bit about transformers and the importance of using all these different
+tools to be able to exploit our data in the best possible way. The next section has to do with physics-informed neural networks, or
+PINNs. Okay? And this is going to be an application to RANS data. So we're going to work with Reynolds averages Navier–Stokes equations.
+So this is documented in this article by A. Vasy and others in Physics of Fluids. So if you look at this paper,
+you can download it, and you can look at the code. This was one of probably the first application of physics-informed neural
+networks for solving the RANS equations. So in PINNs, and PINNs were created by George Karniadakis and his group in Brown
+University. The idea is the following. I'm going to be using the machinery to train neural networks in order to solve PDEs.
+So if you remember, when we calculate the partial derivative of the error with respect to the weights of my model,
+I need to calculate partial derivatives and apply the chain rule, because I need to back propagate that error. So that derivative is calculated exactly,
+and that allows me to use that machinery to calculate residuals of PDEs. So, let's consider 2D RANS equations that you can see over here.
+And so without any modeling, I'm not modeling any term, I am just writing the RANS equations for incompressible flow.
+So this is the momentum in the stream wise direction, the momentum in the vertical direction, and it's the continuity equation in 2D.
+As you know, the capital letters are mean quantities. And these Reynolds stresses, the U squared, V squared, and the UV,
+these are the unknown quantities that basically create the closure problem, because I have more unknowns than equations. So what we're going to do, instead of creating an eddy
+viscosity or a mixing length model for these Reynolds stresses, I'm going to solve all the quantities in my unknowns, in my
+equations at once. And I'm going to use PINNs for that. So in my PINNs framework, the inputs are the coordinates
+of my mesh, the X and Y coordinates. Then I have a neural network, which is basically a multi-layer perceptron. So I have a bunch of layers.
+My outputs are the unknowns of my problem. So UVP and the Reynolds stresses, U squared, UV, V squared. Then I'm going to use the automatic differentiation capabilities
+of my neural network framework to calculate partial derivatives. Remember, I need the partial derivatives for the backpropagation of the error,
+but I can use the same machinery to calculate the partial derivatives of these quantities. So I will use the identity operator,
+partial, partial X, and partial with respect to Y, apply it to these values that I have here, and I will basically
+create all the terms of the governing equations. Okay? Now, with these terms that I calculated, I get the residuals of the
+X and Y momentum equations and the continuity equations, and I will see if the residuals are high. If the residuals are high, that means that I need to keep
+changing the parameters of my neural network such that these values are satisfying a low residual condition. Okay? Does it make sense conceptually, the idea behind the PINNs approach
+to RANS modeling? Okay. Makes sense. Now, in reality, we also have boundary conditions. So for this example that we have here, the red values
+are considered to be known. This will be my boundary conditions. And the black values are my co-location points. So these are the places where I'm going to evaluate the residuals of my equation.
+So my loss will have two terms. One first term, which is basically the residual of the RANS equations, the two momentum plastic
+continuity. So the residual at each of these black positions. And the red points are basically the supervised loss. So basically, the loss at all
+these red locations that you can see here. And my total loss is a combination of both. The residual of the RANS equations is an unsupervised
+loss because I don't have data, I only have the equations. And the residual of the points at the boundary, so the boundary conditions, those are a
+supervised loss, because I'm using data to train the model based on that supervised part of my total loss. So my unknown
+vector contains these values, UVP and Reynolds stresses. And I am evaluating the residual Which has three equations, so the three components.
+And in the array containing the boundary points, I'm calculating this error, which is my supervised loss. Okay? So in general, I'm
+calculating the unsupervised loss, which is the residual inside the domain, and the supervised loss, which is the residual with respect to the known
+points at the boundaries of the domain. Questions? Does this make sense? Yeah. One question. This is, what do we have
+for the boundary part? Will it change the boundary conditions of a Neumann-based conditions there? Yeah. So for this approach,
+we have Dirichlet conditions. We don't have Neumann conditions. Okay. So we assume that we have measurements in our domain
+which constitute those Dirichlet conditions over here. Understood. So these PINNs are restricted by Dirichlet boundary condition. It cannot be applied to-
+Well, at least this framework. Mm-hmm. Potentially, you can also do Neumann conditions. Potentially, you can. Okay. Because you only need to calculate the partial derivatives, right?
+And then set the values- Yeah ... for the Neumann conditions. I'm not sure if it has been tested for many cases. There could be some numerical instabilities, so it has
+to be tested, but potentially it's possible. Understood. Our work, what we have done is with Dirichlet conditions. Understood. One more question from my side.
+Yeah. So like whatever we have seen, LSTM, transformers and all that, it requires data to train weights and bias there.
+Yes. But when it comes to PINN, you don't need any data. That's the differentiator. Technically, no. Although- Yes ... some boundary data will-
+Yeah. Way more ... improve your results. But it's not strictly necessary. What you do with PINNs is that you have the governing equations, and then you use
+the- Yes ... machinery to train neural networks to solve the governing equations. Yeah. Okay? And the weights are updated based on the residual value.
+The weights are, exactly, are adjusted based on the residual values. Correct. One very important note. PINNs are not a replacement of
+CFD solvers, okay? So it's not like, oh, I'm going to now use PINNs instead of my open form or whatever CFD solver I'm using, because
+PINNs are much slower than numerical solvers and CFD solvers. PINNs have other advantages. PINNs work well with very complex meshes, for example,
+that are not easy to mesh with a conventional solver. They're much more stable to complex meshes. If you have experimental points, you can embed them
+in your solver more efficiently. And PINNs, you can get away with coarser meshes than with a normal CFD solver because the
+automatic differentiation gives me exact derivatives, and that means that I don't need to resolve the gradients in such detail as with a
+conventional solver. So PINNs, my take on it is they are very helpful in certain problems, but in general, they're no replacement for CFD solvers. Does that make sense?
+Yep. Quick question. So, how do we know the- Just a second. Krishna, sorry, there were a few people with their hands raised
+before you. If you raise your hand- Oh, I'm sorry ... I will get to you. Yeah. No problem. So I will start with the ones with their hands raised,
+and then I will go to the chat. So Chandra? Hello, sir. I actually doubt. I'm a little bit confused about from
+previous one and this one. Mm-hmm. So, for RNNs, for LSTM, we have input images, snapshots basically. We are taking the snapshots from the-
+No. In RNNs, it's not snapshots. It's time series. Okay. Yeah. True. For MLB, we have snapshots. For LSTM, we have time series.
+For MLBs, you can have snapshots also, but we did not do that. In our example, we did also time series.
+Yeah. The question here is, what are the PINNs? So what is it really trying-- What are the inputs basically here?
+What we are really trying to get? The inputs is just the geometry, the X and Y coordinates. And we're trying to solve the velocity field through the RANS equations,
+and the RANS equations are solved through a neural network instead of a CFD solver. Okay. So, the coordinates means what is the--
+What do you mean by the coordinates? I didn't get that part. These black points. That's the input to my model,
+my domain. Oh, okay. Where I want to solve my equations. Okay. Thank you so much. Yeah. Okay. Hari Krishna?
+Okay, you don't have a question anymore. Krishna? So the question is, the accounting equations we want to solve is purely
+depend on the boundary conditions we are given? See, how do we know that we want to solve the fluid flow equations, right?
+I can do the electromagnetics. I can do another physics too. You can. Yeah. Anything. But only everything is input is only the XY
+coordinates- ... and I see the boundary conditions, right? Correct Correct. Yes. So the physics governing equations is mainly depend on only the
+boundary conditions here? Special coordinates- Yeah ... is common for any problem, right? Yes. The boundary conditions guide how my PINNs
+optimized- ... is solving those governing equations. Okay Got you. Okay. Thank you. El Hanafi? Yeah. Thank you. I have a question.
+How do we handle the Reynolds stress in the PINNs? It's another output of your model. So we are not inputting any explicit model, neither
+viscosity, nothing, no model at all. My outputs are the mean velocity and the Reynolds stresses as well. Those are outputs of my neural network.
+Okay. Harikrishnan? Yeah. So, I was speaking on mute previously. So, if I understand correctly, so the losses you're talking about here is equivalent to
+the iteration, or you have these residuals in regular iterations, right? If you use an iterative solver. So it's equivalent to that, isn't it?
+Yeah. You're basically looking at the losses equations. Yeah, I can just... Okay. So next question is that, say if I want to solve
+a CH3 problem where partially some domain you'll be solving only the energy equation, right? Yeah. So, how would I tell this that, okay, I need just energy equation
+here, and you need trans plus energy on the other area. Otherwise, how would I define those things here? That's a good question.
+What I would do, well, you could try different things. Either a masking function- Okay ... where for some part of the domain, you only
+evaluate. So actually, you could do it with a masking probably, right? So for part of the domain, your loss, so
+you want to do this total loss, right? The total loss has an unsupervised part, which is this one, right?
+Yes. And this unsupervised goes up to three because I have three governing equations. But in some points you can just go up to one.
+Okay. Right. So that's one way with a masking. The problem is that that will give more weight to the energy equation because in
+some parts of the domain, the energy equation only has one fourth of the weight. In other places, it will be everything.
+Another possibility is that you have a PINNs model for the region of the domain with the momentum plus energy, another PINNs
+model for the region of the domain with only the energy, and then you solve for iteratively for the boundary across both, right?
+So- Okay. Like you have two separate models, and you kind of- Yeah ... try to merge it. Yeah. Okay.
+Exactly. Okay. That would be another possibility. Okay. Okay, so I have several questions in the chat. Thank you. No problem.
+Can you explain better the loss for the boundary conditions? Well, the loss for the boundary condition is a supervised loss.
+It's very simple, right? So I have known values, and the values given by the PINN need to have a
+very small error with respect to those values. So it's not a strictly enforced boundary condition. We are minimizing the deviation with respect to those values in a
+supervised sense, basically. So the predicted boundary conditions might be different from the real boundary conditions. Technically, yes. The idea is that the error is
+minimized. And then you can have a weighting factor here to give more weight to the boundary condition or less weight to the boundary
+condition. So this is not like a numerical solver where the boundary condition is enforced strictly. This is a minimization problem, right? So we are minimizing the deviation with respect to the
+boundary conditions and with respect to the residuals inside the domain. Is this considered as reinforcement learning? No, this is not reinforcement learning. This is something else. This is PINNs.
+So physics-informed neural networks. Can PINNs be applied to transient problems? That's a very good question. PINNs have quite some difficulties with transient problems.
+But I'm going to show you an example next day where it works quite well with transient problems. How to decide the number of layers required in PINNs to replicate the governing
+equations. Well, that's a little bit like when we talked about the MLP before. So here you need to adjust the
+number of layers and the number of neurons here, and that's done a bit heuristically, so a bit of trial and error.
+You get an idea of the complexity of the problem, and that connects with how big the model needs to be so that you develop through experience.
+But there is a little bit of trial and error in how you are deciding that. So PINNs will work with zero training data?
+Technically, yes. The boundary conditions are, in principle, data that you need. So you need to set the boundary conditions. So that's the data that you need.
+Besides the boundary conditions, no training data. It's just the governing equations. So PINNs, they only require data for the boundary conditions.
+The solution is obtained from the governing equation. So you're using the machinery used to train neural networks to solve the governing equations.
+Is there an equivalent of a mesh sensitivity study for PINNs? Yeah, that's a good question. There's not such formal convergence analysis as with normal numerical
+methods. But you can see here the mesh needs to be designed such that the information is propagated from the domain to the boundaries because my
+loss function is to satisfy both. It's to satisfy the residuals inside the domain and the values in the boundaries. So there's not exactly a
+mesh sensitivity analysis, but rather being able to make sure that my loss is reasonable. Okay? And now, last question, because we're already over time.
+Subash? Yeah. Hi. Sorry, I joined late today. I'm just trying to understand PINNs. So yeah, you were saying that first we need to train the network, right?
+So we have to provide some solution, which a converse solution to train on this, right? Am I- Not really.
+This is how to really- You don't need to provide a solution. You provide the coordinates, and then you adjust
+the parameters of the neural network to get the output of my model. So you don't need an initial solution, technically.
+You only need an initialization of the weights. Oh, okay. So it solves the governing equation. How do they do it?
+Maybe we need to see how exactly it does into using PINN. That way, we'll understand it, probably. Well, it's a neural network, right?
+So it's a neural network where you are predicting these values, and the parameters of the neural network are adjusted, so the resulting values
+minimize the residuals. So with a stochastic gradient- So this- Mm-hmm. So these residuals are calculated by solving this Navier-Stokes? By automatic
+differentiation, so it calculates the derivative? Yeah. Oh, okay. Yeah. So that means we provide an initial U, right? U and V. Velocity and pressure, initially.
+What we provide initially is a set of parameters here in my neural network, which will provide an initial field.
+And that's what will give me a first value of the residuals, and then the training will improve the values of the residuals,
+basically. Okay. So this paper gives more detail about that, how they do it, right? Yeah. Yeah. Thank you. Just download the paper. All the method is there, and we can chat more in the next
+class. So in the next class, I will be covering in more detail the PINNs, the implementation. The code is here, so you can see everything in there.
+If you have more questions, feel free to ask me in the next class, or by email. But if you want me to answer you live,
+remember to write down the questions and ask me in the next class, so I will go through them. Okay? Sounds good?
+Sure. Thank you. Thank you. Okay. Thanks, everybody, and I'll see you next time on Monday. Thank you so much.
+Thank you. Thanks, Ricardo. Bye. Bye bye. Bye. Thank you so much. Yeah. Thank you.
+

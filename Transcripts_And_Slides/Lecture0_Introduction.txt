@@ -1,0 +1,358 @@
+So we can start or? Do you know if there are more people- Yeah ... who should be joining or?
+Yeah. I think there should be participants more than 100. Some of them may be not joining now. It's weekday. Some of them will join on weekends.
+Okay. So I'm expecting something around 100 plus to join. Okay. Perfect. So I send a request to share my screen.
+Yeah. I shared. Should work now. Okay. Very good. Can you see my screen? Yes. Excellent. So yeah, should I start?
+No. I will give a couple of minutes introduction. So, welcome everybody for this cohort, and today we have the introduction session by Professor Ricardo.
+And more details about the structure of the cohort, the schedule, how you can access the videos, how you can access the materials and all, I
+will share after the session by Professor Ricardo today, after one hour. And then, we can have more discussion. We can also take some feedback from you.
+If you have some idea, that also will be considered as a suggestion. So over to you, Dr. Ricardo, for now,
+and maybe more details we can discuss after your session. Okay. Excellent. Well, welcome everybody. Thanks for joining in this cohort that we're really excited to
+put together and to really give you the latest in machine learning, engineering, fluid mechanics, both from a theoretical and a more practical point of view.
+So I'll be giving an overview today. Just take advantage of the interactivity, so please feel free to ask questions, to stop, to write in the chat.
+So I will be monitoring also the chat, so if you want to write something in the chat or simply unmute yourself and ask any questions that you have.
+So I'll be very happy to answer every question. So, let's start with this introduction and kind of like this first block, we will not cover everything today, but this first
+block will have to do with a general intro to machine learning. We'll be talking about deep learning applications, including
+multilayer perceptrons and long short-term memory networks, so MLP and LSTM. You will have kind of like a high level
+perspective, introduction. You will also have practical sessions where you will get deeper into these ideas and concepts. So you'll have all the content for all of these topics.
+And we will also cover in this first block PINNs, physics-informed neural networks. So let me just start with a short introduction to machine
+learning. And generally, why are data-driven methods even a topic of discussion nowadays? We should take a bit of perspective, because of course,
+some of the most challenging problems nowadays, well, they're involved in massive amounts of data. And kind of like the traditional methods of data
+analysis and statistical analysis are perhaps not sufficiently powerful and sophisticated to tackle all these open questions that we have in the context of
+large data sets for engineering and science. So, also, derivations based on first principles cannot fully tackle all the dimensionality and complexity
+of some of these data sets that we have. And also, we are generating more data than ever. So that's another important point.
+And with data, it's not only just measurements in the lab, but tracking in any apps, any web access, any
+Google Maps tracking locations and positions and geo-positioning systems. All of that is producing more data than ever. So we need methods to really exploit effectively
+all this data that we have access to. So, while the methods have been around for a while, the scale-up of these data-driven methods to large dimensional data
+sets is relatively recent, and this has led to the development of a new area, which is data science broadly. So data science has to do with the management,
+analysis. I would say not just the analysis, but importantly also the storage and processing of all of these very large volumes of data.
+So data science involves also the whole science behind accessing, in situ analysis, all of those things. So this has really led to a new paradigm of scientific
+discovery. So traditionally we've been looking at theory, then experiments. More recently, simulations became an essential pillar of scientific discovery, and even more recently, data science or
+ML, deep learning, AI has become a fourth paradigm. So this is not meant to replace any of the existing paradigms.
+This is meant to complement and to enhance the capabilities of what we can actually do. So He et al.
+in 2009 kind of recognized that this was really becoming a new paradigm of scientific discovery. So data science. I'm just going to check
+the chat. There were some comments. Okay. So that was models developed based from experiments. Yeah, an empirical model involves
+some assumptions. So it doesn't really come necessarily from the fundamentals, but from observations, where you can, purely based on
+those observations, develop ways of representing those observations, but it's not necessarily the fundamental or truly generalizable. So that's the idea with
+these empirical models. So data science involves a broad range of disciplines, including mathematics, statistics, computer science, information science. So there's really many different disciplines that come into data science.
+That's why it's a quite broad and also complex field. And we also have the differentiation between machine learning and statistical learning.
+So machine learning is more recent. And even if the goals are similar, machine learning has more focus on the computer science aspect, so that we can develop fast and
+scalable algorithms. Whereas statistical learning is a bit more connected with interpretable models and methods to develop equations that can help to represent
+the data. So this is a little bit what we are meaning. And then the term models based from experiments.
+Yeah, to some extent. Exactly. So I will be stopping sometimes to read the chat, but you can also unmute
+yourself and ask the questions. So we can have a possible classification of methods. So if we look here at this chart,
+we have artificial intelligence. And I'll be talking about the different techniques and the different ideas. This is one possible classification, but people classify these things a bit
+differently. But artificial intelligence will be the broader concept where machine learning and data-driven methods are kind of like a narrower concept inside AI.
+And there's overlaps between robotics, voice recognition, computer vision, autonomous processing, and there's intersections between ML and AI within this space basically. Now, AI, artificial intelligence,
+is a subfield within computer science. So AI is embedded in computer science. Computer science will be more general than AI.
+And the goal of AI is to develop machines that can imitate intelligent behavior. This was a definition coined by McCarthy and others in
+1955. It's still a relevant definition. What perhaps is changing is what is meant with intelligent behavior. But the goal generally of AI is basically to have
+machines that can develop this intelligent way of thinking, of processing data, and solving problems. Now, weak AI has to do with systems that can
+outperform humans in a very narrow set of tasks, speech recognition, robot movement, et cetera. Whereas a strong AI has to do with systems that
+are broader, that can actually solve problems at a human or even superhuman performance in many different tasks. And of course, the goal is the
+artificial general intelligence, AGI, which nowadays is a bit of a controversial topic because, of course, the big AI labs have an incentive to achieve
+AGI, but in a way to also redefine what AGI means. Technically, AGI would be an artificial intelligence that is broad enough, so it performs
+really well, better than humans in a very broad range of tasks. So that's the goal. So the focus of
+AI is on developing machines that can mimic human intelligence. So that's also the idea. That's the main goal. And that's a bit different from the goal with machine
+learning, data-driven methods, et cetera. Does it make sense? Any questions? Hello, Professor. Hi. My name is Leonardo, and I have a question.
+Hi. Is there still a consensus on how artificial general intelligence could be applied, for example, for physical-based systems? Is there still a consensus on
+the scientific community on how they could be applied? So that's a bit of a broad and almost philosophical question.
+So AGI has not been achieved yet. We have very powerful AI systems that can help in certain ways. Now, how can these systems help? Currently, there's
+very powerful agentic AI systems and foundation model systems that can help in the process of scientific discovery by accelerating the exploration process, by
+interacting maybe with humans, interaction between AI systems and humans to achieve deeper and broader conclusions. So those are the directions that we are
+exploring. But I don't think there is a consensus because we simply don't know what's the full potential of these systems. What we know is that their
+potential is increasing rapidly. So each week, the capabilities of the frontier AI models are developing. Okay. Thank you, Professor. And these AGI,
+they should have more physical insights about the problem than we humans have about the problem, in a sense. They should-
+Well- ... be supposed to do that That's the theory, right? But remember, AGI is a theoretical concept. Yet we haven't reached AGI, and we are not even
+sure what that means to reach AGI. So theoretically, it would be a system that would be better than humans at almost every task, right?
+Including science. But again, this is kind of like a theoretical concept. I think that a more realistic concept is
+having AI co-scientists that can interact with humans and discover together. Thank you very much, Professor. Yeah, thanks for the question.
+There's another question in the chat. Can we say surrogate models are weak AI and PINNs are strong AI? No. PINNs are also weak AI.
+And we will learn more about PINNs. I have to say that PINNs are helpful for a very concrete set of problems, but they are not a general
+solution. So PINNs are basically solving governing equations using neural networks instead of numerical solvers. So they are helpful in certain problems, but they are not
+AGI at all. I mean, all the system, AGI has not been achieved yet. Professor, hi. My name is Abi. So I have one question.
+So in terms of this computational application in CFD- Yeah ... so currently, we see there are a lot of work in HPC, machine
+learning, surrogate modeling. Mm-hmm. And based on your experience, because it's very new topic for me, AI- Yeah ... in CFD.
+Yeah. So where are we at this stage? Mostly it is still ML and surrogate modeling, HPC, or- It's much more than that. And actually, I would recommend
+you, so I have a review paper on this topic on... Let's see. Let's move here. Let me just share a paper with you.
+I have a review paper on machine learning and computational fluid dynamics, which I think will be a good read for you, and we're going to talk about it in this
+cohort later on. But just for you, if you want to start reading, I have a review paper, which is called Enhancing Computational Fluid Dynamics with Machine
+Learning. I'm going to leave it in the chat. And in a nutshell, what is possible now is to accelerate simulations, improve models,
+and improve better surrogate models, including foundation models. So we are working also on foundation models that can be very
+general in terms of how we can use these systems for predicting fluid mechanics problems. So I recommend that you have a look at that paper and then-
+... you can get a better idea of what can be done, and we can chat more in the next
+Okay sessions. Okay. Thank you. Okay, so AGI cannot beat Navier-Stokes equations. It's different things. So AGI is theoretical, right?
+So AGI is not there. So the Navier-Stokes equations are the best representation of the fluid mechanics problems, and AI systems, not AGI, but current
+AI systems, can really help to interrogate and discover fluid mechanics phenomena, which are complementary to Navier-Stokes equations. Will the PPT be provided? Yes. I mean, I'm sure Sandeep
+will make it accessible. We see that for ML, AI, Python is much better, but for CFD codes, Python is
+much slower. How can we leverage both in a single code? We have done that many times. So CFD codes, I mean,
+Fortran 77 or Fortran 90, even, I mean, it's much faster than Python, right? It's just a less complete language.
+It's much lower level, but it's faster. So for many problems, we have coupled Python machine learning libraries with Fortran-based CFD solvers, and that works very
+well. Instead of weak and strong AI, can we call it as narrow or broad AI? It's applied on a specific task or many tasks involving at a time for a specific
+objective. That's not unheard of, narrow and broad AI. I think that could be fine. Yeah. That could be okay.
+How can we incorporate more complex CAD models into AI-driven approaches to solve fluid mechanics problems? That depends a lot on the problem that you
+have in mind. So, I mean, the CAD model, well, it's just a design, right? It's just a drawing in a way, right?
+But when you need to calculate things on it, including the structural aspects and the fluid mechanics around it, then you need to solve for the
+governing equations. Now, something that we are working on, which you may find quite exciting, is to, on the one hand, have
+agentic AI systems that help to set up the CFD part, and also foundation models that really help to produce fluid mechanics data in new unseen geometries.
+So that's also something that is very powerful. So I'm going to leave a couple of links in the chat.
+I think that this is for people interested in AI for fluid mechanics and kind of like new developments. So in this cohort, we're going to start with more basic ideas so that you can
+understand all the concepts and build up. But I think these papers, you can read them because they will give you
+some interesting perspectives. So let me just leave a few links in the chat so you can read about it,
+and then we will provide more context as the lectures go on in the cohort, okay? So I will just copy a few links in the chat,
+and you can always go back to them. So this is first one. And I think a big value of this
+cohort is this interaction. So, we don't have any pressure to cover as many slides as possible. I think there is much more value in you sharing your
+questions and us discussing. So feel free to ask. If a machinery model is able to accurately capture the main flow
+mechanisms such as separation, recirculation, vortex shedding, and other coherent structures across a wide range of CFD problems, could we consider this as
+a form of strong AI, since it would effectively reproduce the physics of fluid flows? So, strong AI should be broad in many tasks.
+So even if you would solve fluid mechanics, it would still be one task, right? So a strong AI would be many tasks. But since you asked about
+systems that can really solve fluid mechanics problems in many areas, one of the three links that I left in the chat is for a paper called IroJepa,
+which is a foundation model for fluid mechanics. So foundation models generalize very well across flow conditions. So I will
+copy it again, and I will put the name IroJepa, so you are familiar with it. So IroJepa. So IroJepa is a foundation model for fluid mechanics.
+So it's doing exactly what you're saying. Generalizing across many different geometries and flow regimes, and this is a research project that we are developing.
+So that would be a very general model for fluid mechanics, but it still would be just fluid mechanics, right?
+So we are not having a completely general description of science, right? Hi, professor. Are PINNs always faster and accurate than finite elements or other numerical methods?
+So this is important, and I will talk about it more when we cover PINNs. PINNs are usually much, much, much, much
+slower than finite elements or CFD or any traditional methods. And I'm talking at least an order of magnitude slower. Okay?
+So this is very important. PINNs can help in certain problems. So in certain conditions with particular meshes and particular type of
+data, we will talk about it in a few lessons, PINNs can be helpful. And I have many studies on PINNs. I've worked on them for a long time.
+But keep in mind that the claim that PINNs are faster is wrong. PINNs are much slower than classical numerical solvers.
+Can you show a practical example- Hi, professor. Yes. So my name is Nalan. I just had a two-part question.
+One was regarding when we talk about, I am not at all that familiar with AI. So when we talk about foundational models or surrogate
+models, what do we exactly mean by that? And also, when we are looking at AI in fluid mechanics, general question,
+might be too early to ask this, but are we looking at a way that we can just use AI to solve any new fluid mechanics problem instead of traditional CFD?
+Or are we looking to say, there are lots of tasks that can be automated in a way? Like a lot of cases where the geometries are pretty similar, and
+you just have to keep running a lot of cases. Is AI and CFD trying to solve that issue, where we can, rather than
+run those repeated simulations to optimize a certain problem, we are basically just using AI to fast-track them? So there are many things here to unpack, and of course, we
+will go through things as the course progresses. But to the first question, a foundation model is typically a data-driven model, which should be
+trained on a very broad range of cases. So it should be able to generalize across many different cases. And the idea is that it can be later on fine-tuned or
+applied to a concrete application. So let's say that I can train my model on many different fluid mechanics problems, and then I only want to do turbines.
+Well, then my foundation model is general enough, but then it will be specialized on turbines. Regarding the second part of the question on AI and fluid mechanics.
+So what we do, there's many different areas. One of them is to accelerate simulations. Another one is to improve models.
+Another one is to have discovery, to answer unsolved questions. Another one is to help the simulation process. So with the meshing, the CAD, and all of that.
+So there's many different areas where AI can help fluid mechanics. Thank you, professor. Yeah, no problem. Can you show a practical example comparing traditional CFD
+methods with AI-assisted CFD and explain what improvements AI can achieve? So this is basically the content of this cohort.
+So we will see many examples. We will see many different applications of this. So we will get there. But if you look at
+the review paper on AI and CFD that I shared before, and if you look at the papers that I've shared in the chat, you will see many examples
+there. Hello, professor. I have another question. Yeah. If I train my machine learning model to, for example, in a particular mesh, for example,
+using a CFD simulation, is there a particular type of architecture that I can use to make my predictions mesh
+independent, for example? Well, that's part of what we will cover in the course. So that will come in the next weeks.
+So generally, it depends on whether you have only temporal data or spatial data, or spatial-temporal data. It also depends on whether you want your model to work very well for
+one particular type of geometry, or you want it to generalize across geometries. So it depends on many things. But I think the answer to that question will come in
+the next weeks. Okay. Thank you. Okay. So I'll go back to the chat. I recently read a paper regarding using Bayesian
+optimization in CFD. Are we going to work on optimization in this course? We're going to work on control problems that are basically
+optimization problems. So Bayesian optimization is helpful. We'll talk briefly about it. It's not always the most powerful for complex, high-dimensional
+problems, but it's helpful. And we will mention it, but we will talk a lot about reinforcement learning, which is a framework that is
+incredibly powerful. Can LLMs be considered strong AI since they can be used in many different tasks? Well, that's what
+AI companies would like you to think, that they are AGI or a strong AI, but we are not there yet.
+They can do very well in many tasks, but the question is whether they're considered to be superhuman in a
+very broad range of tasks, which is maybe not there true. They're not better than the best engineers, they're not better than the best scientists,
+and they're not really truly generalizing yet, but their capabilities are very impressive. I would also say that the key is not in LLMs alone, just not language models.
+They should be coupled with other systems. I think that's how you can get the most potential from them. Can two AI models communicate with each other?
+If so, can we create a strong AI model by combining those specific AI models? That's an interesting question. So that's what's being done nowadays with agents, so agentic AI
+frameworks. So agents are basically LLMs, AI models, and they are being used to automatize tasks, and they have different sets of skills. So some of them are more specialized
+in text, some of them are more specialized in calculations, some of them are more specialized in optimization. And what people are doing now with very impressive
+results is cooperative interactions across these agents, basically. But we are not there in a strong AI case. We are in a very impressive,
+quickly developing case. Is data fusion where high-fidelity data is integrated using traditional solvers and low fidelity using approximated equations can be considered as part of AI and
+CFD? If yes, how, and if not, why? Yeah, data fusion goes in that direction, and that has to do with multi-fidelity.
+So multi-fidelity is when you're combining data of higher and lower fidelity, and you try to make predictions using all this information.
+So maybe you have a very highly resolved case and then many different geometries with lower resolution, and then you can
+learn from everything. So you can generalize and benefit from the accuracy of the high fidelity and from the generality of the lower fidelity.
+So that's a very current and powerful framework. I posted- Which regimes of flow- Sorry. Yeah. Which regimes of flow, incompressible to compressible, is the most tricky to
+implement AI to optimize? It depends a lot on the problem. It depends very much on what you're trying to do.
+But as you increase the Mach number, of course, you have shocks and discontinuities. So for modeling and control, it becomes more
+challenging, but it's not something that we haven't done. The research is really going in that direction. Okay. What is your opinion on current maturity level of commercial software
+developers like Ansys, SIM, AI, Star-CCM, et cetera? So I assume that your question has to do with AI implementations within
+commercial solvers. I think there is potential, there is development. I think there's still room for improvement. So they're not perfect, but there is
+more and more adoption and much more interaction between research labs and companies for deploying these latest AI developments in
+mature solvers. Are these concepts involved in the techniques that we will talk about applicable to other fields, or are they strictly related to CFD?
+They're applicable to any field in engineering and science. So many of the examples will be on CFD, because that's kind of like the main
+expertise that we are focusing on. But yeah, finite element methods, numerical solvers, simulation, generally engineering, any data set that you
+have can benefit from the techniques that we will be covering in this course. Would it be possible to continue with the slide content?
+Perhaps the talk covers some of these questions, and we can take the questions at the end. Yes, we will resume, but don't worry, you'll have all the content, and we
+will have many sessions and many lessons, so don't worry. I think it's good to have discussion and interaction. What exactly does ML and on top of POD introduce ordered modeling?
+We will cover that. We'll have a whole session, actually several sessions on reduced-order model. What will be the curriculum that I will be covering?
+I think you will get all the information from Sandeep and the organizers. But yeah, there's going to be machine learning, CFD.
+There's going to be modeling. There's going to be spatial and temporal predictions, control, and reduced-order model. Okay. So I'll take a couple more questions and go back to the slides, and then I
+will go back to two more questions. For working on vehicle crash and safety simulations, remains the same for this domain or has to do more with different than in this
+course, as it works on many nonlinearities. What you will see in the course will be relevant also to vehicle crash
+safety simulations. Will everything be Python-based or also Linux-based systems like Dakota? So Dakota is an uncertainty quantification library. I don't think we'll use it.
+Python is going to be the main code that you will need. Okay. So I will make a bit of progress with the slides and then go back to the
+questions. And the videos, my understanding is that they will be provided, but Sandeep can speak to that. So let's
+go back to the slides a bit, and then I will go back to the questions. So if we go now deeper in this figure, here you can see that machine learning
+is a narrower set within artificial intelligence. Interestingly, I would consider machine learning and data-driven methods to be basically equivalent. That depends a little bit on everybody's taste and the author that you
+read. I would consider both as being the subfield of AI, where the focus is to develop machines that can learn without
+being explicitly product. That would be my definition for it. So basically building methods from data using optimization. So those are
+the three keywords, the models. So those methods are models, data, and optimization. So that's why machine learning and data-driven methods would be
+similar. Examples of machine learning methods, decision trees, regression, classification, clustering, and deep learning. Deep learning is a subset within machine learning.
+So unlike AI, where in AI the focus is on mimicking intelligent behavior, in machine learning, the focus is on
+solving problems using patterns. That's kind of like the main idea of machine learning. Okay, let me go back to the chat. Are we covering
+basics of FNO? So, FNO, we're not going to cover so much. We have other better methods, I would say.
+Physics Nemo is a NVIDIA library where many of these methods are implemented. So yes, you can use Physics Nemo for sure.
+The recording, I think it will be provided. How we are approaching... Open the chat here. How we are approaching ARC elements for fluid mechanics,
+Physics Nemo. So we're going to cover all the basics and some of the advanced techniques so that you can understand, and Physics Nemo is certainly one of the tools that you
+can use. Physics Nemo is open access through NVIDIA. So we're going to be covering many of these methods. Mathematical aspects of the AI model.
+We're going to be covering some of the mathematics, yes. Simulating viscoplastic flows using experimental POD. Data simulation techniques such as PINNs.
+Yes, we're going to be talking about this. Yes, about data simulation. And also, for rheology and things like that, we're going to be talking about. We have papers.
+If you look at my group, we have papers on this topic, on non-Newtonian flows. So that's going to be also something that we'll talk about.
+As I use OpenFOAM for my simulations, I've noticed that Claude is really capable of writing code according to my requirements and even setting up the case.
+Do you think that in the future, most of these tasks will be automated? Not in the future, nowadays. They're being automated, for sure, by
+agentic AI systems. Yes, 100%. Sorry, I have one question here. Yes. Maybe that will be covered eventually in the course.
+But in many CFD cases, like if you're using RANS model flow over airfoil, we always have this problem, let's say, about separation and stall-
+Yes ... which RANS typically over-predict. Yes. Most of the time we only rely on experimental data in this case, but this experimental data is of low fidelity,
+basically CL and CD over airfoil. Is there a possibility or a methodology to take this CL and CD and go back to the high fidelity, let's say,
+RANS case, to do some sort of a correction of the RANS equations to really predict this phenomena specifically, which is one of the shortcomings of using RANS,
+generally speaking? I think we're going to cover methods that are much more powerful than RANS. And this foundation model ideas that I was talking about, that's I think
+much more powerful. But because RANS at the end are limited by the empirical assumptions that you make, basically. So do you think those models then can effectively
+replace RANS, and then we'll be able to predict such phenomena like- I think so ... transition and so on?
+I think so. Have a look at the HydroChapa paper that I put in the chat. Yeah, I already read this.
+I think that's the clearest example where we can very quickly, in a few seconds, produce data in new geometries with accuracy that is comparable
+to LES or DNS. Mm-hmm. Okay. So another question in the chat. What software I need for this entire curriculum?
+So each section will be a bit different. But for now, familiarity with Python would be the most important, probably. But each section will be a little bit different, and you'll
+get information for all of it. PDF copy of all the papers. You can download them from the links that I provided.
+But if you cannot download them, send me an email and I'll send you the papers. You can always send me an
+email. So just send me an email. If you want the papers and you cannot access them, just send me an email. Okay, so let's continue.
+That's ML. Deep learning is an even narrower set of techniques within machine learning, which involves neural networks that are deep. What deep means is that between the
+input and the output, there is more than one hidden layer. So if you have one hidden layer between the input and the output, you have
+something called a shallow neural network, and that would be within machine learning, but not within deep learning. So that would be a particular case of
+machine learning method, but not deep learning. The deep learning paradigm relies on hierarchical learning. So the first layers of a neural network learn more simple
+features from the original data, and then hierarchically build more and complex features towards the end of the network. So if we're thinking of cars, for example, the first layers would be
+identifying simple concepts like a mirror or a wheel, and then as we hierarchically build down through the neural network, we build more complex concepts like a car or a
+motorbike. So they require large amounts of data to be trained and find the patterns required for establishing these connections. And big data is the accumulation of analysis of large
+databases, and the main goal is to extract knowledge from those databases. So that's the field of big data. Okay.
+Let me take some more questions. Do you see foundation models for fluid mechanics as a fundamental new paradigm for
+turbulence modeling? Yes, 100%. Foundation models and agentic AI together, they are already changing completely fluid mechanics. Thank you for sharing the
+PDFs in the chat. So I recommend that you read. So the most relevant to these questions that you're asking are IROJepa.
+So IROJepa is a very good paper for you to read. And the other one is Explainable AI: Learning from the Learners.
+That's another one where I think you can learn a lot. The other two are also very relevant with agentic AI and so
+on. But the IROJepa and the Explainable AI, I think they are going to open your eyes to a lot of the
+possibilities that are available nowadays. Will the PDFs of the slides be shared with us? I think so, yeah. I think you'll have access to the slides and the videos and everything.
+So Sandeep and everybody else in the Fluid Thermal Lab team will make it available. Now, how do these machine learning systems learn?
+Because at the end, the key is that they're not explicitly programmed, but that they are capable of learning by themselves.
+Well, there's several types of learning. One is supervised. So in supervised learning, you are providing labeled data to your system. So you basically have an input and an
+output, and you explicitly tell your model what's the expected answer, and the model needs to learn to reproduce that expected
+answer. And the classical examples are predictions and supervised classification. So if you think of a bag full of balls and some are red and some are blue, in supervised
+learning, what you do is that you tell your machine learning system, Look, this is a blue ball. Look, this is a red ball. And when
+the AI system learns that, when you show them a ball, then they will be able to tell you if it's blue or red.
+That's supervised learning because you provide the answer. In unsupervised learning, which is the second paradigm, you don't provide the answer. You just provide the data, and then the system needs
+to learn to find patterns by itself. Some examples are clustering and unsupervised classification. So for example, in this case of the bag full of balls,
+you would give the bag to the AI system, and the AI system by itself, by analyzing the characteristics of the data, it will realize, oh,
+we have two groups here, one group of blue balls, one group of red balls. But you have not told that explicitly to the system.
+The system has understood it by itself through pattern and clustering mechanisms. The third paradigm of learning is what we call reinforcement learning.
+This is very powerful. In reinforcement learning, this is very important, you don't provide data. This is something that many people-- I get at least once or twice per
+week, someone asking me what data do I need to provide for a reinforcement learning algorithm? You don't provide data. You provide an environment.
+So the reinforcement learning algorithm interacts with the environment and by itself finds the best policies. That environment can be a simulation or an experiment, but
+it's not data, frozen data. Because the reinforcement learning through trial and error will try to find the best performing strategies. So let's imagine a robot that is
+learning how to walk. You provide that reward. That reward is the goal, and the goal is to travel a certain distance in the
+shortest amount of time. And the robot will start to try different things. It will start to crawl, it will start to roll, then it will start
+to stand up and fall until eventually it tries out enough things to learn to run. And then by running, it will really maximize the reward.
+The reward being the distance in a certain amount of time. So that's the idea with reinforcement learning. It learns by trial and error and interaction with a particular
+environment. There is a fourth paradigm. I don't write it here because it's something quite new and it's developing. It's the self-supervised learning.
+In self-supervised learning, which is what you have with generative AI models, you learn basically by context. So you're masking certain
+parts of the data, and you teach the AI model to fill in the blanks, and then It learns through the data around those blanks, through
+context, to generalize. So self-supervised learning is actually very powerful in generalization because of this capability to fill in the
+blanks and basically generate data in new conditions. Okay? Okay, we have more questions. The advancements in AI for CFD and physics is evolving
+very rapidly. Any particular roadmap to focus to avoid FOMO, unlike conventional CFD where knowing a code would suffice? Yeah. So what is the best roadmap to learn AI
+for CFD? This cohort, you're in the right place. So you're fine. Okay? This is the right way to go. Have a look at the papers that I sent.
+I think they will provide you an idea of the state of the art. Is reinforcement learning similar to design exploration studies where user provides
+a range and sets an objective function? Design exploration can be done in different ways. So reinforcement learning is one way to optimize, but not the only one.
+You can do design exploration with gradient-based optimization, with Bayesian optimization, with Kriging. There's many ways. So reinforcement learning is only one of them.
+Is there a disadvantage to provide initial data along with environment in case of reinforcement learning? You don't provide initial data. You would provide an
+architecture of the reinforcement learning network that can exploit what you know about the problem. So you would design the architecture through the data that you have,
+but not provide the data explicitly. Is solving PDEs without any previous data a use of reinforcement learning? It's maybe not the most common use I can think of, of reinforcement
+learning. To solve PDEs, there are other methods, and now there's a lot of generative AI approaches with diffusion models, with flow
+matching techniques that are very powerful. Reinforcement learning is typically more for dynamic optimization. So flow control is a typical example of reinforcement learning or
+robotics applications. Okay? All right, so let's continue. I'm going to give you a couple of examples of more general AI applications.
+In this study in Nature Communications that we published a few years ago, you can see that 79% of the sustainable development goals
+can be facilitated by AI, whereas 35% can be negatively impacted. So the environment is the one with actually highest potential from AI, because one can solve many
+environmental problems, and the society is the one with the highest challenges. So if you're interested in learning more about how AI can
+solve sustainability problems, have a look at this paper. This is actually a very interesting read, I think. This is about
+explainability and interpretability. So we have this article in Nature Machine Intelligence where you can read about our view on how interpretable systems can
+help to understand what the AI models are doing and hopefully develop better strategies. So one example is this application where
+the authors were using AI to analyze satellite data, and based on the satellite data, predict regions of poverty. This is to tackle the sustainable development goal of poverty.
+But with interpretability, you don't just get an output, you get an equation. So you can actually relate the poverty
+with the amount of light in the nights in the satellite images, the amount of roads, the distance to the cities. So you can get a pretty good
+representation through equations that can really enhance the interpretability of your models. And this is also something that is becoming a bit trendy again regarding stopping
+AI research and AI use. We have a couple of papers on why that's not a good idea, stopping research, in particular this one in Nature Climate Change, because a
+lot of the solutions will come through research itself. So one should have reasonable regulations, and also enable research itself to find
+new ideas, new directions, new solutions that hopefully can allow us to control the systems and understand them. So that's a little bit the way that I think about these AI
+systems. Okay? And I'm going to also show you a little-- So this is to end the introduction, and then we're going to
+start with some basic concepts. This is a little joke where it basically says that changing random stuff until your program
+works is hacky and bad code in practice, but if you do it fast enough, it is machine learning, and it pays four times your current salary.
+Now, what I want to say with this is that there's a lot of hype, there's a lot of misinformation. Just try to stick to things that you
+understand. So simpler models are preferred. We're going to teach you, and you were asking in the chat about very
+advanced physics NEMO implementations and very advanced models. That's fine. But what I want you to do is understand the simpler
+models first. You need to understand the basics. Because once you understand the basics, you will be prepared and equipped to
+understand more complex products and more complex models. If you take a very complicated model that you download the GitHub repo and you
+start to run it, and you don't understand anything, then you will not know why it works or why it doesn't work. If you start with the basics and you build up from
+there, you will have a much deeper knowledge, and you'll create much more impact in your ... scientific or engineering application than just blindly taking models. Okay?
+So take my word for it. Good. So we're going to start with some deep learning applications. We have 10 minutes left, so I'll just provide a short intro, and
+I will also answer a couple of questions that we have here. Is a robot navigating a maze using an algorithm like A-star also reinforcement
+learning? Typically, that's a classical application of reinforcement learning. Yes. Topology optimization can be done after this course. You will have the tools to do topology optimization,
+in different contexts. But yes. And I can always share papers and references if you're interested in other topics. Okay, sounds good. So let me start
+with this introduction to deep learning. We're going to consider a simple example, and this is a fluid mechanics problem, but it's applicable to many other
+disciplines. This is a simple nine-equation model of a near-wall region of a turbulent flow. So this is a model by Mohelis,
+which contains the essential ingredients of the near-wall cycle of turbulence with extreme vortices, streaks, and their instabilities. Here you have
+the velocity field, which depends on space and time, and this is decomposed into nine modes where you have spatial information and temporal coefficients. Okay?
+So you make up this spatiotemporal data. The idea is that we want to predict the temporal coefficients. Remember, the spatial data is frozen, so the only thing that gives dynamics to my
+problem is these temporal coefficients. And the idea is that, well, we're going to generate many datasets, 10,000 datasets, of 4,000 time units each.
+These are nine coefficients, so we're going to perturb the initial coefficients such that we can produce through the chaotic
+characteristics of this problem, many different trajectories, so many different datasets to train deep learning models. Professor, are you sharing something online?
+Yes. I mean, the idea is that you will get the slides and the videos. I think that's the idea. Yes.
+Okay. So let me go back to this. This is what the data looks like. So the nine coefficients, you
+can see them here from the first to the ninth. The first coefficient corresponds to the mean flow, and the rest of coefficients
+correspond to vortices, streaks, and nonlinear interactions between them. When the first coefficient goes to one and everything else to zero,
+the flow has re-laminarized, so the turbulence is gone. That's not a case that we're going to focus on. We're going to focus on the turbulent regime.
+And here on the right, you can see the frontal view. So you're showing vortices and streaks, and the top
+view shows the spanwise meandering of the streaks. For more details, you can go to this reference, Prem Srinivasa and others in
+Physical Review Fluids 2019. So this is a very detailed reference with a lot of code for neural network predictions, for data generation, for interpretation of
+these results. Okay. Why are there nine modes? This is the minimum amount of modes to represent the physics that we're trying to model here.
+What is the difference between perturbation and fluctuation? It's an actual difference when we talk about turbulence. So perturbation is typically more associated with stability
+theory, that you have a stable solution and you add perturbations on top, to see how transition takes place. Fluctuation is more of a turbulence term,
+where you have a mean, and you look at the deviation with respect to that mean. So typically, fluctuation is more common in the turbulence literature.
+I don't think you're sharing what you're describing. Can't see? Yeah. So people can see it, actually. Okay, you can see it now. Okay, good. Yeah.
+So these are the slides that I'm sharing. Yes. Now, this is going to be kind of like some of the last parts before we stop this first
+session. But this is a neural network. This is the first example of neural network. Okay? So this is the problem.
+This is a neural network. Here on the left, you have what is called the input vector, and here on the
+right, the output vector, and this is a multilayer perceptron or MLP. Multilayer perceptron is the easiest neural network. The simplest one is valid only for point predictions, and it's
+going to be our baseline. So the simplest method for neural network predictions that we're going to consider. In this example,
+our output is going to have a dimensionality of nine. So we're going to predict the nine coefficients in the next step.
+The input is going to have a dimensionality of d, which is basically nine coefficients times the number of steps that we are going to consider.
+And so we can use information from many steps to predict the next step. And these intermediate layers are what we call the
+hidden layers. So the idea is that we want to use input information. So let's think of the weather for many previous days,
+and the output information will be the weather tomorrow. So I may need many days to predict the weather tomorrow.
+The MLP cannot exploit temporal information in the data. So the only thing that it does is, depending on where you are in this array,
+you know where you are in a temporal sequence, but your architecture is not explicitly exploiting the temporal information. Okay? And
+another detail that is important from the MLP ... is that even if it doesn't exploit temporal dynamics, it serves as a very good
+baseline method. Now, one question for you. Based on what we have seen so far, is this an example of a deep neural network or a shallow neural network?
+What do you think? I think it's a deep neural network. Why? Because it has more than one hidden layer.
+Does everybody agree? Okay. Let me look at the chat quickly. Yeah. Okay. So everybody says deep. It's not shallow. So two layers is
+not really shallow. Here, depends a little bit on which literatures you look at, but technically, the technical definition is one hidden
+layer is shallow, more than one hidden layer is deep. So this one has two hidden layers. That means that
+this is technically a deep neural network. Okay? So very good, everybody, for your answer. And this is what a detail of a
+neuron looks like. Okay? This is a bit of a more complicated explanation. I just want to give you a couple of ideas, and then
+next time, we will go deeper into it. I just want you to realize that the key to neural networks to have
+effective and very general predictive capabilities is the non-linearity. So here, in addition to our matrix vector multiplications, and we will cover this in detail next time,
+in addition to all of that, we have this function g, which in this case is basically a sigmoid, and that's a non-linear activation
+function. So the predictive power of neural networks comes from the non-linear activation functions. Okay? Again, don't worry about this.
+We'll cover it in a lot of depth next time. I just want you to retain this idea. There are a couple of questions in the chat.
+What do you mean by previous step? Yeah. So think of it as if each step would be like one
+day. Right? So my output is going to be nine-dimensional. My input is going to be nine-dimensional times the number of days to make my
+next prediction. Do we have open source code repo for this? Yes, 100%. If you go to that paper and now...
+Hi, Krishna. Very nice. Thank you for putting the paper PDF in the chat. If you go there, you can access the repository and all the code, all the
+data is open, so you can play with it. Okay? You mentioned that AI is helping tackle climate change, but I've come across
+information saying that AI centers require large amounts of data, of water. Yes. I'm asking because in India, AI centers are being built, and there are concerns
+about deforestation, high fresh water. This is a very important and interesting debate. It is true that the environmental footprint of AI systems is huge.
+That is completely true. What is also true is that we are achieving technological breakthroughs that are helping climate change also.
+So it's about finding the right trade-off. We're going to have technological advances that are really going to help climate and help with the energy transition.
+But we should not destroy the planet in that process, right? So there is a bit of an intermediate point.
+And I have a couple of papers that you could see in the slides, in nature communications, in nature climate change on AI and
+sustainability. So you can read them also, and I'll be very happy to answer your questions. Okay, we have one minute left. So are there any last-minute pressing
+questions before we disconnect today? Will you explain the last concepts in the next session? Yeah, for sure. This slide that I'm showing you here today was just an introduction.
+Today was just a high level overview. You got introduced to MLPs and neural networks. In the next sessions, we will go very deep into this, so you will understand
+everything. Today, I just wanted to have an introduction. Okay. Seawater will be better. Yeah, there's many technological solutions, for sure.
+How do we stay relevant? Following this cohort is a good way to stay relevant. What to learn or do some work before the session. Yeah.
+So Sandeep is going to take over from now, and he's going to tell you more about how the cohort works and the different sessions and the different
+approaches. So I think you will get a lot of good information from Sandeep now. And of course, feel free to send me an email if you have any questions.
+I'll be happy to answer all your questions. For now, I think that all those logistics, Sandeep is the right person to
+answer. Thank you, Dr. Ricardo. So thank you for the nice introduction. I hope you can hear me. And thank you, everybody. I'll disconnect now, but happy to keep in touch.
+See you later. Thank you. Bye. Bye. 

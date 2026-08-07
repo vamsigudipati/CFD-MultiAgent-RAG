@@ -1,0 +1,767 @@
+{
+  "table_of_contents": [
+    {
+      "title": "The transformative potential of machine learning for\nexperiments in fluid mechanics",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          53.500431060791016,
+          54.125553131103516
+        ],
+        [
+          557.2495422363281,
+          54.125553131103516
+        ],
+        [
+          557.2495422363281,
+          100.8201904296875
+        ],
+        [
+          53.500431060791016,
+          100.8201904296875
+        ]
+      ]
+    },
+    {
+      "title": "Abstract",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          285.97393798828125,
+          190.10984802246094
+        ],
+        [
+          323.81055450439453,
+          190.10984802246094
+        ],
+        [
+          323.81055450439453,
+          202.43206787109375
+        ],
+        [
+          285.97393798828125,
+          202.43206787109375
+        ]
+      ]
+    },
+    {
+      "title": "Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          50.417083740234375,
+          299.94934844970703
+        ],
+        [
+          137.4375343322754,
+          299.94934844970703
+        ],
+        [
+          137.4375343322754,
+          318.2060241699219
+        ],
+        [
+          50.417083740234375,
+          318.2060241699219
+        ]
+      ]
+    },
+    {
+      "title": "Improvement of measurement techniques by means of machine learning",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          51.43838310241699,
+          484.82098388671875
+        ],
+        [
+          530.6428527832031,
+          484.82098388671875
+        ],
+        [
+          530.6428527832031,
+          503.553955078125
+        ],
+        [
+          51.43838310241699,
+          503.553955078125
+        ]
+      ]
+    },
+    {
+      "title": "Experimental design and modeling enhanced by machine learning",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          51.2596549987793,
+          584.3150024414062
+        ],
+        [
+          490.0531768798828,
+          584.3150024414062
+        ],
+        [
+          490.0531768798828,
+          604.1820678710938
+        ],
+        [
+          51.2596549987793,
+          604.1820678710938
+        ]
+      ]
+    },
+    {
+      "title": "Possibilities within data-driven flow estimation and control",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          51.28435134887695,
+          642.4202728271484
+        ],
+        [
+          445.3432159423828,
+          642.4202728271484
+        ],
+        [
+          445.3432159423828,
+          661.2899017333984
+        ],
+        [
+          51.28435134887695,
+          661.2899017333984
+        ]
+      ]
+    },
+    {
+      "title": "Conclusions and outlook",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          50.90108871459961,
+          645.4682922363281
+        ],
+        [
+          218.48059844970703,
+          645.4682922363281
+        ],
+        [
+          218.48059844970703,
+          664.2498779296875
+        ],
+        [
+          50.90108871459961,
+          664.2498779296875
+        ]
+      ]
+    },
+    {
+      "title": "Experimental Applications",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          201.89238739013672,
+          56.93134689331055
+        ],
+        [
+          407.17877197265625,
+          56.93134689331055
+        ],
+        [
+          407.17877197265625,
+          77.92364501953125
+        ],
+        [
+          201.89238739013672,
+          77.92364501953125
+        ]
+      ]
+    },
+    {
+      "title": "Acknowledgements",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          50.93400192260742,
+          214.8567352294922
+        ],
+        [
+          185.41197967529297,
+          214.8567352294922
+        ],
+        [
+          185.41197967529297,
+          233.572265625
+        ],
+        [
+          50.93400192260742,
+          233.572265625
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          51.143280029296875,
+          341.63358306884766
+        ],
+        [
+          126.2442741394043,
+          341.63358306884766
+        ],
+        [
+          126.2442741394043,
+          360.1392822265625
+        ],
+        [
+          51.143280029296875,
+          360.1392822265625
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          122
+        ],
+        [
+          "Line",
+          53
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Footnote",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          166
+        ],
+        [
+          "Line",
+          73
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          170
+        ],
+        [
+          "Line",
+          55
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          120
+        ],
+        [
+          "Line",
+          36
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          117
+        ],
+        [
+          "Line",
+          39
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          183
+        ],
+        [
+          "Line",
+          61
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          121
+        ],
+        [
+          "Line",
+          33
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          180
+        ],
+        [
+          "Line",
+          74
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 8,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          182
+        ],
+        [
+          "Line",
+          54
+        ],
+        [
+          "Reference",
+          16
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 9,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          255
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "Reference",
+          28
+        ],
+        [
+          "ListItem",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 10,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          259
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "Reference",
+          27
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 11,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          261
+        ],
+        [
+          "Line",
+          60
+        ],
+        [
+          "Reference",
+          28
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Text",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 12,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          203
+        ],
+        [
+          "Line",
+          45
+        ],
+        [
+          "Reference",
+          20
+        ],
+        [
+          "ListItem",
+          3
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/Vinuesa_2023_Enhancing_Experimental_Fluid_Mechanics_ML"
+}

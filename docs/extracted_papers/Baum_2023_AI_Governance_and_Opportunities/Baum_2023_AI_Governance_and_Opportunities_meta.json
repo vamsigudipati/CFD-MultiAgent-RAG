@@ -1,0 +1,424 @@
+{
+  "table_of_contents": [
+    {
+      "title": "OPEN ACCESS",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          46.36092918645825,
+          136.04442540047324
+        ],
+        [
+          96.88868601916718,
+          136.04442540047324
+        ],
+        [
+          96.88868601916718,
+          148.301513671875
+        ],
+        [
+          46.36092918645825,
+          148.301513671875
+        ]
+      ]
+    },
+    {
+      "title": "From fear to action: AI\ngovernance and opportunities for\nall",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          211.89948585952257,
+          100.62613468051275
+        ],
+        [
+          543.2256541984808,
+          100.62613468051275
+        ],
+        [
+          543.2256541984808,
+          175.8367919921875
+        ],
+        [
+          211.89948585952257,
+          175.8367919921875
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          48.3704780943748,
+          105.36446206015555
+        ],
+        [
+          122.11416733595226,
+          105.36446206015555
+        ],
+        [
+          122.11416733595226,
+          117.56396011529176
+        ],
+        [
+          48.3704780943748,
+          117.56396011529176
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          46.40223982111933,
+          277.6100669310545
+        ],
+        [
+          76.11249778613035,
+          277.6100669310545
+        ],
+        [
+          76.11249778613035,
+          287.0496556323655
+        ],
+        [
+          46.40223982111933,
+          287.0496556323655
+        ]
+      ]
+    },
+    {
+      "title": "KEYWORDS",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          211.95357023378463,
+          328.3527214070674
+        ],
+        [
+          245.57659912109375,
+          328.3527214070674
+        ],
+        [
+          245.57659912109375,
+          340.41668701171875
+        ],
+        [
+          211.95357023378463,
+          340.41668701171875
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          46.28792902564522,
+          354.0634161251948
+        ],
+        [
+          81.72512605989009,
+          354.0634161251948
+        ],
+        [
+          81.72512605989009,
+          363.2551799716423
+        ],
+        [
+          46.28792902564522,
+          363.2551799716423
+        ]
+      ]
+    },
+    {
+      "title": "Author contributions",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          302.10342568654556,
+          262.62953782527444
+        ],
+        [
+          435.18908137938837,
+          262.62953782527444
+        ],
+        [
+          435.18908137938837,
+          280.29638671875
+        ],
+        [
+          302.10342568654556,
+          280.29638671875
+        ]
+      ]
+    },
+    {
+      "title": "Funding",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          301.6388406825606,
+          342.04393357287955
+        ],
+        [
+          355.35756700645464,
+          342.04393357287955
+        ],
+        [
+          355.35756700645464,
+          359.13641357421875
+        ],
+        [
+          301.6388406825606,
+          359.13641357421875
+        ]
+      ]
+    },
+    {
+      "title": "Conflict of interest",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          301.64814108745276,
+          410.9002070303804
+        ],
+        [
+          422.2507521007163,
+          410.9002070303804
+        ],
+        [
+          422.2507521007163,
+          428.9674072265625
+        ],
+        [
+          301.64814108745276,
+          428.9674072265625
+        ]
+      ]
+    },
+    {
+      "title": "Publisher's note",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          301.47633557836116,
+          495.50831806458007
+        ],
+        [
+          403.76626609975204,
+          495.50831806458007
+        ],
+        [
+          403.76626609975204,
+          512.7843933105469
+        ],
+        [
+          301.47633557836116,
+          512.7843933105469
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          46.59011487216132,
+          620.2123738643004
+        ],
+        [
+          119.62829051750433,
+          620.2123738643004
+        ],
+        [
+          119.62829051750433,
+          637.0744171142578
+        ],
+        [
+          46.59011487216132,
+          637.0744171142578
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          282
+        ],
+        [
+          "Line",
+          98
+        ],
+        [
+          "Text",
+          13
+        ],
+        [
+          "SectionHeader",
+          6
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Footnote",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          254
+        ],
+        [
+          "Line",
+          114
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          262
+        ],
+        [
+          "Line",
+          104
+        ],
+        [
+          "Text",
+          13
+        ],
+        [
+          "Reference",
+          10
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          58
+        ],
+        [
+          "Line",
+          16
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Reference",
+          4
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/Baum_2023_AI_Governance_and_Opportunities"
+}

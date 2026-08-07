@@ -1,0 +1,468 @@
+{
+  "table_of_contents": [
+    {
+      "title": "FORMATION AND EVOLUTION OF SHEAR LAYERS IN A\nDEVELOPING TURBULENT BOUNDARY LAYER",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          138.9448050587844,
+          79.92899066384945
+        ],
+        [
+          458.138523438115,
+          79.92899066384945
+        ],
+        [
+          458.138523438115,
+          111.31817626953125
+        ],
+        [
+          138.9448050587844,
+          111.31817626953125
+        ]
+      ]
+    },
+    {
+      "title": "ABSTRACT",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          70.2296282962828,
+          296.3838323251753
+        ],
+        [
+          127.767333984375,
+          296.3838323251753
+        ],
+        [
+          127.767333984375,
+          310.80169677734375
+        ],
+        [
+          70.2296282962828,
+          310.80169677734375
+        ]
+      ]
+    },
+    {
+      "title": "Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          70.05360586517104,
+          683.7025180181433
+        ],
+        [
+          131.55357812453877,
+          683.7025180181433
+        ],
+        [
+          131.55357812453877,
+          698.041259765625
+        ],
+        [
+          70.05360586517104,
+          698.041259765625
+        ]
+      ]
+    },
+    {
+      "title": "Description of experiments",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          70.27774460069479,
+          674.1358546921958
+        ],
+        [
+          202.47011583457967,
+          674.1358546921958
+        ],
+        [
+          202.47011583457967,
+          688.2019195556641
+        ],
+        [
+          70.27774460069479,
+          688.2019195556641
+        ]
+      ]
+    },
+    {
+      "title": "Results",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          70.36845435423575,
+          290.1525663136374
+        ],
+        [
+          110.13467610933318,
+          290.1525663136374
+        ],
+        [
+          110.13467610933318,
+          303.601806640625
+        ],
+        [
+          70.36845435423575,
+          303.601806640625
+        ]
+      ]
+    },
+    {
+      "title": "Conclusions",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          70.52018422624026,
+          620.2965393338156
+        ],
+        [
+          133.3759145472452,
+          620.2965393338156
+        ],
+        [
+          133.3759145472452,
+          633.9620056152344
+        ],
+        [
+          70.52018422624026,
+          633.9620056152344
+        ]
+      ]
+    },
+    {
+      "title": "REFERENCES",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          310.7079941679909,
+          466.6054014645828
+        ],
+        [
+          382.2451477050781,
+          466.6054014645828
+        ],
+        [
+          382.2451477050781,
+          480.60089111328125
+        ],
+        [
+          310.7079941679909,
+          480.60089111328125
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          221
+        ],
+        [
+          "Line",
+          97
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          367
+        ],
+        [
+          "Line",
+          97
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "Footnote",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          525
+        ],
+        [
+          "Line",
+          143
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          564
+        ],
+        [
+          "Line",
+          153
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          329
+        ],
+        [
+          "Line",
+          114
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          237
+        ],
+        [
+          "Line",
+          79
+        ],
+        [
+          "ListItem",
+          4
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/Lee_2019_Towing_Tank_PIV_Turbulent_Boundary_Layer"
+}

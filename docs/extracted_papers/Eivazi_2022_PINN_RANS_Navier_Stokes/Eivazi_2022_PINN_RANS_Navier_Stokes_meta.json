@@ -1,0 +1,590 @@
+{
+  "table_of_contents": [
+    {
+      "title": "PHYSICS-INFORMED NEURAL NETWORKS FOR SOLVING\nREYNOLDS-AVERAGED NAVIER\u2013STOKES EQUATIONS",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          92.25699848011699,
+          61.94796508354261
+        ],
+        [
+          520.4985800486068,
+          61.94796508354261
+        ],
+        [
+          520.4985800486068,
+          103.2349853515625
+        ],
+        [
+          92.25699848011699,
+          103.2349853515625
+        ]
+      ]
+    },
+    {
+      "title": "Abstract",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          75.42627794856689,
+          231.35386987891667
+        ],
+        [
+          122.82352937559035,
+          231.35386987891667
+        ],
+        [
+          122.82352937559035,
+          245.88568115234375
+        ],
+        [
+          75.42627794856689,
+          245.88568115234375
+        ]
+      ]
+    },
+    {
+      "title": "1 Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          75.106994590471,
+          515.5433400698464
+        ],
+        [
+          163.29022216796875,
+          515.5433400698464
+        ],
+        [
+          163.29022216796875,
+          530.7955322265625
+        ],
+        [
+          75.106994590471,
+          530.7955322265625
+        ]
+      ]
+    },
+    {
+      "title": "2 Methodology",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          75.83369180597646,
+          316.493851102046
+        ],
+        [
+          165.76696923397648,
+          316.493851102046
+        ],
+        [
+          165.76696923397648,
+          330.6717224121094
+        ],
+        [
+          75.83369180597646,
+          330.6717224121094
+        ]
+      ]
+    },
+    {
+      "title": "3 Results",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          312.8345581362169,
+          695.8977954079822
+        ],
+        [
+          374.61746853845244,
+          695.8977954079822
+        ],
+        [
+          374.61746853845244,
+          710.7796325683594
+        ],
+        [
+          312.8345581362169,
+          710.7796325683594
+        ]
+      ]
+    },
+    {
+      "title": "Falkner\u2013Skan boundary layer (FSBL)",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          75.77685854356895,
+          710.5787239380426
+        ],
+        [
+          240.5191453602212,
+          710.5787239380426
+        ],
+        [
+          240.5191453602212,
+          724.3111801147461
+        ],
+        [
+          75.77685854356895,
+          724.3111801147461
+        ]
+      ]
+    },
+    {
+      "title": "ZPG turbulent boundary layer",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          312.74977784433054,
+          697.8382745540683
+        ],
+        [
+          448.6435602221741,
+          697.8382745540683
+        ],
+        [
+          448.6435602221741,
+          711.7449493408203
+        ],
+        [
+          312.74977784433054,
+          711.7449493408203
+        ]
+      ]
+    },
+    {
+      "title": "APG turbulent boundary layer",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          75.4368210799748,
+          719.9361140725873
+        ],
+        [
+          210.63211098005547,
+          719.9361140725873
+        ],
+        [
+          210.63211098005547,
+          733.3691787719727
+        ],
+        [
+          75.4368210799748,
+          733.3691787719727
+        ]
+      ]
+    },
+    {
+      "title": "NACA4412 airfoil",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          313.0467264862445,
+          671.346796322803
+        ],
+        [
+          393.4398845220993,
+          671.346796322803
+        ],
+        [
+          393.4398845220993,
+          684.1001434326172
+        ],
+        [
+          313.0467264862445,
+          684.1001434326172
+        ]
+      ]
+    },
+    {
+      "title": "Periodic hill",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          75.5168824472115,
+          592.1191602997342
+        ],
+        [
+          130.5488328140989,
+          592.1191602997342
+        ],
+        [
+          130.5488328140989,
+          604.7591552734375
+        ],
+        [
+          75.5168824472115,
+          604.7591552734375
+        ]
+      ]
+    },
+    {
+      "title": "4 Conclusions",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          312.93661060861734,
+          693.8841873399933
+        ],
+        [
+          399.14309438710245,
+          693.8841873399933
+        ],
+        [
+          399.14309438710245,
+          708.6716461181641
+        ],
+        [
+          312.93661060861734,
+          708.6716461181641
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          75.18774890659438,
+          480.2125521326107
+        ],
+        [
+          172.2897257384485,
+          480.2125521326107
+        ],
+        [
+          172.2897257384485,
+          493.45071750820904
+        ],
+        [
+          75.18774890659438,
+          493.45071750820904
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          74.68115745563651,
+          537.734352607761
+        ],
+        [
+          134.26985379850834,
+          537.734352607761
+        ],
+        [
+          134.26985379850834,
+          550.4866087888886
+        ],
+        [
+          74.68115745563651,
+          550.4866087888886
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          231
+        ],
+        [
+          "Line",
+          99
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          642
+        ],
+        [
+          "Line",
+          228
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "Equation",
+          3
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ],
+        [
+          "Diagram",
+          1
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          525
+        ],
+        [
+          "Line",
+          123
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "Reference",
+          3
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          609
+        ],
+        [
+          "Line",
+          136
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ],
+        [
+          "Reference",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          434
+        ],
+        [
+          "Line",
+          130
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "FigureGroup",
+          2
+        ],
+        [
+          "Reference",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          283
+        ],
+        [
+          "Line",
+          101
+        ],
+        [
+          "ListItem",
+          35
+        ],
+        [
+          "Reference",
+          27
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "ListGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/Eivazi_2022_PINN_RANS_Navier_Stokes"
+}

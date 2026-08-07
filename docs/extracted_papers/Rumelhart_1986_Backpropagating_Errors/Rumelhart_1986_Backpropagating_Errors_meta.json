@@ -1,0 +1,83 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Making sure you're not a bot!",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          97.22481777085464,
+          179.70172119140625
+        ],
+        [
+          499.1789855957031,
+          179.70172119140625
+        ],
+        [
+          499.1789855957031,
+          208.8616943359375
+        ],
+        [
+          97.22481777085464,
+          208.8616943359375
+        ]
+      ]
+    },
+    {
+      "title": "",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          264.6092327896233,
+          224.21734744145843
+        ],
+        [
+          328.0980573601326,
+          224.21734744145843
+        ],
+        [
+          328.0980573601326,
+          239.47628276006301
+        ],
+        [
+          264.6092327896233,
+          239.47628276006301
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          53
+        ],
+        [
+          "Line",
+          23
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "SectionHeader",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/tmph7_rtgty"
+}

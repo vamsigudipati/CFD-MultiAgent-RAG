@@ -1,0 +1,4 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-08-06 22:49:44,359 [INFO] marker: Saved markdown to docs/extracted_papers/Hasanuzzaman_2023_PINN_PIV_Measurements
+2026-08-06 22:49:44,360 [INFO] marker: Total time: 7.2096521854400635
+Force-killed llamacpp (pid 2338)

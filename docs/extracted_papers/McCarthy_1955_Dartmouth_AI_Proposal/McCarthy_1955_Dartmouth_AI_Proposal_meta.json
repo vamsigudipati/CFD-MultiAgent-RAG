@@ -1,0 +1,864 @@
+{
+  "table_of_contents": [
+    {
+      "title": "A PROPOSAL FOR THE\nDARTMOUTH SUMMER RESEARCH PROJECT\nON ARTIFICIAL INTELLIGENCE",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          177.77474212646484,
+          70.37792587280273
+        ],
+        [
+          431.39268493652344,
+          70.37792587280273
+        ],
+        [
+          431.39268493652344,
+          112.00519180297852
+        ],
+        [
+          177.77474212646484,
+          112.00519180297852
+        ]
+      ]
+    },
+    {
+      "title": "1 Automatic Computers",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.52027130126953,
+          199.38670349121094
+        ],
+        [
+          226.9889144897461,
+          199.38670349121094
+        ],
+        [
+          226.9889144897461,
+          212.78514862060547
+        ],
+        [
+          90.52027130126953,
+          212.78514862060547
+        ]
+      ]
+    },
+    {
+      "title": "2. How Can a Computer be Programmed to Use a Language",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.52352714538574,
+          268.7296142578125
+        ],
+        [
+          428.12864685058594,
+          268.7296142578125
+        ],
+        [
+          428.12864685058594,
+          283.52222442626953
+        ],
+        [
+          90.52352714538574,
+          283.52222442626953
+        ]
+      ]
+    },
+    {
+      "title": "3. Neuron Nets",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          91.32509422302246,
+          352.3876190185547
+        ],
+        [
+          178.48814392089844,
+          352.3876190185547
+        ],
+        [
+          178.48814392089844,
+          366.1208953857422
+        ],
+        [
+          91.32509422302246,
+          366.1208953857422
+        ]
+      ]
+    },
+    {
+      "title": "4. Theory of the Size of a Calculation",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.78813171386719,
+          424.14866638183594
+        ],
+        [
+          302.21315002441406,
+          424.14866638183594
+        ],
+        [
+          302.21315002441406,
+          437.6472930908203
+        ],
+        [
+          90.78813171386719,
+          437.6472930908203
+        ]
+      ]
+    },
+    {
+      "title": "5. Self-lmprovement",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          91.49166297912598,
+          533.7627868652344
+        ],
+        [
+          204.07294464111328,
+          533.7627868652344
+        ],
+        [
+          204.07294464111328,
+          547.0448455810547
+        ],
+        [
+          91.49166297912598,
+          547.0448455810547
+        ]
+      ]
+    },
+    {
+      "title": "6. Abstractions",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          91.32148361206055,
+          591.3262939453125
+        ],
+        [
+          177.6800422668457,
+          591.3262939453125
+        ],
+        [
+          177.6800422668457,
+          604.1994323730469
+        ],
+        [
+          91.32148361206055,
+          604.1994323730469
+        ]
+      ]
+    },
+    {
+      "title": "7. Randomness and Creativity",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          90.98868370056152,
+          648.2254486083984
+        ],
+        [
+          260.399658203125,
+          648.2254486083984
+        ],
+        [
+          260.399658203125,
+          661.9197082519531
+        ],
+        [
+          90.98868370056152,
+          661.9197082519531
+        ]
+      ]
+    },
+    {
+      "title": "PROPOSAL FOR RESEARCH BY C. E. SHANNON",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          153.94934463500977,
+          71.14068031311035
+        ],
+        [
+          455.52069091796875,
+          71.14068031311035
+        ],
+        [
+          455.52069091796875,
+          84.14934539794922
+        ],
+        [
+          153.94934463500977,
+          84.14934539794922
+        ]
+      ]
+    },
+    {
+      "title": "PROPOSAL FOR RESEARCH BY M. L. MINSKY",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          159.22869873046875,
+          71.21040916442871
+        ],
+        [
+          450.4801025390625,
+          71.21040916442871
+        ],
+        [
+          450.4801025390625,
+          84.04389381408691
+        ],
+        [
+          159.22869873046875,
+          84.04389381408691
+        ]
+      ]
+    },
+    {
+      "title": "PROPOSAL FOR RESEARCH BY N. ROCHESTER",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          155.09263229370117,
+          70.56826400756836
+        ],
+        [
+          454.32012939453125,
+          70.56826400756836
+        ],
+        [
+          454.32012939453125,
+          83.9256649017334
+        ],
+        [
+          155.09263229370117,
+          83.9256649017334
+        ]
+      ]
+    },
+    {
+      "title": "Originality in Machine Performance",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          68.62288856506348,
+          98.20703887939453
+        ],
+        [
+          270.6543731689453,
+          98.20703887939453
+        ],
+        [
+          270.6543731689453,
+          111.83978271484375
+        ],
+        [
+          68.62288856506348,
+          111.83978271484375
+        ]
+      ]
+    },
+    {
+      "title": "The Process of Invention or Discovery",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          68.30316352844238,
+          260.91302490234375
+        ],
+        [
+          283.2021789550781,
+          260.91302490234375
+        ],
+        [
+          283.2021789550781,
+          275.28009033203125
+        ],
+        [
+          68.30316352844238,
+          275.28009033203125
+        ]
+      ]
+    },
+    {
+      "title": "The Machine With Randomness",
+      "heading_level": null,
+      "page_id": 7,
+      "polygon": [
+        [
+          68.53142738342285,
+          436.5108947753906
+        ],
+        [
+          250.84215545654297,
+          436.5108947753906
+        ],
+        [
+          250.84215545654297,
+          450.1358642578125
+        ],
+        [
+          68.53142738342285,
+          450.1358642578125
+        ]
+      ]
+    },
+    {
+      "title": "REFERENCES",
+      "heading_level": null,
+      "page_id": 8,
+      "polygon": [
+        [
+          260.63360595703125,
+          333.1024703979492
+        ],
+        [
+          348.9957962036133,
+          333.1024703979492
+        ],
+        [
+          348.9957962036133,
+          345.5581970214844
+        ],
+        [
+          260.63360595703125,
+          345.5581970214844
+        ]
+      ]
+    },
+    {
+      "title": "PROPOSAL FOR RESEARCH BY JOHN MCCARTHY",
+      "heading_level": null,
+      "page_id": 9,
+      "polygon": [
+        [
+          145.05669021606445,
+          70.79652214050293
+        ],
+        [
+          464.63995361328125,
+          70.79652214050293
+        ],
+        [
+          464.63995361328125,
+          83.73996162414551
+        ],
+        [
+          145.05669021606445,
+          83.73996162414551
+        ]
+      ]
+    },
+    {
+      "title": "PEOPLE INTERESTED IN THE\nARTIFICIAL INTELLIGENCE PROBLEM",
+      "heading_level": null,
+      "page_id": 10,
+      "polygon": [
+        [
+          183.03576278686523,
+          70.02469253540039
+        ],
+        [
+          427.68035888671875,
+          70.02469253540039
+        ],
+        [
+          427.68035888671875,
+          96.63547897338867
+        ],
+        [
+          183.03576278686523,
+          96.63547897338867
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          19
+        ],
+        [
+          "Line",
+          9
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          442
+        ],
+        [
+          "Line",
+          47
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "SectionHeader",
+          7
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          464
+        ],
+        [
+          "Line",
+          47
+        ],
+        [
+          "Text",
+          11
+        ],
+        [
+          "ListItem",
+          4
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          66
+        ],
+        [
+          "Line",
+          13
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          419
+        ],
+        [
+          "Line",
+          28
+        ],
+        [
+          "Text",
+          3
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          539
+        ],
+        [
+          "Line",
+          33
+        ],
+        [
+          "Text",
+          5
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          593
+        ],
+        [
+          "Line",
+          47
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "ListItem",
+          4
+        ],
+        [
+          "SectionHeader",
+          3
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          570
+        ],
+        [
+          "Line",
+          50
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 8,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          211
+        ],
+        [
+          "Line",
+          29
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "ListItem",
+          3
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 9,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          269
+        ],
+        [
+          "Line",
+          30
+        ],
+        [
+          "ListItem",
+          7
+        ],
+        [
+          "Text",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 10,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          233
+        ],
+        [
+          "Line",
+          44
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 11,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          169
+        ],
+        [
+          "Line",
+          45
+        ],
+        [
+          "ListGroup",
+          1
+        ],
+        [
+          "PageFooter",
+          1
+        ],
+        [
+          "Text",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 12,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          53
+        ],
+        [
+          "Line",
+          15
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "PageFooter",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/McCarthy_1955_Dartmouth_AI_Proposal"
+}
