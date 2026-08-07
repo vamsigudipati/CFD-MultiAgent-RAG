@@ -82,6 +82,77 @@ def validate(model, data, nu=0.01):
     }
 ```
 
+## Data Handling & Loaders
+
+```python
+from dataclasses import dataclass
+
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+
+@dataclass
+class MinMaxScaler:
+    min_xy: torch.Tensor
+    max_xy: torch.Tensor
+
+    def transform(self, xy: torch.Tensor) -> torch.Tensor:
+        denom = (self.max_xy - self.min_xy).clamp_min(1e-8)
+        return (xy - self.min_xy) / denom
+
+
+class PINNDataset(Dataset):
+    """Stores interior and boundary points with explicit coordinate scaling."""
+
+    def __init__(self, x_all, y_all, u_bc, v_bc, p_bc, boundary_mask):
+        xy_all = torch.cat([x_all, y_all], dim=1).float()
+        self.scaler = MinMaxScaler(
+            min_xy=xy_all.min(dim=0).values,
+            max_xy=xy_all.max(dim=0).values,
+        )
+
+        xy_scaled = self.scaler.transform(xy_all)
+        interior_mask = ~boundary_mask
+
+        # Interior collocation points for PDE residuals
+        self.xy_interior = xy_scaled[interior_mask]
+
+        # Boundary points and targets for supervised boundary loss
+        self.xy_boundary = xy_scaled[boundary_mask]
+        self.bc_targets = torch.cat([u_bc, v_bc, p_bc], dim=1).float()[boundary_mask]
+
+    def __len__(self):
+        return self.xy_interior.shape[0]
+
+    def __getitem__(self, idx):
+        interior_xy = self.xy_interior[idx]
+
+        # Pair one boundary sample with each interior sample for joint loss updates.
+        boundary_idx = idx % self.xy_boundary.shape[0]
+        boundary_xy = self.xy_boundary[boundary_idx]
+        boundary_target = self.bc_targets[boundary_idx]
+        return {
+            "x_e": interior_xy[0:1],
+            "y_e": interior_xy[1:2],
+            "x_b": boundary_xy[0:1],
+            "y_b": boundary_xy[1:2],
+            "target_b": boundary_target,
+        }
+
+
+dataset = PINNDataset(x_all, y_all, u_bc, v_bc, p_bc, boundary_mask)
+loader = DataLoader(
+    dataset,
+    batch_size=512,
+    shuffle=True,
+    num_workers=4,
+    persistent_workers=True,
+)
+```
+
+Use the `loader` batches inside `train_model(...)` to feed interior residual and
+boundary condition terms every step.
+
 ## Pitfalls
 
 1. **L-BFGS without a closure** raises a runtime error — the closure is

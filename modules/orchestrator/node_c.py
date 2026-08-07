@@ -262,7 +262,10 @@ PINN_SYSTEM_PROMPT = (
     "   followed by (L-)BFGS) and implement them using the exact syntax shown in the FRAMEWORK\n"
     "   REFERENCE section below -- including a proper `closure()` for L-BFGS.\n"
     "10) Keep default epoch/iteration counts small enough for a CPU smoke run (<= 200 Adam epochs,\n"
-    "    <= 100 L-BFGS iterations) while preserving the paper's optimizer structure.\n\n"
+    "    <= 100 L-BFGS iterations) while preserving the paper's optimizer structure.\n"
+    "11) You must implement a custom PyTorch Dataset class to handle data ingestion, coordinate\n"
+    "    scaling, and boundary separation. You must feed your training loop using a PyTorch\n"
+    "    DataLoader configured with multi-processing workers.\n\n"
 )
 
 
