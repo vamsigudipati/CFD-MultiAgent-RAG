@@ -60,96 +60,100 @@
     * **Typed Failure Taxonomy & Checkpointing:** Replaced raw stack trace accumulation with normalized error fingerprinting, a monotonic budget ($k=3$), and a SQLite checkpointer (`SqliteSaver`). *Rationale:* Prevents LLM context window bloat and cleanly terminates infinite "self-thrashing" loops when a model fundamentally fails to converge due to chaotic physics.
     * **Zero-LLM Frontmatter Enrichment:** Mandated a 100% rule-based parsing script (`enrich_blueprints.py`) for Stage 1 to Stage 2 handoffs. *Rationale:* Ensures the feasibility pre-check (Node A.5 kill switch) evaluates deterministic ground truth rather than stochastic LLM judgments.
 
-    graph TD
-    %% STAGE 1
-    subgraph S1 ["STAGE 1: Offline Ingestion & Enrichment (Run Once)"]
-        PDF["48 Raw Academic PDFs"] -->|Marker OCR| EXT["Extracted Markdown"]
-        EXT -->|normalize_markdown.py| NORM["Normalized Markdown"]
-        NORM -->|synthesize_blueprint.py| BP["_blueprint.md x48"]
-        BP -->|enrich_blueprints.py| FM["YAML Frontmatter"]
-        FM -->|Human Sign-off| FROZEN["Frozen Frontmatter (Trust Anchor)"]
+#### Architecture Diagram: Stage 1-3 Multi-Agent Pipeline
 
-        TB["Version-Pinned Textbooks"] -->|Index| ORACLE["Syntax Oracle"]
-        GH["GitHub Repos"] -->|AST Parser| T1C["Tier 1: Repo Cards"]
-        GH -->|AST Parser| T2C["Tier 2: Symbol Chunks"]
-    end
+```mermaid
+graph TD
+%% STAGE 1
+subgraph S1 ["STAGE 1: Offline Ingestion & Enrichment (Run Once)"]
+    PDF["48 Raw Academic PDFs"] -->|Marker OCR| EXT["Extracted Markdown"]
+    EXT -->|normalize_markdown.py| NORM["Normalized Markdown"]
+    NORM -->|synthesize_blueprint.py| BP["_blueprint.md x48"]
+    BP -->|enrich_blueprints.py| FM["YAML Frontmatter"]
+    FM -->|Human Sign-off| FROZEN["Frozen Frontmatter (Trust Anchor)"]
 
-    %% STAGE 2
-    subgraph S2 ["STAGE 2: LangGraph Runtime"]
-        NA{"Node A: Deterministic Router"}
-        NA5{"Node A.5: Feasibility Pre-Check"}
-        NB["Node B: Physics Reasoner"]
-        NC{"Node C: Framework Supervisor"}
-        PT["PyTorch Agent"]
-        TF["TensorFlow Agent"]
-        KR["Keras Agent"]
-        MONO["Monolith: train_and_val.py (LLM Mutable)"]
-        ND["Node D: Test Execution Engine"]
+    TB["Version-Pinned Textbooks"] -->|Index| ORACLE["Syntax Oracle"]
+    GH["GitHub Repos"] -->|AST Parser| T1C["Tier 1: Repo Cards"]
+    GH -->|AST Parser| T2C["Tier 2: Symbol Chunks"]
+end
 
-        NA --> NA5
-        NA5 -->|Missing Fields/Closure| BLOCK1["TERMINAL: BLOCKED_DATA"]
-        NA5 -->|Feasible Spec| NB
-        NB -->|Plan + Typed Constraints| NC
-        NC -->|Route: PyTorch| PT
-        NC -->|Route: TF| TF
-        NC -->|Route: Keras| KR
-        PT -->|Generate/Patch| MONO
-        TF -->|Generate/Patch| MONO
-        KR -->|Generate/Patch| MONO
-        MONO --> ND
-    end
+%% STAGE 2
+subgraph S2 ["STAGE 2: LangGraph Runtime"]
+    NA{"Node A: Deterministic Router"}
+    NA5{"Node A.5: Feasibility Pre-Check"}
+    NB["Node B: Physics Reasoner"]
+    NC{"Node C: Framework Supervisor"}
+    PT["PyTorch Agent"]
+    TF["TensorFlow Agent"]
+    KR["Keras Agent"]
+    MONO["Monolith: train_and_val.py (LLM Mutable)"]
+    ND["Node D: Test Execution Engine"]
 
-    %% STAGE 3
-    subgraph S3 ["STAGE 3: Validation Harness (Immutable)"]
-        CONF["conftest.py (Fixtures, CPU/f64 Pinning)"]
-        T0["T0: Static (Param count)"]
-        T1["T1: Plumbing (Data-term overfit)"]
-        T2["T2: Physics (MMS, gradcheck f64)"]
-        T3["T3: Short-Train Regression"]
-        HREG["Handler Registry (open/closed)"]
+    NA --> NA5
+    NA5 -->|Missing Fields/Closure| BLOCK1["TERMINAL: BLOCKED_DATA"]
+    NA5 -->|Feasible Spec| NB
+    NB -->|Plan + Typed Constraints| NC
+    NC -->|Route: PyTorch| PT
+    NC -->|Route: TF| TF
+    NC -->|Route: Keras| KR
+    PT -->|Generate/Patch| MONO
+    TF -->|Generate/Patch| MONO
+    KR -->|Generate/Patch| MONO
+    MONO --> ND
+end
 
-        CONF --> T0
-        T0 --> T1
-        T1 --> T2
-        T2 --> T3
-        HREG -.->|gate_assert| T2
-    end
+%% STAGE 3
+subgraph S3 ["STAGE 3: Validation Harness (Immutable)"]
+    CONF["conftest.py (Fixtures, CPU/f64 Pinning)"]
+    T0["T0: Static (Param count)"]
+    T1["T1: Plumbing (Data-term overfit)"]
+    T2["T2: Physics (MMS, gradcheck f64)"]
+    T3["T3: Short-Train Regression"]
+    HREG["Handler Registry (open/closed)"]
 
-    %% SELF-HEALING
-    subgraph SH ["SELF-HEALING CONTROL LOOP"]
-        CLS["Taxonomy Classifier"]
-        FP["Normalized Fingerprint"]
-        DEDUP{"Dedup & Budget Check k=3"}
-        ART["artifacts / Out-of-band traces"]
-    end
+    CONF --> T0
+    T0 --> T1
+    T1 --> T2
+    T2 --> T3
+    HREG -.->|gate_assert| T2
+end
 
-    ND -->|Failure Captured| CLS
-    CLS --> FP
-    FP --> DEDUP
-    CLS -.->|Advisory Summary| ART
+%% SELF-HEALING
+subgraph SH ["SELF-HEALING CONTROL LOOP"]
+    CLS["Taxonomy Classifier"]
+    FP["Normalized Fingerprint"]
+    DEDUP{"Dedup & Budget Check k=3"}
+    ART["artifacts / Out-of-band traces"]
+end
 
-    DEDUP -->|SYNTAX or SHAPE_DTYPE| NC
-    DEDUP -->|NAN_DIVERGENCE or GATE_FAIL| NB
-    DEDUP -->|Repeat or Budget Exhausted| BLOCK2["TERMINAL: BLOCKED_PHYSICS"]
+ND -->|Failure Captured| CLS
+CLS --> FP
+FP --> DEDUP
+CLS -.->|Advisory Summary| ART
 
-    ND -->|ALL gates pass| REF["Refactor Node (Split Monolith)"]
-    REF -->|Full T0-T3 Re-run| FINAL["Production-Validated Model"]
-    REF -.->|Re-validate| T0
+DEDUP -->|SYNTAX or SHAPE_DTYPE| NC
+DEDUP -->|NAN_DIVERGENCE or GATE_FAIL| NB
+DEDUP -->|Repeat or Budget Exhausted| BLOCK2["TERMINAL: BLOCKED_PHYSICS"]
 
-    %% FEEDS
-    FROZEN -->|Immutable Ground Truth| NA
-    FROZEN -->|Parametrizes Assertions| CONF
-    ORACLE -.->|Namespace: Syntax| PT
-    ORACLE -.->|Namespace: Syntax| TF
-    ORACLE -.->|Namespace: Syntax| KR
-    T1C -.->|Namespace: Code| PT
-    T1C -.->|Namespace: Code| TF
-    T1C -.->|Namespace: Code| KR
-    T2C -.->|Namespace: Code| PT
-    T2C -.->|Namespace: Code| TF
-    T2C -.->|Namespace: Code| KR
+ND -->|ALL gates pass| REF["Refactor Node (Split Monolith)"]
+REF -->|Full T0-T3 Re-run| FINAL["Production-Validated Model"]
+REF -.->|Re-validate| T0
 
-    ### 9. Phase 1 & 2 Completed: The Deterministic Validation Harness
+%% FEEDS
+FROZEN -->|Immutable Ground Truth| NA
+FROZEN -->|Parametrizes Assertions| CONF
+ORACLE -.->|Namespace: Syntax| PT
+ORACLE -.->|Namespace: Syntax| TF
+ORACLE -.->|Namespace: Syntax| KR
+T1C -.->|Namespace: Code| PT
+T1C -.->|Namespace: Code| TF
+T1C -.->|Namespace: Code| KR
+T2C -.->|Namespace: Code| PT
+T2C -.->|Namespace: Code| TF
+T2C -.->|Namespace: Code| KR
+```
+
+### 9. Phase 1 & 2 Completed: The Deterministic Validation Harness
 * **Milestone:** Successfully built and tested the "Green Layer" (T0-T3 PyTest validation gates). The harness is now completely immutable at runtime, protecting the pipeline against LLM reward-hacking.
 * **Key Implementations:**
     * **MMS Registry:** Hardcoded a mathematically verified Taylor-Green Vortex analytic solution for the 2D Incompressible Navier-Stokes PDE family. Autograd residuals hit `0.0` (continuity) and machine epsilon `~6e-17` (momentum) using `float64`.
@@ -157,3 +161,11 @@
     * **Dynamic Execution Utilities:** Built a strict `WORKSPACE_DIR` loader (`utils.py`) to safely import LLM-generated monoliths without polluting the static test harness.
     * **Negative Path Handling:** Ensured that missing constraints raise loud `UNSUPPORTED_CONSTRAINT` errors and missing required methods trigger `SYNTAX` errors to gracefully route failures in the LangGraph loop.
     * **T1 & T3 Gate Calibration:** Calibrated the T1 gradient overfit test learning rate to `1e-2`. Established that T1 requires the code generator to produce *structured* (non-random) dummy targets to reliably test gradient plumbing. Integrated `pytest-timeout` for the T3 multi-seed regression to prevent execution deadlocks.
+
+### 10. Phase 3 Completed: AST Knowledge Base Indexing
+* **Milestone:** Built the Tier 1 (Repo Cards) and Tier 2 (Symbol Chunks) Code Vector Store. 
+* **Key Implementations:**
+    * **Repository Cloner:** Successfully extracted, de-duplicated, and cloned 10 unique, state-of-the-art GitHub repositories directly from the literature CSV.
+    * **AST Indexer:** Implemented a targeted AST visitor (`ast_indexer.py`) that successfully indexed 155 critical physics symbols (models, neural nets, loss functions, and PDE residuals) into a highly structured SQLite database (`ast_index.sqlite`).
+    * **Keras Function Factory Patch:** Adjusted the extraction rules to capture functional API definitions (`def model_factory`) critical for TensorFlow/Keras architectures.
+    * **fetch_symbol Tool:** Established the deterministic lookup function that the Framework Sub-Agents will use to inject golden physics code into their generation contexts.
