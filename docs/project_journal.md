@@ -176,3 +176,19 @@ T2C -.->|Namespace: Code| KR
     * **Node A & A.5 (Ingestion & Kill Switch):** Implemented a deterministic data pre-check. If a blueprint's `closure_status` is `unclosed` or `pde_family` is unresolved, the graph safely terminates with a `BLOCKED_DATA` status without wasting a single LLM token.
     * **Node B (Physics Reasoner):** Bypassed the LLM entirely for synthesis. The node deterministically constructs an `execution_plan` string by iterating over the Pydantic `frontmatter`. This explicitly sets the contract for the Code Supervisor, mandating `compute_bc_loss`, `train_short_loop`, and `get_dummy_batch` (with structured targets to satisfy the T1 overfit calibration).
     * **State Serialization:** Ensured `frontmatter` is passed via `model_dump()` so the entire state remains JSON-serializable, anticipating the `SqliteSaver` checkpointer.
+
+    ### 12. Phase 4 Completed: Autonomous Orchestration, Self-Healing, and Checkpointing
+* **Milestone:** Finalized the multi-agent graph architecture, test execution runner, and persistent state management.
+* **Key Implementations:**
+    * **Node C (Framework Supervisor):** Integrated code generation logic that pulls reference symbols from the AST SQLite database via structured queries and formats complete PyTorch/TensorFlow execution monoliths.
+    * **Node D (Test Execution & Fingerprinting):** Built an isolated subprocess runner for the T0–T3 PyTest harness that normalizes failures into a strict priority hierarchy (`SYNTAX` > `UNSUPPORTED_CONSTRAINT` > Normalized `GATE_FAIL|tier:test_name`) to prevent line-number churn from breaking self-healing routing.
+    * **Self-Healing State Machine (`graph.py`):** Wired deterministic conditional routing to loop `SYNTAX` errors back to Node C, route `GATE_FAIL` errors back to Node B (Physics Reasoner) for re-planning, and enforce a monotonic budget cap ($k=3$) leading to a graceful `BLOCKED_PHYSICS` terminal state.
+    * **Persistent State Management:** Integrated LangGraph's `SqliteSaver` checkpointer to persist all graph state transitions and self-healing iterations into `data/orchestrator_checkpoints.sqlite`.
+
+    ### 13. Phase 4 Validation, Regression Fixes & Production Hardening
+* **Milestone:** Executed full end-to-end integration testing, validating orchestrator routing, SQLite state checkpointing, and the T0–T3 green layer gates.
+* **Key Refinements:**
+    * **Robust Ingestion:** Patched `node_a_ingest` to safely load raw YAML via `yaml.safe_load` before passing it to Pydantic, maintaining graceful error degradation.
+    * **Normalization Spec Typing:** Updated `node_b_physics_reasoner` to call `.model_dump()` on the Pydantic `NormalizationSpec` object prior to dictionary iteration.
+    * **Test Institutionalization:** Committed `modules/orchestrator/test_orchestrator.py` to permanently capture happy-path execution, data kill-switches (`BLOCKED_DATA`), and budget exhaustion ($k=3$) leading to `BLOCKED_PHYSICS`.
+    * **Dependency Management:** Established root `requirements.txt` containing all runtime libraries (`torch`, `pydantic`, `pyyaml`, `pytest`, `pytest-timeout`, `langgraph`, `langgraph-checkpoint-sqlite`).
