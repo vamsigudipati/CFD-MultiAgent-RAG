@@ -12,8 +12,26 @@ LOGGER = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKSPACE_DIR = REPO_ROOT / "modules" / "workspace"
+# Backward-compatibility shim for tests/utilities that still import the legacy
+# static monolith path. Runtime execution now uses _resolve_workspace_dir(...).
 MONOLITH_PATH = WORKSPACE_DIR / "train_and_val.py"
 HARNESS_DIR = REPO_ROOT / "modules" / "validation_harness"
+
+
+def _resolve_workspace_dir(state: AgentState, config=None) -> Path:
+    """Return a thread-isolated workspace for this paper/run.
+
+    Layout: modules/workspace/<paper_id>_<thread_id>/train_and_val.py
+    """
+    paper_id = str(state.get("paper_id", "unknown_paper"))
+    thread_id = "default-thread"
+    if config is not None:
+        config_block = config.get("configurable", {}) or {}
+        thread_id = str(config_block.get("thread_id", thread_id))
+
+    safe_paper_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", paper_id)
+    safe_thread_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", thread_id)
+    return WORKSPACE_DIR / f"{safe_paper_id}_{safe_thread_id}"
 
 
 def _classify_failure(output: str) -> str:
@@ -61,13 +79,17 @@ def _classify_failure(output: str) -> str:
     return "UNKNOWN"
 
 
-def node_d_execute_tests(state: AgentState) -> dict:
+def node_d_execute_tests(state: AgentState, config=None) -> dict:
     """Executes the PyTest validation harness against the monolith with hang protection."""
-    MONOLITH_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MONOLITH_PATH.write_text(state.get("generated_code", ""))
+    workspace_dir = _resolve_workspace_dir(state, config=config)
+    monolith_path = workspace_dir / "train_and_val.py"
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+    monolith_path.write_text(state.get("generated_code", ""))
     LOGGER.info(
-        "Node D: wrote monolith (%s chars) and starting Green Layer run (attempt %s)",
-        len(state.get("generated_code", "")), state.get("failure_count", 0) + 1,
+        "Node D: wrote monolith to %s (%s chars) and starting Green Layer run (attempt %s)",
+        monolith_path,
+        len(state.get("generated_code", "")),
+        state.get("failure_count", 0) + 1,
     )
     start_time = time.time()
 
@@ -82,7 +104,7 @@ def node_d_execute_tests(state: AgentState) -> dict:
         "no:cacheprovider",
     ]
 
-    env = {**os.environ, "WORKSPACE_DIR": str(WORKSPACE_DIR.resolve())}
+    env = {**os.environ, "WORKSPACE_DIR": str(workspace_dir.resolve())}
 
     try:
         result = subprocess.run(

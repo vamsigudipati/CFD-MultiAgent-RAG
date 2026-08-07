@@ -10,7 +10,9 @@ __pycache__/
 .env
 
 # Runtime / generated data
-modules/workspace/
+modules/workspace/*
+!modules/workspace/.gitignore
+!modules/workspace/.gitkeep
 data/
 checkpoints/
 
