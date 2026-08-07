@@ -1,6 +1,18 @@
+# Python noise
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# macOS noise
+.DS_Store
+
+# Secrets / local env
+.env
+
+# Runtime / generated data
 modules/workspace/
 data/
 checkpoints/
+
+# Out-of-scope lecture materials
+docs/lectures/
