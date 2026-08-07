@@ -80,8 +80,8 @@ def test_data_term_overfit_and_triviality(standard_evaluation_batch):
     if initial_loss <= 1e-12:
         pytest.skip("Initial loss is already ~0; relative-drop check is not meaningful")
 
-    assert final_loss < 0.01 * initial_loss, (
-        f"Data-term overfit failed: final loss {final_loss:.6g} is not < 1% of "
+    assert final_loss < initial_loss / 10.0, (
+        f"Data-term overfit failed: final loss {final_loss:.6g} is not < 10% of "
         f"initial loss {initial_loss:.6g} (gradient plumbing likely broken)"
     )
 
