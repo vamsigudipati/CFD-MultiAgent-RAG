@@ -17,6 +17,7 @@ failure_count) -- never prose.
 Persistent state checkpointing is enabled via SqliteSaver.
 """
 from pathlib import Path
+import logging
 import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
@@ -33,29 +34,73 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHECKPOINT_DB_PATH = REPO_ROOT / "data" / "orchestrator_checkpoints.sqlite"
 CHECKPOINT_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+# --- File-based observability -------------------------------------------------
+LOGS_DIR = REPO_ROOT / "logs"
+ORCHESTRATOR_LOG_PATH = LOGS_DIR / "orchestrator.log"
+LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+
+def configure_orchestrator_logging(level: int = logging.INFO) -> logging.Logger:
+    """Attach a shared FileHandler to the root logger (idempotent).
+
+    Every module logger (modules.orchestrator.*, validation harness, run
+    scripts) propagates to root, so a single file handler captures the full
+    orchestration trace in logs/orchestrator.log.
+    """
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    root = logging.getLogger()
+    already_attached = any(
+        isinstance(h, logging.FileHandler)
+        and getattr(h, "baseFilename", "") == str(ORCHESTRATOR_LOG_PATH)
+        for h in root.handlers
+    )
+    if not already_attached:
+        handler = logging.FileHandler(ORCHESTRATOR_LOG_PATH, encoding="utf-8")
+        handler.setFormatter(logging.Formatter(LOG_FORMAT))
+        root.addHandler(handler)
+    if root.level > level or root.level == logging.NOTSET:
+        root.setLevel(level)
+    return logging.getLogger("modules.orchestrator")
+
+
+LOGGER = configure_orchestrator_logging()
+
 
 def node_block_physics(state: AgentState) -> dict:
     """Terminal stamp: budget exhausted or unenforceable constraint."""
+    LOGGER.error(
+        "Terminal BLOCKED_PHYSICS: failure_count=%s fingerprint=%s",
+        state.get("failure_count", 0), state.get("error_fingerprint", ""),
+    )
     return {"status": "BLOCKED_PHYSICS"}
 
 
 def _route_after_feasibility(state: AgentState) -> str:
     """Deterministic conditional edge keyed exclusively off the typed status."""
-    return "feasible" if state["status"] == "FEASIBLE" else "blocked"
+    route = "feasible" if state["status"] == "FEASIBLE" else "blocked"
+    LOGGER.info("Feasibility route: %s (status=%s)", route, state["status"])
+    return route
 
 
 def _route_after_tests(state: AgentState) -> str:
     """Deterministic self-healing router (typed fields only)."""
-    if state["status"] == "PASSED":
-        return "done"
     fingerprint = state.get("error_fingerprint", "")
-    if state.get("failure_count", 0) >= MAX_FAILURES or fingerprint == "UNSUPPORTED_CONSTRAINT":
-        return "blocked"
-    if fingerprint in ("SYNTAX", "HANG"):
-        return "fix_code"
-    if fingerprint.startswith("GATE_FAIL"):
-        return "fix_physics"
-    return "blocked"  # UNKNOWN -> terminate rather than thrash
+    failure_count = state.get("failure_count", 0)
+    if state["status"] == "PASSED":
+        route = "done"
+    elif failure_count >= MAX_FAILURES or fingerprint == "UNSUPPORTED_CONSTRAINT":
+        route = "blocked"
+    elif fingerprint in ("SYNTAX", "HANG"):
+        route = "fix_code"
+    elif fingerprint.startswith("GATE_FAIL"):
+        route = "fix_physics"
+    else:
+        route = "blocked"  # UNKNOWN -> terminate rather than thrash
+    LOGGER.info(
+        "Self-healing route: %s (status=%s failures=%s fingerprint=%s)",
+        route, state["status"], failure_count, fingerprint or "None",
+    )
+    return route
 
 
 workflow = StateGraph(AgentState)

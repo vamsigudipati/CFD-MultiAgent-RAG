@@ -188,12 +188,13 @@ _FINGERPRINT_REMEDIES: tuple[tuple[str, str], ...] = (
      "Every parameter must receive a finite gradient from `output.sum().backward()`. "
      "Do not detach, clamp with non-differentiable ops, or route any branch around the graph."),
     ("t1:test_data_term_overfit_and_triviality",
-     "The model must be able to overfit a single (B=2, C=3, H=64, W=64) batch: MSE loss must "
-     "drop 100x within 50 Adam(lr=1e-2) steps AND prediction std must stay above 10% of target "
-        "std. Increase the optimizer learning rate (e.g., AdamW with lr=5e-3) and ensure the network "
-        "has sufficient capacity (e.g., a per-pixel MLP head) to drop the loss by two orders of "
-        "magnitude within 50 steps. Keep an unconstrained output layer (no final activation that "
-        "limits range)."),
+     "The harness trains YOUR architecture with ITS OWN Adam(lr=1e-2) for exactly 50 steps -- "
+     "your train_short_loop settings cannot help here. The architecture itself must converge fast: "
+     "use a per-pixel MLP head (nn.Conv2d with kernel_size=1) as the primary mapping path, e.g. "
+     "1x1 conv (3->128) -> GELU -> 1x1 conv (128->128) -> GELU -> 1x1 conv (128->3), optionally "
+     "with ONE 3x3 conv branch added residually. MSE must drop 100x within 50 steps AND prediction "
+     "std must stay above 10% of target std. Keep the output layer unconstrained (no final "
+     "activation that limits range)."),
     ("t2:test_boundary_condition_loss_finiteness",
      "`compute_bc_loss(batch)` must return a FINITE differentiable scalar tensor for a "
      "(2, 3, 64, 64) input. Avoid division by tensors that can be zero and avoid log/sqrt of "
@@ -202,10 +203,15 @@ _FINGERPRINT_REMEDIES: tuple[tuple[str, str], ...] = (
      "Respect every declared blueprint constraint (e.g. output_floor: all outputs >= floor). "
      "Apply constraints smoothly (e.g. floor + softplus(x)) so gradients survive."),
     ("t2:test_mms_spectral_fidelity",
-     "The output field's high-frequency PSD energy (top 20% of wavenumbers along W) must stay "
-     "within 15% of a reference turbulence spectrum. Use SMOOTH layers (conv with kernel >= 3 "
-     "or per-pixel MLP with SiLU/GELU/Tanh), never checkerboard-prone ops (ConvTranspose with "
-     "stride, PixelShuffle) and never add noise to outputs."),
+     "The output field's high-frequency PSD energy FRACTION (top 20% of wavenumbers along W) must "
+     "match a decaying DNS turbulence spectrum within 15%. The evaluation input is mostly white "
+     "noise, so the network MUST act as a low-pass filter. HARD BANS: never use nn.ConvTranspose2d "
+     "(strided transposed convs cause checkerboard artifacts), never use nn.PixelShuffle, never add "
+     "noise to outputs. REQUIRED: if you change resolution, upsample ONLY with "
+     "nn.Upsample(mode='bilinear', align_corners=False) followed by a standard nn.Conv2d. To "
+     "suppress high-frequency noise, include an explicit smoothing path: either an encoder-decoder "
+     "bottleneck (AvgPool2d(2) -> convs -> bilinear Upsample) or 5x5+ convolution kernels. Use "
+     "smooth activations (SiLU/GELU/Tanh) everywhere."),
     ("t3:test_short_train_regression_multi_seed",
      "`train_short_loop(seed)` must reach the blueprint's expected_validation_loss. Train on a "
      "learnable synthetic mapping (e.g. y = tanh(conv(x))) with enough steps (>= 200) and a "
@@ -271,8 +277,10 @@ def _build_prompt(
         "- No in-place ops on tensors that require grad; no torch.no_grad() inside loss computation.\n\n"
         "SPECTRAL SMOOTHNESS (T2 spectral-fidelity gate):\n"
         "- Use SMOOTH activations: SiLU, GELU, Tanh, or Sin (for PINNs). Avoid ReLU kinks in output layers.\n"
-        "- Do NOT inject noise, checkerboard patterns, PixelShuffle, or strided ConvTranspose upsampling.\n"
-        "- Predicted fields must have physically plausible (decaying) high-frequency spectra.\n\n"
+        "- HARD BAN: nn.ConvTranspose2d and nn.PixelShuffle are FORBIDDEN (checkerboard artifacts).\n"
+        "- Standard upsampling pattern: nn.Upsample(mode='bilinear', align_corners=False) followed by nn.Conv2d.\n"
+        "- Do NOT inject noise into outputs. Predicted fields must have physically plausible "
+        "(decaying) high-frequency spectra -- prefer an explicit low-pass path (pooled bottleneck or 5x5+ kernels).\n\n"
         "CONTRACT COMPLIANCE:\n"
         "- Keep outputs in a standard scale (roughly unit-magnitude; no exp() blowups, no huge constants).\n"
         "- Use exact method signatures shown above; extra helpers are allowed, missing symbols are not.\n"
@@ -366,7 +374,16 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
     )
 
     code = _try_generate_with_gemini(prompt)
-    if not code:
+    if code:
+        LOGGER.info(
+            "Node C: live LLM generation succeeded (attempt %s, %s chars, %s refs)",
+            failure_count + 1, len(code), len(references),
+        )
+    else:
+        LOGGER.warning(
+            "Node C: using deterministic fallback template (attempt %s, fingerprint=%s)",
+            failure_count + 1, fingerprint or "None",
+        )
         code = _fallback_monolith(
             failure_count=failure_count,
             retry_note=retry_note,

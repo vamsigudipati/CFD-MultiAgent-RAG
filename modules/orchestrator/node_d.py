@@ -1,10 +1,14 @@
 """Node D: Test execution runner via subprocess and failure fingerprinting."""
+import logging
 import os
 import re
 import sys
 import subprocess
+import time
 from pathlib import Path
 from .state import AgentState
+
+LOGGER = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKSPACE_DIR = REPO_ROOT / "modules" / "workspace"
@@ -61,6 +65,11 @@ def node_d_execute_tests(state: AgentState) -> dict:
     """Executes the PyTest validation harness against the monolith with hang protection."""
     MONOLITH_PATH.parent.mkdir(parents=True, exist_ok=True)
     MONOLITH_PATH.write_text(state.get("generated_code", ""))
+    LOGGER.info(
+        "Node D: wrote monolith (%s chars) and starting Green Layer run (attempt %s)",
+        len(state.get("generated_code", "")), state.get("failure_count", 0) + 1,
+    )
+    start_time = time.time()
 
     cmd = [
         sys.executable,
@@ -86,6 +95,10 @@ def node_d_execute_tests(state: AgentState) -> dict:
         )
     except subprocess.TimeoutExpired:
         new_failures = state.get("failure_count", 0) + 1
+        LOGGER.error(
+            "Node D: Green Layer HANG after %.1fs (failure_count -> %s)",
+            time.time() - start_time, new_failures,
+        )
         return {
             "status": "FAILED",
             "error_fingerprint": "HANG",
@@ -93,6 +106,7 @@ def node_d_execute_tests(state: AgentState) -> dict:
         }
 
     if result.returncode == 0:
+        LOGGER.info("Node D: Green Layer PASSED in %.1fs", time.time() - start_time)
         return {
             "status": "PASSED",
             "error_fingerprint": "",
@@ -101,6 +115,10 @@ def node_d_execute_tests(state: AgentState) -> dict:
 
     fingerprint = _classify_failure(result.stdout + "\n" + result.stderr)
     new_failures = state.get("failure_count", 0) + 1
+    LOGGER.warning(
+        "Node D: Green Layer FAILED in %.1fs (failure_count -> %s, fingerprint=%s)",
+        time.time() - start_time, new_failures, fingerprint,
+    )
     return {
         "status": "FAILED",
         "error_fingerprint": fingerprint,

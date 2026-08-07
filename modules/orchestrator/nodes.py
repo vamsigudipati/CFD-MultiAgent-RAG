@@ -1,8 +1,11 @@
 """Orchestrator nodes for ingestion, feasibility pre-check, and physics reasoning."""
+import logging
 import yaml
 from pathlib import Path
 from modules.validation_harness.frontmatter import BlueprintFrontmatter
 from .state import AgentState
+
+LOGGER = logging.getLogger(__name__)
 
 # Absolute path anchor from repo root
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -18,12 +21,17 @@ def node_a_ingest(state: AgentState) -> dict:
     try:
         parsed = yaml.safe_load(raw_text) or {}
         frontmatter = BlueprintFrontmatter.from_yaml(parsed)
+        LOGGER.info(
+            "Node A: blueprint ingested (pde_family=%s, closure_status=%s, %s constraints)",
+            frontmatter.pde_family, frontmatter.closure_status, len(frontmatter.constraints),
+        )
         return {
             "blueprint_yaml": raw_text,
             "frontmatter": frontmatter.model_dump(),
         }
     except (yaml.YAMLError, ValueError) as e:
         # Gracefully capture malformed syntax into state instead of crashing mid-stream
+        LOGGER.error("Node A: malformed blueprint YAML, degrading to BLOCKED_DATA (%s)", e)
         return {
             "blueprint_yaml": raw_text,
             "frontmatter": {"closure_status": "unclosed", "pde_family": "unknown"},
@@ -88,4 +96,8 @@ def node_b_physics_reasoner(state: AgentState) -> dict:
     ])
 
     execution_plan = "\n".join(lines)
+    LOGGER.info(
+        "Node B: execution plan synthesized (%s chars, pde_family=%s, %s constraints)",
+        len(execution_plan), pde_family, len(constraints),
+    )
     return {"execution_plan": execution_plan}
