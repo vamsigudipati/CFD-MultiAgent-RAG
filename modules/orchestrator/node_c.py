@@ -19,6 +19,11 @@ from .state import AgentState
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 AST_DB_PATH = REPO_ROOT / "data" / "ast_index.sqlite"
 ENV_FILE_PATH = REPO_ROOT / ".env"
+EXTRACTED_PAPERS_DIR = REPO_ROOT / "docs" / "extracted_papers"
+FRAMEWORK_TEMPLATES_DIR = REPO_ROOT / "docs" / "framework_templates"
+PINN_TRAINING_TEMPLATE_PATH = FRAMEWORK_TEMPLATES_DIR / "pytorch_pinn_training.md"
+# Cap the paper text injected into the prompt (methodology-first papers fit well within this).
+PAPER_TEXT_CHAR_LIMIT = 12000
 LOGGER = logging.getLogger(__name__)
 DEFAULT_GEMINI_MODELS = ("gemini-2.5-pro", "gemini-2.5-flash")
 _SKIP_LLM_FOR_SESSION = False
@@ -62,6 +67,40 @@ def _fetch_golden_references(
     finally:
         conn.close()
     return [(f"{repo}::{qual}", src) for repo, qual, src in rows]
+
+
+def _load_paper_text(paper_id: str) -> str:
+    """Load the extracted markdown of the target paper for traceability grounding.
+
+    Returns '' when no extraction exists, so the prompt can honestly mark
+    citations as UNAVAILABLE instead of fabricating section/page numbers.
+    """
+    if not paper_id:
+        return ""
+    candidate = EXTRACTED_PAPERS_DIR / paper_id / f"{paper_id}.md"
+    if not candidate.is_file():
+        return ""
+    try:
+        text = candidate.read_text(encoding="utf-8")
+    except Exception as exc:
+        LOGGER.warning("Node C: failed to read extracted paper %s (%s)", candidate, exc)
+        return ""
+    return text[:PAPER_TEXT_CHAR_LIMIT]
+
+
+def _load_framework_template() -> str:
+    """Load the PyTorch PINN training best-practices template for RAG injection."""
+    if not PINN_TRAINING_TEMPLATE_PATH.is_file():
+        LOGGER.warning(
+            "Node C: framework template missing at %s; prompt will omit the framework reference",
+            PINN_TRAINING_TEMPLATE_PATH,
+        )
+        return ""
+    try:
+        return PINN_TRAINING_TEMPLATE_PATH.read_text(encoding="utf-8")
+    except Exception as exc:
+        LOGGER.warning("Node C: failed to read framework template (%s)", exc)
+        return ""
 
 
 # Contract-complete PyTorch monolith (validated against the T0-T3 harness):
@@ -144,6 +183,17 @@ class Model(nn.Module):
 CNN_SYSTEM_PROMPT = (
     "You are the Framework Supervisor for a deterministic SciML-CFD pipeline.\n"
     "Generate ONLY a valid PyTorch train_and_val.py module for FIELD-BASED CNN/SURROGATE models.\n\n"
+    "TRACEABILITY MATRIX (MANDATORY -- read first):\n"
+    "- Your generated code string MUST BEGIN with a multi-line Python comment ('''...''') containing a\n"
+    "  strict JSON object named the traceability matrix.\n"
+    "- The JSON MUST map each of the following keys to an object with 'value', 'section', and 'page'\n"
+    "  citing the EXACT section and page number of the provided paper text:\n"
+    "    network_inputs, network_outputs, activation_functions, layer_depths,\n"
+    "    pde_formulation, loss_function_components\n"
+    "- network_outputs must list EVERY output variable the paper specifies (do not drop variables).\n"
+    "- pde_formulation must state the exact residual equations used by the paper.\n"
+    "- loss_function_components must distinguish supervised (boundary/data) vs unsupervised (residual) terms.\n"
+    "- If the paper text is not provided below, write \"section\": \"UNAVAILABLE\" instead of inventing one.\n\n"
     "HARD CONTRACT (violations are auto-rejected by an immutable test harness):\n"
     "1) Output MUST be Python code only, in one ```python fenced block, no prose.\n"
     "2) The module MUST export exactly these symbols:\n"
@@ -174,16 +224,45 @@ CNN_SYSTEM_PROMPT = (
 PINN_SYSTEM_PROMPT = (
     "You are the Framework Supervisor for a deterministic SciML-CFD pipeline.\n"
     "Generate ONLY a valid PyTorch train_and_val.py module for a CONTINUOUS PHYSICS-INFORMED NEURAL NETWORK (PINN).\n\n"
+    "TRACEABILITY MATRIX (MANDATORY -- read first):\n"
+    "- Your generated code string MUST BEGIN with a multi-line Python comment ('''...''') containing a\n"
+    "  strict JSON object named the traceability matrix.\n"
+    "- The JSON MUST map each of the following keys to an object with 'value', 'section', and 'page'\n"
+    "  citing the EXACT section and page number of the provided paper text:\n"
+    "    network_inputs, network_outputs, activation_functions, layer_depths,\n"
+    "    pde_formulation, loss_function_components\n"
+    "- network_outputs must list EVERY output variable the paper specifies (e.g., if the paper outputs\n"
+    "  6 variables such as U, V, P and Reynolds stresses uu, uv, vv -- list all 6).\n"
+    "- pde_formulation must state the exact residual equations used by the paper.\n"
+    "- loss_function_components must distinguish supervised (boundary/data) vs unsupervised (residual) terms.\n"
+    "- If the paper text is not provided below, write \"section\": \"UNAVAILABLE\" instead of inventing one.\n\n"
+    "PHYSICS-SPECIFIC EXTRACTION (MANDATORY):\n"
+    "- Do not use generic Navier-Stokes templates. You must read the methodology section of the provided\n"
+    "  text. If the paper specifies RANS, your neural network must output the exact Reynolds stress\n"
+    "  components specified, and your PDE residual function must compute their gradients exactly as\n"
+    "  formulated in the text.\n"
+    "- Name the residual function `navier_stokes_residuals` and include every Reynolds-stress gradient\n"
+    "  term the paper's momentum equations contain.\n\n"
     "HARD CONTRACT (violations are auto-rejected by the PINN harness):\n"
     "1) Output MUST be Python code only, in one ```python fenced block, no prose.\n"
     "2) The module MUST export exactly this symbol:\n"
     "   - class Model(torch.nn.Module) with forward(self, x, y)\n"
     "3) forward(self, x, y) MUST accept continuous spatial inputs x, y each shaped (B, 1), with requires_grad=True.\n"
-    "4) forward(self, x, y) MUST return exactly three continuous fields: u, v, p; each shaped (B, 1).\n"
+    "4) forward(self, x, y) MUST return exactly three fields (u, v, p), each shaped (B, 1) -- the harness\n"
+    "   unpacks exactly three values. If the paper specifies additional outputs (e.g., Reynolds stresses),\n"
+    "   the network output layer MUST still predict them; expose the full set via a separate method\n"
+    "   `forward_full(self, x, y)` returning ALL paper-specified fields, and use `forward_full` inside\n"
+    "   `navier_stokes_residuals`.\n"
     "5) Use a DEEP MLP with Linear and Tanh activations. CNN layers are FORBIDDEN: no Conv1d/2d/3d, no pooling, no upsampling.\n"
     "6) Preserve autograd connectivity so torch.autograd.grad(outputs=u, inputs=x, ...) and dv/dy both work.\n"
     "7) NEVER use detach(), item(), numpy(), or non-differentiable conversions inside forward().\n"
-    "8) Keep imports minimal and CPU-safe.\n\n"
+    "8) Keep imports minimal and CPU-safe.\n"
+    "9) The module MUST also define `train_model(...)` and `validate(...)` functions implementing the\n"
+    "   FULL training/validation logic. Extract the specific optimizers the paper uses (e.g., Adam\n"
+    "   followed by (L-)BFGS) and implement them using the exact syntax shown in the FRAMEWORK\n"
+    "   REFERENCE section below -- including a proper `closure()` for L-BFGS.\n"
+    "10) Keep default epoch/iteration counts small enough for a CPU smoke run (<= 200 Adam epochs,\n"
+    "    <= 100 L-BFGS iterations) while preserving the paper's optimizer structure.\n\n"
 )
 
 
@@ -321,6 +400,7 @@ def _build_prompt(
     fingerprint: str,
     references: list[tuple[str, str]],
     architecture_mode: str,
+    paper_text: str = "",
 ) -> str:
     retry_section = ""
     if failure_count > 0 and fingerprint:
@@ -344,8 +424,26 @@ def _build_prompt(
 
     system_prompt = PINN_SYSTEM_PROMPT if architecture_mode == "continuous_pinn" else CNN_SYSTEM_PROMPT
 
+    framework_section = ""
+    if architecture_mode == "continuous_pinn":
+        framework_template = _load_framework_template()
+        if framework_template:
+            framework_section = (
+                "FRAMEWORK REFERENCE (PyTorch Best Practices):\n"
+                f"{framework_template}\n\n"
+            )
+
+    if paper_text:
+        paper_section = f"PROVIDED PAPER TEXT (cite sections/pages from THIS text only):\n{paper_text}\n\n"
+    else:
+        paper_section = (
+            "PROVIDED PAPER TEXT: none available -- mark all traceability sections as UNAVAILABLE.\n\n"
+        )
+
     return (
         f"{system_prompt}"
+        f"{framework_section}"
+        f"{paper_section}"
         f"EXECUTION PLAN:\n{execution_plan}\n\n"
         f"{retry_section}"
         f"GOLDEN REFERENCE SNIPPETS (AST-indexed, structurally validated):\n{refs_section}\n"
@@ -419,6 +517,15 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
     references = _fetch_golden_references(limit=4, execution_plan=execution_plan)
     reference_names = ", ".join(name for name, _ in references) or "(AST index unavailable)"
 
+    paper_text = _load_paper_text(str(state.get("paper_id", "")))
+    if paper_text:
+        LOGGER.info("Node C: grounding prompt with extracted paper text (%s chars)", len(paper_text))
+    else:
+        LOGGER.warning(
+            "Node C: no extracted paper text found for paper_id=%s; traceability sections will be UNAVAILABLE",
+            state.get("paper_id", ""),
+        )
+
     if failure_count > 0 and fingerprint:
         retry_note = (
             f"RETRY CONTEXT: previous attempt failed with fingerprint '{fingerprint}'. "
@@ -433,6 +540,7 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
         fingerprint=fingerprint,
         references=references,
         architecture_mode=architecture_mode,
+        paper_text=paper_text,
     )
 
     code = _try_generate_with_gemini(prompt)
