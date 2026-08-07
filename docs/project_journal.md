@@ -174,7 +174,7 @@ T2C -.->|Namespace: Code| KR
 * **Milestone:** Defined the `AgentState` schema and wired the deterministic initial nodes (A, A.5, and B) into a compiled `StateGraph`.
 * **Key Implementations:**
     * **Node A & A.5 (Ingestion & Kill Switch):** Implemented a deterministic data pre-check. If a blueprint's `closure_status` is `unclosed` or `pde_family` is unresolved, the graph safely terminates with a `BLOCKED_DATA` status without wasting a single LLM token.
-    * **Node B (Physics Reasoner):** Bypassed the LLM entirely for synthesis. The node deterministically constructs an `execution_plan` string by iterating over the Pydantic `frontmatter`. This explicitly sets the contract for the Code Supervisor, mandating `compute_bc_loss`, `train_short_loop`, and `get_dummy_batch` (with structured targets to satisfy the T1 overfit calibration).
+    * **Node B (Physics Reasoner):** Bypassed the LLM entirely for synthesis. The node deterministically constructs an `execution_plan` string by iterating over the Pydantic `frontmatter`. This explicitly sets the contract for the Code Supervisor, mandating `compute_bc_loss` and `train_short_loop`; evaluation batches are now generated exclusively inside the Green Layer fixture (`standard_evaluation_batch`) to prevent reward-hacking.
     * **State Serialization:** Ensured `frontmatter` is passed via `model_dump()` so the entire state remains JSON-serializable, anticipating the `SqliteSaver` checkpointer.
 
     ### 12. Phase 4 Completed: Autonomous Orchestration, Self-Healing, and Checkpointing

@@ -9,6 +9,7 @@ Enforces the three determinism guarantees required by the pipeline design:
      false-failure fingerprints that poison the self-healing loop.
 """
 from pathlib import Path
+from collections import namedtuple
 
 import pytest
 import torch
@@ -23,6 +24,7 @@ from . import mms  # noqa: F401  (registration side effect)
 
 SEED = 42
 BLUEPRINT_YAML_PATH = Path(__file__).resolve().parent.parent / "workspace" / "blueprint.yaml"
+Batch = namedtuple("Batch", ["x", "y", "variable_names"])
 
 
 # --- 1. Frontmatter loading (session-scoped, immutable for the whole run) ------
@@ -55,6 +57,39 @@ def _reseed_each_test():
     """Reseed before every test so ordering never affects reproducibility."""
     torch.manual_seed(SEED)
     yield
+
+
+@pytest.fixture
+def standard_evaluation_batch(request: pytest.FixtureRequest):
+    """Deterministic Green Layer batch used across T1/T2 gates.
+
+    This closes the trust leak where generated monoliths could game tests by
+    supplying a favorable batch. The harness now owns x/y generation.
+    """
+    is_t2 = request.node.get_closest_marker("t2") is not None
+    dtype = torch.float64 if is_t2 else torch.float32
+
+    g = torch.Generator(device="cpu")
+    g.manual_seed(SEED)
+
+    b, c, h, w = 2, 3, 64, 64
+    x_noise = torch.randn((b, c, h, w), generator=g, dtype=dtype)
+
+    ys = torch.linspace(0.0, 2.0 * torch.pi, h, dtype=dtype)
+    xs = torch.linspace(0.0, 2.0 * torch.pi, w, dtype=dtype)
+    gy, gx = torch.meshgrid(ys, xs, indexing="ij")
+    pattern = torch.stack(
+        [
+            torch.sin(gx),
+            torch.cos(gy),
+            torch.sin(gx + gy),
+        ],
+        dim=0,
+    ).unsqueeze(0)
+
+    x = 0.85 * x_noise + 0.15 * pattern
+    y = torch.tanh(0.7 * x + 0.15 * x.roll(shifts=1, dims=-1) - 0.10 * x.roll(shifts=1, dims=-2))
+    return Batch(x=x, y=y, variable_names=["u", "v", "p"])
 
 
 # --- 3. Strict CPU / float64 pinning for T2 (MMS + gradcheck) tests ------------

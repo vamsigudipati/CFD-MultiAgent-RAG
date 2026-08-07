@@ -14,11 +14,11 @@ from .utils import load_generated_monolith
 pytestmark = pytest.mark.t1
 
 
-def test_backward_finiteness():
+def test_backward_finiteness(standard_evaluation_batch):
     """A single backward pass must populate finite gradients on every param."""
     monolith = load_generated_monolith()
     model = monolith.Model()
-    batch = monolith.get_dummy_batch()
+    batch = standard_evaluation_batch
 
     output = model(batch.x)
     loss = output.sum()
@@ -37,7 +37,7 @@ def test_backward_finiteness():
     assert checked_any, "Model has no trainable parameters to check gradients on"
 
 
-def test_data_term_overfit_and_triviality():
+def test_data_term_overfit_and_triviality(standard_evaluation_batch):
     """50-step single-batch overfit on the DATA term only, with a collapse guard.
 
     Two independent assertions:
@@ -48,12 +48,12 @@ def test_data_term_overfit_and_triviality():
     """
     monolith = load_generated_monolith()
     model = monolith.Model()
-    batch = monolith.get_dummy_batch()
+    batch = standard_evaluation_batch
 
     target = getattr(batch, "y", None)
     if target is None:
         pytest.skip(
-            "Dummy batch does not expose a `y` target; cannot run the "
+            "Standard evaluation batch does not expose a `y` target; cannot run the "
             "data-term overfit test"
         )
 

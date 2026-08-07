@@ -1,5 +1,6 @@
 """Node D: Test execution runner via subprocess and failure fingerprinting."""
 import os
+import re
 import sys
 import subprocess
 from pathlib import Path
@@ -19,18 +20,31 @@ def _classify_failure(output: str) -> str:
         return "UNSUPPORTED_CONSTRAINT"
 
     failed_lines = []
+    test_pattern = re.compile(r"::(test_[A-Za-z0-9_]+)")
     for line in output.splitlines():
         if "FAILED" in line and "test_" in line:
-            # Extract test name token for normalization
-            parts = line.strip().split()
-            for token in parts:
-                if token.startswith("test_"):
-                    # Strip out parameterization suffixes for stable fingerprinting
-                    test_name = token.split("[")[0]
-                    # Identify tier from test name prefix or path context
-                    tier = "t3" if "regression" in test_name or "multi_seed" in test_name else "t2"
-                    failed_lines.append(f"{tier}:{test_name}")
-                    break
+            match = test_pattern.search(line)
+            if not match:
+                continue
+
+            # Strip parameterization suffixes for stable fingerprints.
+            test_name = match.group(1).split("[")[0]
+
+            lower_line = line.lower()
+            if "test_gates_t0" in lower_line:
+                tier = "t0"
+            elif "test_gates_t1" in lower_line:
+                tier = "t1"
+            elif "test_gates_t2" in lower_line:
+                tier = "t2"
+            elif "test_gates_t3" in lower_line:
+                tier = "t3"
+            elif "regression" in test_name or "multi_seed" in test_name:
+                tier = "t3"
+            else:
+                tier = "t2"
+
+            failed_lines.append(f"{tier}:{test_name}")
 
     if failed_lines:
         # Deduplicate and sort to ensure identical failure sets yield identical fingerprints

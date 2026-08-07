@@ -9,7 +9,7 @@ import importlib.util
 import os
 import sys
 from pathlib import Path
-from typing import Callable, NamedTuple, Type
+from typing import NamedTuple, Type
 
 import torch.nn as nn
 
@@ -19,7 +19,6 @@ MODULE_NAME = "generated_train_and_val"
 
 class GeneratedMonolith(NamedTuple):
     Model: Type[nn.Module]
-    get_dummy_batch: Callable[[], object]
 
 
 def _import_monolith_module():
@@ -54,15 +53,13 @@ def _import_monolith_module():
 
 
 def load_generated_monolith() -> GeneratedMonolith:
-    """Load the generated monolith and return its ``Model`` class and ``get_dummy_batch``."""
+    """Load the generated monolith and return its ``Model`` class."""
     module = _import_monolith_module()
 
     if not hasattr(module, "Model"):
         raise AttributeError(f"{MONOLITH_FILENAME} does not define a `Model` class")
-    if not hasattr(module, "get_dummy_batch"):
-        raise AttributeError(f"{MONOLITH_FILENAME} does not define a `get_dummy_batch` function")
 
-    return GeneratedMonolith(Model=module.Model, get_dummy_batch=module.get_dummy_batch)
+    return GeneratedMonolith(Model=module.Model)
 
 
 def get_monolith_symbol(name: str, required: bool = True):

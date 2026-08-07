@@ -81,7 +81,6 @@ def node_b_physics_reasoner(state: AgentState) -> dict:
         "   The generated monolith (train_and_val.py) must export:",
         "   - class Model(torch.nn.Module): architecture supporting input/output mappings",
         "   - def compute_bc_loss(self, batch): boundary condition / residual loss callable",
-        "   - def get_dummy_batch(): returns a namedtuple/batch with structured targets for T1 overfit calibration",
         "   - def train_short_loop(seed=0): executes training and returns dictionary with val_loss",
         "",
         "4. OUTPUT DIRECTIVE:",

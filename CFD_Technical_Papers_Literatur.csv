@@ -56,3 +56,9 @@ Slide Deck 2,General AI Milestones,Silver et al.,2016,Mastering the game of Go w
 ,,Encinar & Jiménez,2023,Cause and effect of streaks and vortices in wall-bounded turbulence,Journal of Fluid Mechanics,
 ,,Cremades et al.,2024,Identification of key coherent structures in turbulent channel flows through explainable deep learning,Nature Communications,https://github.com/KTH-FlowAI/Identifying-regions-of-importance-in-wall-bounded-turbulence-through-explainable-deep-learning
 ,,"Cremades, Hoyas & Vinuesa",2025,Point-by-point SHAP analysis in wall-bounded turbulence,Nature Communications,
+,RAG Corpus Rebalance — ML-CFD Surrogates,Thuerey et al.,2020,Deep Learning Methods for Reynolds-Averaged Navier-Stokes Simulations of Airfoil Flows,AIAA Journal,https://github.com/thunil/Deep-Flow-Prediction
+,RAG Corpus Rebalance — ML-CFD Surrogates,Hennigh,2017,Computational Fluid Dynamics Machine Learning Examples,GitHub,https://github.com/loliverhennigh/Computational-Fluid-Dynamics-Machine-Learning-Examples
+,RAG Corpus Rebalance — ML-CFD Surrogates,Weiner,2021,Machine Learning Applied to CFD,GitHub,https://github.com/AndreWeiner/machine-learning-applied-to-cfd
+,RAG Corpus Rebalance — ML-CFD Surrogates,Patel et al. (RigasLab),2024,Turbulence model augmented physics-informed neural networks for mean-flow reconstruction,Physical Review Fluids,https://github.com/RigasLab/PINN_SA
+,RAG Corpus Rebalance — ML-CFD Surrogates,Coscia et al.,2024,Generative Adversarial Reduced Order Modelling (GAROM),Scientific Reports,https://github.com/dario-coscia/GAROM
+,RAG Corpus Rebalance — ML-CFD Surrogates,Solera-Rico et al.,2024,β-Variational autoencoders and transformers for reduced-order modelling of fluid flows,Nature Communications,https://github.com/KTH-FlowAI/beta-Variational-autoencoders-and-transformers-for-reduced-order-modelling-of-fluid-flows
