@@ -10,6 +10,7 @@ class AgentState(TypedDict):
     paper_id: str            # identifies the current run
     blueprint_yaml: str      # raw text of the blueprint frontmatter file
     frontmatter: dict        # parsed + validated YAML fields
+    architecture_mode: str   # 'cnn_field' | 'continuous_pinn'
     execution_plan: str      # filled by Node B (Physics Reasoner)
     generated_code: str      # filled by Node C (Framework Sub-Agent)
     failure_count: int       # monotonic self-healing budget (k=3)

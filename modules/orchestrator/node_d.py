@@ -93,16 +93,26 @@ def node_d_execute_tests(state: AgentState, config=None) -> dict:
     )
     start_time = time.time()
 
+    architecture_mode = state.get("architecture_mode", "cnn_field")
+    if architecture_mode == "continuous_pinn":
+        test_targets = [str(HARNESS_DIR / "test_gates_pinn.py")]
+    else:
+        test_targets = [
+            str(HARNESS_DIR / "test_gates_t1.py"),
+            str(HARNESS_DIR / "test_gates_t2.py"),
+        ]
+
     cmd = [
         sys.executable,
         "-m",
         "pytest",
-        str(HARNESS_DIR),
+        *test_targets,
         "-v",
         "--tb=short",
         "-p",
         "no:cacheprovider",
     ]
+    LOGGER.info("Node D: architecture_mode=%s -> pytest targets=%s", architecture_mode, test_targets)
 
     env = {**os.environ, "WORKSPACE_DIR": str(workspace_dir.resolve())}
 

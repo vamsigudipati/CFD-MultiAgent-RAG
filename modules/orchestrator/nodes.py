@@ -12,6 +12,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BLUEPRINT_YAML_PATH = REPO_ROOT / "modules" / "workspace" / "blueprint.yaml"
 
 
+def _classify_architecture_mode(state: AgentState, frontmatter: BlueprintFrontmatter) -> str:
+    """Classify high-level model family for downstream prompt/test routing."""
+    paper_id = str(state.get("paper_id", "")).lower()
+    provenance_text = " ".join(str(v).lower() for v in frontmatter.provenance.values())
+    haystack = " ".join([paper_id, provenance_text, frontmatter.pde_family.lower()])
+    if "pinn" in haystack or "eivazi" in haystack:
+        return "continuous_pinn"
+    return "cnn_field"
+
+
 def node_a_ingest(state: AgentState) -> dict:
     """Ingests and parses the workspace blueprint YAML with robust error protection."""
     if not BLUEPRINT_YAML_PATH.exists():
@@ -57,6 +67,7 @@ def node_b_physics_reasoner(state: AgentState) -> dict:
     frontmatter = BlueprintFrontmatter(**frontmatter_dict)
 
     pde_family = frontmatter.pde_family
+    architecture_mode = _classify_architecture_mode(state, frontmatter)
     # NormalizationSpec is a Pydantic model -- dump to a dict for iteration.
     normalization = frontmatter.normalization.model_dump() if frontmatter.normalization else {}
     constraints = frontmatter.constraints or []
@@ -65,6 +76,7 @@ def node_b_physics_reasoner(state: AgentState) -> dict:
         "==================================================",
         "EXECUTION PLAN -- Scientific ML Code Generation",
         f"Paper ID: {state.get('paper_id', 'unknown')}",
+        f"Architecture Mode: {architecture_mode}",
         f"Target PDE Family (T2 MMS Gate): {pde_family}",
         "==================================================",
         "",
@@ -88,16 +100,32 @@ def node_b_physics_reasoner(state: AgentState) -> dict:
         "3. MANDATORY MODULE CONTRACT FOR GENERATED CODE:",
         "   The generated monolith (train_and_val.py) must export:",
         "   - class Model(torch.nn.Module): architecture supporting input/output mappings",
-        "   - def compute_bc_loss(self, batch): boundary condition / residual loss callable",
-        "   - def train_short_loop(seed=0): executes training and returns dictionary with val_loss",
         "",
         "4. OUTPUT DIRECTIVE:",
         "   Emit a single valid Python code monolith. Never alter test files in modules/validation_harness/.",
     ])
 
+    if architecture_mode == "continuous_pinn":
+        lines.extend([
+            "",
+            "5. PINN-SPECIFIC DIRECTIVES:",
+            "   - Use a coordinate-based MLP: inputs are continuous x, y tensors of shape (B, 1).",
+            "   - Model.forward(x, y) must output three continuous fields (u, v, p), each shaped (B, 1).",
+            "   - Use only Linear/Tanh-style MLP blocks; avoid convolutional layers for this paper family.",
+            "   - Preserve autograd connectivity so du/dx and dv/dy are differentiable via torch.autograd.grad.",
+        ])
+    else:
+        lines.extend([
+            "",
+            "5. CNN-SPECIFIC DIRECTIVES:",
+            "   - Model.forward(x) consumes field tensors shaped (B, C, H, W) and returns the same spatial shape.",
+            "   - Def compute_bc_loss(self, batch): boundary condition / residual loss callable.",
+            "   - Def train_short_loop(seed=0): executes training and returns dictionary with val_loss.",
+        ])
+
     execution_plan = "\n".join(lines)
     LOGGER.info(
-        "Node B: execution plan synthesized (%s chars, pde_family=%s, %s constraints)",
-        len(execution_plan), pde_family, len(constraints),
+        "Node B: execution plan synthesized (%s chars, pde_family=%s, mode=%s, %s constraints)",
+        len(execution_plan), pde_family, architecture_mode, len(constraints),
     )
-    return {"execution_plan": execution_plan}
+    return {"execution_plan": execution_plan, "architecture_mode": architecture_mode}

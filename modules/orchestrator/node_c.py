@@ -113,8 +113,90 @@ def train_short_loop(seed=0):
 '''
 
 
+_PINN_FALLBACK_TEMPLATE = '''\
+"""Auto-generated PINN fallback. Iteration: {iteration}.
+{retry_note}
+Structural references consulted: {references}
+"""
+import torch
+import torch.nn as nn
+
+
+class Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(2, 64), nn.Tanh(),
+            nn.Linear(64, 64), nn.Tanh(),
+            nn.Linear(64, 3),
+        )
+
+    def forward(self, x, y):
+        coords = torch.cat([x, y], dim=1)
+        fields = self.net(coords)
+        u = fields[:, 0:1]
+        v = fields[:, 1:2]
+        p = fields[:, 2:3]
+        return u, v, p
+'''
+
+
+CNN_SYSTEM_PROMPT = (
+    "You are the Framework Supervisor for a deterministic SciML-CFD pipeline.\n"
+    "Generate ONLY a valid PyTorch train_and_val.py module for FIELD-BASED CNN/SURROGATE models.\n\n"
+    "HARD CONTRACT (violations are auto-rejected by an immutable test harness):\n"
+    "1) Output MUST be Python code only, in one ```python fenced block, no prose.\n"
+    "2) The module MUST export exactly these symbols:\n"
+    "   - class Model(torch.nn.Module) with forward(self, x)\n"
+    "   - Model.compute_bc_loss(self, batch)  # batch has .x, .y, .variable_names\n"
+    "   - def train_short_loop(seed=0) -> {\"val_loss\": float}\n"
+    "3) Do NOT define get_dummy_batch(). The harness supplies its own evaluation batch:\n"
+    "   x has shape (2, 3, 64, 64) float32/float64 on CPU; forward(x) must return the SAME shape.\n\n"
+    "GRADIENT CONTINUITY (T1 gates):\n"
+    "- All losses (including compute_bc_loss) MUST return differentiable scalar tensors.\n"
+    "- NEVER call .detach(), .item(), .numpy(), or convert to Python floats inside any loss path.\n"
+    "- Every trainable parameter must participate in forward() so gradients reach it.\n"
+    "- No in-place ops on tensors that require grad; no torch.no_grad() inside loss computation.\n\n"
+    "SPECTRAL SMOOTHNESS (T2 spectral-fidelity gate):\n"
+    "- Use SMOOTH activations: SiLU, GELU, Tanh, or Sin (for PINNs). Avoid ReLU kinks in output layers.\n"
+    "- HARD BAN: nn.ConvTranspose2d and nn.PixelShuffle are FORBIDDEN (checkerboard artifacts).\n"
+    "- Standard upsampling pattern: nn.Upsample(mode='bilinear', align_corners=False) followed by nn.Conv2d.\n"
+    "- Do NOT inject noise into outputs. Predicted fields must have physically plausible "
+    "(decaying) high-frequency spectra -- prefer an explicit low-pass path (pooled bottleneck or 5x5+ kernels).\n\n"
+    "CONTRACT COMPLIANCE:\n"
+    "- Keep outputs in a standard scale (roughly unit-magnitude; no exp() blowups, no huge constants).\n"
+    "- Use exact method signatures shown above; extra helpers are allowed, missing symbols are not.\n"
+    "- CPU-only, minimal imports (torch, torch.nn, torch.nn.functional), deterministic seeds.\n"
+    "- Honor every constraint in the execution plan (e.g. output floors) using smooth operations.\n\n"
+)
+
+
+PINN_SYSTEM_PROMPT = (
+    "You are the Framework Supervisor for a deterministic SciML-CFD pipeline.\n"
+    "Generate ONLY a valid PyTorch train_and_val.py module for a CONTINUOUS PHYSICS-INFORMED NEURAL NETWORK (PINN).\n\n"
+    "HARD CONTRACT (violations are auto-rejected by the PINN harness):\n"
+    "1) Output MUST be Python code only, in one ```python fenced block, no prose.\n"
+    "2) The module MUST export exactly this symbol:\n"
+    "   - class Model(torch.nn.Module) with forward(self, x, y)\n"
+    "3) forward(self, x, y) MUST accept continuous spatial inputs x, y each shaped (B, 1), with requires_grad=True.\n"
+    "4) forward(self, x, y) MUST return exactly three continuous fields: u, v, p; each shaped (B, 1).\n"
+    "5) Use a DEEP MLP with Linear and Tanh activations. CNN layers are FORBIDDEN: no Conv1d/2d/3d, no pooling, no upsampling.\n"
+    "6) Preserve autograd connectivity so torch.autograd.grad(outputs=u, inputs=x, ...) and dv/dy both work.\n"
+    "7) NEVER use detach(), item(), numpy(), or non-differentiable conversions inside forward().\n"
+    "8) Keep imports minimal and CPU-safe.\n\n"
+)
+
+
 def _fallback_monolith(failure_count: int, retry_note: str, reference_names: str) -> str:
     return _MONOLITH_TEMPLATE.format(
+        iteration=failure_count + 1,
+        retry_note=retry_note,
+        references=reference_names,
+    )
+
+
+def _fallback_pinn_monolith(failure_count: int, retry_note: str, reference_names: str) -> str:
+    return _PINN_FALLBACK_TEMPLATE.format(
         iteration=failure_count + 1,
         retry_note=retry_note,
         references=reference_names,
@@ -238,6 +320,7 @@ def _build_prompt(
     failure_count: int,
     fingerprint: str,
     references: list[tuple[str, str]],
+    architecture_mode: str,
 ) -> str:
     retry_section = ""
     if failure_count > 0 and fingerprint:
@@ -259,33 +342,10 @@ def _build_prompt(
     else:
         refs_section = "(no AST references available)"
 
+    system_prompt = PINN_SYSTEM_PROMPT if architecture_mode == "continuous_pinn" else CNN_SYSTEM_PROMPT
+
     return (
-        "You are the Framework Supervisor for a deterministic SciML-CFD pipeline.\n"
-        "Generate ONLY a valid PyTorch train_and_val.py module.\n\n"
-        "HARD CONTRACT (violations are auto-rejected by an immutable test harness):\n"
-        "1) Output MUST be Python code only, in one ```python fenced block, no prose.\n"
-        "2) The module MUST export exactly these symbols:\n"
-        "   - class Model(torch.nn.Module) with forward(self, x)\n"
-        "   - Model.compute_bc_loss(self, batch)  # batch has .x, .y, .variable_names\n"
-        "   - def train_short_loop(seed=0) -> {\"val_loss\": float}\n"
-        "3) Do NOT define get_dummy_batch(). The harness supplies its own evaluation batch:\n"
-        "   x has shape (2, 3, 64, 64) float32/float64 on CPU; forward(x) must return the SAME shape.\n\n"
-        "GRADIENT CONTINUITY (T1 gates):\n"
-        "- All losses (including compute_bc_loss) MUST return differentiable scalar tensors.\n"
-        "- NEVER call .detach(), .item(), .numpy(), or convert to Python floats inside any loss path.\n"
-        "- Every trainable parameter must participate in forward() so gradients reach it.\n"
-        "- No in-place ops on tensors that require grad; no torch.no_grad() inside loss computation.\n\n"
-        "SPECTRAL SMOOTHNESS (T2 spectral-fidelity gate):\n"
-        "- Use SMOOTH activations: SiLU, GELU, Tanh, or Sin (for PINNs). Avoid ReLU kinks in output layers.\n"
-        "- HARD BAN: nn.ConvTranspose2d and nn.PixelShuffle are FORBIDDEN (checkerboard artifacts).\n"
-        "- Standard upsampling pattern: nn.Upsample(mode='bilinear', align_corners=False) followed by nn.Conv2d.\n"
-        "- Do NOT inject noise into outputs. Predicted fields must have physically plausible "
-        "(decaying) high-frequency spectra -- prefer an explicit low-pass path (pooled bottleneck or 5x5+ kernels).\n\n"
-        "CONTRACT COMPLIANCE:\n"
-        "- Keep outputs in a standard scale (roughly unit-magnitude; no exp() blowups, no huge constants).\n"
-        "- Use exact method signatures shown above; extra helpers are allowed, missing symbols are not.\n"
-        "- CPU-only, minimal imports (torch, torch.nn, torch.nn.functional), deterministic seeds.\n"
-        "- Honor every constraint in the execution plan (e.g. output floors) using smooth operations.\n\n"
+        f"{system_prompt}"
         f"EXECUTION PLAN:\n{execution_plan}\n\n"
         f"{retry_section}"
         f"GOLDEN REFERENCE SNIPPETS (AST-indexed, structurally validated):\n{refs_section}\n"
@@ -352,6 +412,7 @@ def _try_generate_with_gemini(prompt: str, model_names: tuple[str, ...] | None =
 def node_c_framework_supervisor(state: AgentState) -> dict:
     """Generate (or regenerate, on retry) the monolith from the execution plan."""
     execution_plan = state.get("execution_plan", "")
+    architecture_mode = state.get("architecture_mode", "cnn_field")
     failure_count = state.get("failure_count", 0)
     fingerprint = state.get("error_fingerprint", "")
 
@@ -371,6 +432,7 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
         failure_count=failure_count,
         fingerprint=fingerprint,
         references=references,
+        architecture_mode=architecture_mode,
     )
 
     code = _try_generate_with_gemini(prompt)
@@ -384,9 +446,16 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
             "Node C: using deterministic fallback template (attempt %s, fingerprint=%s)",
             failure_count + 1, fingerprint or "None",
         )
-        code = _fallback_monolith(
-            failure_count=failure_count,
-            retry_note=retry_note,
-            reference_names=reference_names,
-        )
+        if architecture_mode == "continuous_pinn":
+            code = _fallback_pinn_monolith(
+                failure_count=failure_count,
+                retry_note=retry_note,
+                reference_names=reference_names,
+            )
+        else:
+            code = _fallback_monolith(
+                failure_count=failure_count,
+                retry_note=retry_note,
+                reference_names=reference_names,
+            )
     return {"generated_code": code}
