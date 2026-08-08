@@ -1,7 +1,5 @@
 ## 1. Physical Problem Statement
-N/A — not a fluid-dynamics ML modeling paper.
-
-This paper is John W. Tukey's seminal 1962 treatise, *"The Future of Data Analysis"* (*The Annals of Mathematical Statistics*, Vol. 33, No. 1, pp. 1–67). It presents a methodological and philosophical foundation for data analysis as an empirical science independent of pure mathematical statistics. The paper introduces early principles of Exploratory Data Analysis (EDA), robust statistics for "spotty data" (such as trimming, Winsorizing, and graphical residual analysis via FUNOP and FUNOR-FUNOM), spectral estimation in time series, factor analysis, and the impact of computing on empirical data modeling.
+N/A — No paper context was provided for analysis.
 
 ## 2. Network Architectures
 N/A — not a fluid-dynamics ML modeling paper

@@ -4,11 +4,12 @@ import re
 import time
 from pathlib import Path
 
+import dotenv
 from google import genai
 from google.genai import errors
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
-
+dotenv.load_dotenv()
 # Deterministic semantic relevance keywords for chunk selection.
 KEYWORD_WEIGHTS = {
     "architecture": 5,
@@ -131,6 +132,7 @@ def _select_high_value_chunks(markdown_text: str, max_chunks: int = 18, max_char
 
 
 def synthesize_paper(input_md_path: Path, output_md_path: Path) -> None:
+    dotenv.load_dotenv()
     client = genai.Client()
 
     paper_content = _load_markdown(input_md_path)

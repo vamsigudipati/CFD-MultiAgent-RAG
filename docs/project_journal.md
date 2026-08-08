@@ -226,3 +226,31 @@ T2C -.->|Namespace: Code| KR
     * **`tools/smoke_test.sh`** — deterministic/offline regression that recreates the trust-anchor `blueprint.yaml` (workspace is gitignored), then drives both proven threads — a CNN-field paper (`2004.08826v3`) and a continuous-PINN paper (`Eivazi_2022_PINN_RANS_Navier_Stokes`) — through the full graph and Green Layer gates using fresh timestamped thread IDs.
     * **Offline by design:** `GEMINI_API_KEY` is unset for the run so Node C uses its deterministic fallback templates, exercising graph routing, gates, and checkpointing without a live LLM, network, or cost.
     * **Verdict semantics:** exits `0` only if both threads reach `PASSED`. Verified locally: both cases `PASSED` with 0 attempts.
+
+### 18. Engineering Journal: August 8, 2026 (Completed)
+* **Project:** CFD Technical Papers - Multi-Agent Validation Pipeline.
+* **Focus:** Eradicating LLM hallucinations, pipeline hardening, and self-healing loops.
+* **Key Outcomes:**
+    * **Systemic post-hoc narration discovered:** During corpus batch execution, Node C generated plausible PyTorch artifacts by hallucinating standard CNN/physics templates when paper architecture details were missing.
+    * **The Checkers incident:** The pipeline generated runnable code with an incompressible Navier-Stokes framing for `Samuel_1959_Machine_Learning_Checkers`, confirming the need for strict upstream domain guardrails.
+    * **Issue #04 guardrail enforced in Node B:** Planner now hard-aborts with `BLOCKED_DATA` when critical architecture provenance fields (`activation_functions`, `layer_depths`) are `UNAVAILABLE`.
+    * **Issue #05 domain validation guardrail enforced in Node B:** Planner now blocks fabricated CFD framing for non-CFD papers and emits `BLOCKED_DATA|NON_CFD_DOMAIN` when PDE claims are unresolved or uncited.
+    * **Self-healing semantic judge added (`node_c5_code_reviewer.py`):** Introduced an LLM-as-a-judge layer between Node C and Node D that compares generated code against the embedded traceability matrix.
+    * **Deterministic reviewer fallback:** Added offline static-analysis review mode so critique and rejection logic runs without API keys.
+    * **Semantic rewrite circuit breaker:** Added `rewrite_count` budget (`MAX_REWRITES = 2`) with terminal `BLOCKED_REVIEW` routing when repeated semantic mismatches persist.
+    * **Prompt-level self-healing integration:** Node C now ingests reviewer critique and regenerates code to address specific matrix/code contradictions.
+    * **Guardrail test automation locked:** Added `tests/test_guardrails.py` and `tests/conftest.py`; verified `pytest tests/test_guardrails.py -v` passes fully.
+    * **Batch execution tooling unified:** `tools/batch_execute_corpus.py` now streams LangGraph node-level progress and writes incremental CSV rows for crash-safe auditing.
+
+### 19. Recent Accomplishments: P0 Backlog Closure (Completed)
+* **Issue #01 Implemented (Empirical Cavity Gate):** Added `modules/validation_harness/test_gates_empirical_ldc.py` and integrated conditional routing in Node D so cavity-flow papers run an empirical physics benchmark that validates top-lid velocity, no-slip wall behavior, and mass conservation using PyTorch autograd.
+* **Ingestion Pipeline Decoupled:** Refactored paper preparation into standalone `tools/ingest_paper.py`, separating PDF-derived data staging and YAML blueprint construction from LangGraph runtime orchestration.
+* **Synthesis Metadata Hardening:** Upgraded `tools/synthesize_blueprint.py` prompt rules to map LangChain semantic chunk headers directly into Traceability Matrix `section` metadata, reducing false-positive `MISSING_ARCH_SPEC` blocks.
+* **Node C5 Self-Healing Loop Verified:** Confirmed the C/C5 review loop traps and rejects hallucinated code paths for Eivazi papers; repeated semantic failures now terminate via the `MAX_REWRITES` circuit breaker instead of allowing invalid artifacts to pass downstream gates.
+
+### 20. System Architecture (Current Production Flow)
+1. **Ingestion Layer:** PDF -> Marker extraction -> semantic header chunking -> YAML blueprint construction.
+2. **Node A.5 (Feasibility Check):** Deterministic pre-check that immediately blocks non-CFD/non-ML papers.
+3. **Node B (Physics Reasoner):** Architectural kill-switch and deterministic planning contract before code generation.
+4. **Node C / C5 Loop:** Generator and semantic judge iterate on code validity against traceability constraints.
+5. **Node D (Test Executor):** Executes PyTorch compile checks, autograd-based validations, and empirical physics gates.

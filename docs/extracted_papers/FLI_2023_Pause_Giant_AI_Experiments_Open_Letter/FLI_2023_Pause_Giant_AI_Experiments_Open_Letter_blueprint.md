@@ -1,5 +1,5 @@
 ## 1. Physical Problem Statement
-N/A — not a fluid-dynamics ML modeling paper. This document is a public open letter titled "Pause Giant AI Experiments: An Open Letter" published by the Future of Life Institute (March 22, 2023). It advocates for a minimum 6-month pause on the training of AI models exceeding GPT-4 capabilities to establish safety protocols, governance frameworks, and independent auditing systems for frontier artificial intelligence models.
+N/A — not a fluid-dynamics ML modeling paper. This document is an open letter titled "Pause Giant AI Experiments: An Open Letter" published by the Future of Life Institute. It calls for a minimum 6-month pause on the training of AI systems more powerful than GPT-4, emphasizing AI safety protocols, governance, public policy, and societal risk management.
 
 ## 2. Network Architectures
 N/A — not a fluid-dynamics ML modeling paper.
@@ -14,4 +14,4 @@ N/A — not a fluid-dynamics ML modeling paper.
 N/A — not a fluid-dynamics ML modeling paper.
 
 ## 6. Raw Data Corrections Log
-No corrections required.
+N/A — not a fluid-dynamics ML modeling paper.

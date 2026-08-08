@@ -10,11 +10,17 @@ import os
 import time
 import csv
 import concurrent.futures
+import yaml
+
 from modules.orchestrator.graph import app
+from modules.validation_harness.frontmatter import BlueprintFrontmatter
+from tools.ingest_paper import ingest_paper
 
 PDF_DIR = "pdf_repository"
 RESULTS_CSV = "batch_execution_results.csv"
 TIMEOUT_SECONDS = 600  # 10 minutes max per paper execution
+WORKSPACE_DIR = ROOT_DIR / "modules" / "workspace"
+ACTIVE_BLUEPRINT_PATH = WORKSPACE_DIR / "blueprint.yaml"
 
 
 def get_paper_ids():
@@ -29,10 +35,20 @@ def process_paper(paper_id):
     """Encapsulated execution for a single paper with verbose streaming."""
     thread_id = f"batch-run-{paper_id}-{int(time.time())}"
     config = {"configurable": {"thread_id": thread_id}}
+
+    paper_yaml_path = ingest_paper(paper_id)
+    raw_yaml = paper_yaml_path.read_text(encoding="utf-8")
+    frontmatter = yaml.safe_load(raw_yaml) or {}
+    ACTIVE_BLUEPRINT_PATH.write_text(raw_yaml, encoding="utf-8")
+
+    # Validate and canonicalize frontmatter before graph execution.
+    validated_frontmatter = BlueprintFrontmatter.from_yaml(frontmatter).model_dump()
     initial_state = {
         "paper_id": paper_id,
         "failure_count": 0,
         "status": "PROCESSING",
+        "frontmatter": validated_frontmatter,
+        "blueprint_yaml": raw_yaml,
     }
 
     final_node_state = initial_state
