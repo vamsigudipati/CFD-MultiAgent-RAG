@@ -18,6 +18,9 @@ class BlueprintFrontmatter(BaseModel):
     pde_family: str
     normalization: NormalizationSpec = Field(default_factory=NormalizationSpec)
     constraints: List[ArchConstraint] = Field(default_factory=list)
+    traceability_matrix: Dict[str, Any] = Field(default_factory=dict)
+    activation_functions: Optional[Any] = None
+    layer_depths: Optional[Any] = None
 
     @classmethod
     def from_yaml(cls, yaml_dict: dict) -> "BlueprintFrontmatter":
