@@ -170,6 +170,7 @@ Rules:
   parameter you had to infer. If the extraction was clean, write "No corrections required."
 - LATEX SANITY RULE: Ensure all LaTeX macros are standard TeX commands (e.g., use `\\delta_{{ij}}`, NEVER `\\deltaij`).
 - RAW TEXT FORMATTING RULE: In Section 6, when displaying raw broken OCR strings, malformed math, or invalid syntax, ALWAYS enclose them in code backticks.
+- METADATA RULE: For the `section` field in the Traceability Matrix, you MUST use the exact text provided in the `HEADER:` prefix of the chunk where you found the information. Do not output "UNAVAILABLE" for `section` if a header is present. If you cannot find a physical page number, write "UNAVAILABLE" for `page` but still provide the `section`.
 - GUARDRAIL: If this paper is NOT a fluid-dynamics ML modeling paper (e.g. a foundational AI,
   ethics, interpretability, or pure-methods paper with no flow regime and no trainable flow model),
   do not fabricate physics. Emit the same six headings but fill non-applicable sections with
