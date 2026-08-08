@@ -404,6 +404,7 @@ def _build_prompt(
     references: list[tuple[str, str]],
     architecture_mode: str,
     paper_text: str = "",
+    review_critique: str = "",
 ) -> str:
     retry_section = ""
     if failure_count > 0 and fingerprint:
@@ -443,10 +444,19 @@ def _build_prompt(
             "PROVIDED PAPER TEXT: none available -- mark all traceability sections as UNAVAILABLE.\n\n"
         )
 
+    review_section = ""
+    if review_critique:
+        review_section = (
+            "SEMANTIC REVIEW FEEDBACK (must be fully addressed in this regeneration):\n"
+            f"{review_critique}\n"
+            "- Do not introduce optimizers/learning rates or PDE losses that are not supported by the traceability matrix.\n\n"
+        )
+
     return (
         f"{system_prompt}"
         f"{framework_section}"
         f"{paper_section}"
+        f"{review_section}"
         f"EXECUTION PLAN:\n{execution_plan}\n\n"
         f"{retry_section}"
         f"GOLDEN REFERENCE SNIPPETS (AST-indexed, structurally validated):\n{refs_section}\n"
@@ -516,6 +526,7 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
     architecture_mode = state.get("architecture_mode", "cnn_field")
     failure_count = state.get("failure_count", 0)
     fingerprint = state.get("error_fingerprint", "")
+    review_critique = state.get("review_critique", "")
 
     references = _fetch_golden_references(limit=4, execution_plan=execution_plan)
     reference_names = ", ".join(name for name, _ in references) or "(AST index unavailable)"
@@ -544,6 +555,7 @@ def node_c_framework_supervisor(state: AgentState) -> dict:
         references=references,
         architecture_mode=architecture_mode,
         paper_text=paper_text,
+        review_critique=review_critique,
     )
 
     code = _try_generate_with_gemini(prompt)

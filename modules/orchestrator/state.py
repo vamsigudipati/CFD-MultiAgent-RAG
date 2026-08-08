@@ -13,6 +13,9 @@ class AgentState(TypedDict):
     architecture_mode: str   # 'cnn_field' | 'continuous_pinn'
     execution_plan: str      # filled by Node B (Physics Reasoner)
     generated_code: str      # filled by Node C (Framework Sub-Agent)
+    review_passed: bool      # semantic judge verdict from node_c5
+    review_critique: str     # actionable feedback from semantic review
+    rewrite_count: int       # semantic reviewer rewrite budget counter
     failure_count: int       # monotonic self-healing budget (k=3)
     error_fingerprint: str   # normalized failure-taxonomy fingerprint
     status: str              # routing state: 'FEASIBLE' | 'BLOCKED_DATA' | 'BLOCKED_PHYSICS' | ...

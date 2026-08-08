@@ -23,6 +23,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
 
 from .node_c import node_c_framework_supervisor
+from .node_c5_code_reviewer import MAX_REWRITES, node_c5_code_reviewer
 from .node_d import node_d_execute_tests
 from .nodes import node_a_ingest, node_a5_feasibility_check, node_b_physics_reasoner
 from .state import AgentState
@@ -75,10 +76,27 @@ def node_block_physics(state: AgentState) -> dict:
     return {"status": "BLOCKED_PHYSICS"}
 
 
+def node_block_review(state: AgentState) -> dict:
+    """Terminal stamp: semantic reviewer rewrite budget exhausted."""
+    LOGGER.error(
+        "Terminal BLOCKED_REVIEW: rewrite_count=%s critique=%s",
+        state.get("rewrite_count", 0),
+        state.get("review_critique", ""),
+    )
+    return {"status": "BLOCKED_REVIEW"}
+
+
 def _route_after_feasibility(state: AgentState) -> str:
     """Deterministic conditional edge keyed exclusively off the typed status."""
     route = "feasible" if state["status"] == "FEASIBLE" else "blocked"
     LOGGER.info("Feasibility route: %s (status=%s)", route, state["status"])
+    return route
+
+
+def _route_after_planner(state: AgentState) -> str:
+    """Route after Node B so planner kill-switch can halt before code generation."""
+    route = "blocked" if state.get("status") == "BLOCKED_DATA" else "continue"
+    LOGGER.info("Planner route: %s (status=%s)", route, state.get("status", ""))
     return route
 
 
@@ -103,14 +121,33 @@ def _route_after_tests(state: AgentState) -> str:
     return route
 
 
+def _route_after_semantic_review(state: AgentState) -> str:
+    """Semantic judge route: proceed, request rewrite, or stop after budget."""
+    if state.get("review_passed"):
+        route = "approved"
+    elif int(state.get("rewrite_count", 0) or 0) > MAX_REWRITES:
+        route = "blocked"
+    else:
+        route = "rewrite"
+    LOGGER.info(
+        "Semantic review route: %s (review_passed=%s rewrite_count=%s)",
+        route,
+        state.get("review_passed", False),
+        state.get("rewrite_count", 0),
+    )
+    return route
+
+
 workflow = StateGraph(AgentState)
 
 workflow.add_node("node_a_ingest", node_a_ingest)
 workflow.add_node("node_a5_feasibility_check", node_a5_feasibility_check)
 workflow.add_node("node_b_physics_reasoner", node_b_physics_reasoner)
 workflow.add_node("node_c_framework_supervisor", node_c_framework_supervisor)
+workflow.add_node("node_c5_code_reviewer", node_c5_code_reviewer)
 workflow.add_node("node_d_execute_tests", node_d_execute_tests)
 workflow.add_node("node_block_physics", node_block_physics)
+workflow.add_node("node_block_review", node_block_review)
 
 workflow.add_edge(START, "node_a_ingest")
 workflow.add_edge("node_a_ingest", "node_a5_feasibility_check")
@@ -124,8 +161,25 @@ workflow.add_conditional_edges(
     },
 )
 
-workflow.add_edge("node_b_physics_reasoner", "node_c_framework_supervisor")
-workflow.add_edge("node_c_framework_supervisor", "node_d_execute_tests")
+workflow.add_conditional_edges(
+    "node_b_physics_reasoner",
+    _route_after_planner,
+    {
+        "continue": "node_c_framework_supervisor",
+        "blocked": END,
+    },
+)
+workflow.add_edge("node_c_framework_supervisor", "node_c5_code_reviewer")
+
+workflow.add_conditional_edges(
+    "node_c5_code_reviewer",
+    _route_after_semantic_review,
+    {
+        "approved": "node_d_execute_tests",
+        "rewrite": "node_c_framework_supervisor",
+        "blocked": "node_block_review",
+    },
+)
 
 workflow.add_conditional_edges(
     "node_d_execute_tests",
@@ -139,6 +193,7 @@ workflow.add_conditional_edges(
 )
 
 workflow.add_edge("node_block_physics", END)
+workflow.add_edge("node_block_review", END)
 
 # Compile graph with persistent SQLite checkpointer attached
 conn = sqlite3.connect(str(CHECKPOINT_DB_PATH), check_same_thread=False)
