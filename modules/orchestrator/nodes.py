@@ -1,5 +1,6 @@
 """Orchestrator nodes for ingestion, feasibility pre-check, and physics reasoning."""
 import logging
+import re
 import yaml
 from pathlib import Path
 from modules.validation_harness.frontmatter import BlueprintFrontmatter
@@ -61,10 +62,69 @@ def node_a5_feasibility_check(state: AgentState) -> dict:
     return {"status": "FEASIBLE"}
 
 
+def _traceability_value_is_unavailable(value: object) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, str):
+        normalized = value.strip().upper()
+        return normalized in ("", "UNAVAILABLE")
+    if isinstance(value, dict):
+        raw = value.get("value")
+        if raw is None:
+            return True
+        if isinstance(raw, str):
+            normalized = raw.strip().upper()
+            return normalized in ("", "UNAVAILABLE")
+        return False
+    return False
+
+
+def _read_arch_spec_from_frontmatter(frontmatter_dict: dict) -> tuple[object, object]:
+    """Read activation/layer architecture provenance from frontmatter payload."""
+    traceability = frontmatter_dict.get("traceability_matrix") or {}
+    activation_spec = traceability.get(
+        "activation_functions", frontmatter_dict.get("activation_functions")
+    )
+    layer_depth_spec = traceability.get("layer_depths", frontmatter_dict.get("layer_depths"))
+    return activation_spec, layer_depth_spec
+
+
 def node_b_physics_reasoner(state: AgentState) -> dict:
     """Synthesizes the execution plan string from the parsed blueprint frontmatter."""
     frontmatter_dict = state.get("frontmatter", {})
     frontmatter = BlueprintFrontmatter(**frontmatter_dict)
+
+    activation_spec, layer_depth_spec = _read_arch_spec_from_frontmatter(frontmatter_dict)
+    if _traceability_value_is_unavailable(activation_spec) or _traceability_value_is_unavailable(
+        layer_depth_spec
+    ):
+        message = (
+            "BLOCKED_DATA: insufficient architectural specification in traceability/blueprint "
+            "(activation_functions and/or layer_depths = UNAVAILABLE)."
+        )
+        LOGGER.error("Node B kill-switch triggered: %s paper_id=%s", message, state.get("paper_id", "unknown"))
+        return {
+            "status": "BLOCKED_DATA",
+            "error_fingerprint": "BLOCKED_DATA|MISSING_ARCH_SPEC",
+            "execution_plan": message,
+        }
+
+    pde_field = (frontmatter_dict.get("traceability_matrix") or {}).get("pde_formulation")
+    pde_value = pde_field.get("value", "") if isinstance(pde_field, dict) else str(pde_field or "")
+    pde_cited = isinstance(pde_field, dict) and pde_field.get("section", "").upper() not in (
+        "",
+        "UNAVAILABLE",
+    )
+    names_ns = bool(re.search(r"navier|continuity|incompressible", pde_value, re.IGNORECASE))
+    if names_ns and frontmatter.pde_family in ("", "unknown", "n/a", None) and not pde_cited:
+        return {
+            "status": "BLOCKED_DATA",
+            "error_fingerprint": "BLOCKED_DATA|NON_CFD_DOMAIN",
+            "execution_plan": (
+                "BLOCKED_DATA: paper lacks a closed CFD PDE; "
+                "physics formulation appears fabricated."
+            ),
+        }
 
     pde_family = frontmatter.pde_family
     architecture_mode = _classify_architecture_mode(state, frontmatter)
