@@ -18,6 +18,17 @@ MONOLITH_PATH = WORKSPACE_DIR / "train_and_val.py"
 HARNESS_DIR = REPO_ROOT / "modules" / "validation_harness"
 
 
+def _is_lid_driven_cavity_case(state: AgentState) -> bool:
+    """Heuristic routing for the empirical 2D lid-driven cavity benchmark gate."""
+    paper_id = str(state.get("paper_id", "")).lower()
+    frontmatter = state.get("frontmatter", {}) or {}
+    provenance = frontmatter.get("provenance", {}) or {}
+    provenance_blob = " ".join(str(v).lower() for v in provenance.values())
+    haystack = f"{paper_id} {provenance_blob}"
+    keywords = ("lid-driven", "lid driven", "cavity", "ghia")
+    return any(keyword in haystack for keyword in keywords)
+
+
 def _resolve_workspace_dir(state: AgentState, config=None) -> Path:
     """Return a thread-isolated workspace for this paper/run.
 
@@ -96,6 +107,8 @@ def node_d_execute_tests(state: AgentState, config=None) -> dict:
     architecture_mode = state.get("architecture_mode", "cnn_field")
     if architecture_mode == "continuous_pinn":
         test_targets = [str(HARNESS_DIR / "test_gates_pinn.py")]
+        if _is_lid_driven_cavity_case(state):
+            test_targets.append(str(HARNESS_DIR / "test_gates_empirical_ldc.py"))
     else:
         test_targets = [
             str(HARNESS_DIR / "test_gates_t1.py"),
